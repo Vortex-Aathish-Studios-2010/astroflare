@@ -1,0 +1,12 @@
+# Deployment configuration for the NEW copy only; not the original Render service.
+services:
+  - type: web
+    name: astroflare-research-copy
+    runtime: node
+    branch: main
+    buildCommand: python3 build.py
+    startCommand: node server.mjs
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: '22'

@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1f3447">
+  <title>Astroflare | Guided hazard assessment</title>
+  <style>
+    :root {
+      --ink: #1c2833; --muted: #55646f; --faint: #7a8996; --bg: #f5f6f8; --card: #ffffff; --line: #d8dee5; --soft: #eef1f5;
+      --nav: #1f3447; --accent: #2b5d8a; --accent-soft: #e6eef6; --caution: #7a5200; --caution-bg: #fbf4e2; --caution-line: #e6d3a3;
+      --ok: #2f5a30; --ok-bg: #eef4ee; --bad: #8a3a2a; --bad-bg: #f6e9e6; --mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; overflow-x: clip; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 Inter, "Segoe UI", system-ui, -apple-system, sans-serif; }
+    h1, h2, h3, h4 { margin: 0; line-height: 1.25; letter-spacing: -.01em; }
+    h1 { font-size: 24px; font-weight: 650; } h2 { font-size: 19px; font-weight: 650; } h3 { font-size: 15px; font-weight: 650; }
+    h4 { font-size: 12px; font-weight: 650; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-top: 14px; }
+    p { margin: 0 0 .7em; } a { color: var(--accent); } button, select, input, textarea { font: inherit; color: inherit; }
+    .skip { position: absolute; left: -999px; } .skip:focus { left: 8px; top: 8px; background: #fff; padding: 8px 12px; z-index: 50; }
+    :focus-visible { outline: 3px solid rgba(43,93,138,.5); outline-offset: 2px; }
+    [tabindex="-1"]:focus { outline: none; }
+    .top { background: var(--nav); color: #dbe5ee; display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; padding: 10px 24px; }
+    .brand { display: flex; gap: 10px; align-items: center; } .brand-mark { width: 28px; height: 28px; border-radius: 7px; background: #e8eef4; color: var(--nav); display: grid; place-items: center; font-weight: 800; }
+    .brand-name { font-weight: 700; letter-spacing: .08em; font-size: 13px; color: #fff; } .brand-sub { font-size: 11px; color: #a9bbcb; }
+    .top .btn { background: transparent; border-color: #4a6277; color: #e6eef5; } .top .btn:hover { background: #2b4358; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 18px 24px 60px; }
+    .stepper ol { list-style: none; display: flex; gap: 6px; padding: 0; margin: 0 0 14px; flex-wrap: wrap; }
+    .stepper li button { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 4px 12px; font-size: 12.5px; color: var(--muted); cursor: pointer; }
+    .stepper li button[disabled] { opacity: .5; cursor: default; } .stepper li button[aria-current="step"] { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+    .stepper li button.done { color: var(--ink); }
+    .scope { background: var(--soft); border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; color: var(--muted); font-size: 12.5px; margin-bottom: 16px; } .scope strong { color: var(--ink); }
+    .workspace { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 20px 22px; min-width: 0; overflow-wrap: anywhere; margin-bottom: 14px; }
+    .lede { color: var(--muted); margin: 6px 0 14px; } .small { font-size: 12.5px; color: var(--muted); } .mono { font-family: var(--mono); font-size: 12px; }
+    .btn { border: 1px solid #c3ccd6; background: var(--card); border-radius: 6px; padding: 8px 14px; cursor: pointer; font-size: 14px; color: var(--ink); }
+    .btn:hover { border-color: #8fa0b0; } .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; } .btn.primary:hover { background: #244f77; }
+    .btn.small-btn { padding: 3px 9px; font-size: 12.5px; } .btn:disabled { opacity: .55; cursor: not-allowed; } .btn[hidden] { display: none; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; } .row.sp { justify-content: space-between; } .mt { margin-top: 14px; }
+    label.lbl { display: block; font-weight: 600; margin-bottom: 4px; }
+    select, input[type=text], textarea { width: 100%; border: 1px solid #b9c4cf; border-radius: 6px; padding: 8px 10px; background: #fff; font-size: 14.5px; }
+    textarea { min-height: 96px; resize: vertical; } input:disabled, select:disabled { background: var(--soft); color: var(--faint); }
+    .q { border-top: 1px solid var(--line); padding: 16px 0; } .q:first-of-type { border-top: 0; padding-top: 4px; }
+    .q .why { color: var(--muted); font-size: 13px; margin: 0 0 8px; } .q .err { color: var(--bad); font-size: 13px; margin-top: 4px; }
+    .q .aux { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-top: 8px; font-size: 13px; color: var(--muted); } .q .aux select { width: auto; min-width: 190px; padding: 4px 8px; font-size: 13px; }
+    .q .aux label { display: flex; gap: 6px; align-items: center; } .q.hl { background: var(--caution-bg); border-radius: 6px; padding: 12px; margin: 6px -12px; border-top: 0; }
+    .q.skipped { opacity: .7; } .num { display: flex; gap: 8px; align-items: center; } .num select { flex: 0 0 120px; } .num .unit { color: var(--muted); font-size: 13px; white-space: nowrap; }
+    .choice { display: block; border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; margin: 8px 0; cursor: pointer; background: #fff; }
+    .choice:hover { border-color: #8fa0b0; } .choice input { margin-right: 8px; } .choice.sel { border-color: var(--accent); background: var(--accent-soft); } .choice .d { display: block; color: var(--muted); font-size: 13px; margin: 2px 0 0 24px; }
+    .tagx { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; padding: 1px 6px; border-radius: 3px; border: 1px solid var(--line); color: var(--muted); font-weight: 600; margin-left: 6px; white-space: nowrap; }
+    .tagx.inferred { background: var(--caution-bg); border-color: var(--caution-line); color: var(--caution); } .tagx.auto { background: var(--accent-soft); border-color: #bfd0e2; color: var(--accent); }
+    .cand { display: block; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin: 8px 0; background: #fff; } .cand input[type=checkbox] { margin-right: 8px; } .cand .quote { color: var(--muted); font-size: 13px; display: block; margin: 2px 0 0 24px; }
+    .notice { border: 1px solid var(--line); background: var(--soft); border-radius: 6px; padding: 9px 12px; font-size: 13.5px; color: var(--muted); margin: 10px 0; }
+    .notice.warn { background: var(--caution-bg); border-color: var(--caution-line); color: var(--caution); } .notice.bad { background: var(--bad-bg); border-color: #e0c0b8; color: var(--bad); }
+    .generated { border: 1px dashed #9db3c7; background: var(--accent-soft); border-radius: 6px; padding: 10px 14px; margin: 10px 0; font-size: 14px; } .generated .tag { font-size: 11.5px; color: var(--muted); display: block; margin-bottom: 4px; }
+    .status-card { border-left: 4px solid var(--accent); } .status-card.incomplete { border-left-color: #b58a2a; background: var(--caution-bg); }
+    .status-label { font-size: 20px; font-weight: 650; } .meta { color: var(--muted); font-size: 12.5px; margin-left: 10px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; } .chip { border: 1px solid var(--line); background: var(--soft); border-radius: 4px; padding: 2px 8px; font-size: 12px; color: #34424f; }
+    .qbox { background: var(--soft); border-radius: 6px; padding: 10px 14px; margin-bottom: 12px; } .qbox .q-label { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+    ul.plain { margin: 6px 0 0; padding-left: 20px; } ul.plain li { margin: 3px 0; } .two { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    details.finding { border: 1px solid var(--line); border-radius: 6px; margin: 8px 0; background: #fff; } details.finding > summary { cursor: pointer; padding: 10px 12px; font-weight: 600; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+    details.finding[open] > summary { border-bottom: 1px solid var(--line); background: #fafbfc; } .finding .body { padding: 10px 14px 12px; }
+    .kind { font-size: 10.5px; text-transform: uppercase; letter-spacing: .06em; padding: 1px 6px; border-radius: 3px; border: 1px solid var(--line); color: var(--muted); font-weight: 600; white-space: nowrap; }
+    .kind.condition { background: var(--caution-bg); border-color: var(--caution-line); color: var(--caution); } .kind.pathway { background: var(--accent-soft); color: var(--accent); border-color: #bfd0e2; }
+    .basis { font-size: 13px; color: var(--muted); margin: 6px 0; } details.sec { background: var(--card); border: 1px solid var(--line); border-radius: 8px; margin-bottom: 12px; }
+    details.sec > summary { cursor: pointer; padding: 14px 20px; font-weight: 650; font-size: 16px; } details.sec[open] > summary { border-bottom: 1px solid var(--line); } details.sec > .in { padding: 14px 20px 18px; }
+    details.sub { margin-top: 8px; } details.sub > summary { cursor: pointer; color: var(--accent); font-size: 13.5px; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; } th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 650; } td.num { font-variant-numeric: tabular-nums; white-space: nowrap; } .tablewrap { overflow-x: auto; }
+    .ctx { position: sticky; top: 12px; } .ctx .card { padding: 16px 18px; } .ctx h3 { margin-bottom: 6px; } .ctx dl { margin: 0; font-size: 13.5px; } .ctx dt { color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; margin-top: 8px; } .ctx dd { margin: 0; }
+    .hist { max-height: 340px; overflow: auto; margin: 6px 0 0; padding: 0; list-style: none; font-size: 13px; } .hist li { padding: 5px 0; border-top: 1px solid var(--line); display: flex; gap: 8px; justify-content: space-between; align-items: baseline; } .hist li:first-child { border-top: 0; }
+    .hist .v { color: var(--muted); } .linkbtn { background: none; border: 0; color: var(--accent); cursor: pointer; padding: 0; font-size: 12.5px; text-decoration: underline; }
+    .log-entry { border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; margin: 12px 0; background: #fff; } .log-entry > h3 { margin-bottom: 4px; } .log-entry .stale { color: var(--caution); font-size: 12.5px; }
+    .source { border-top: 1px solid var(--line); padding: 12px 0; } .source:first-of-type { border-top: 0; } .source .cit { color: var(--muted); font-size: 13px; margin: 2px 0 4px; }
+    .flare-row { display: grid; grid-template-columns: 58px 1fr auto; gap: 8px; padding: 6px 0; border-top: 1px solid var(--line); font-size: 13.5px; } .flare-row .cls { font-weight: 700; } .flare-row .sub { color: var(--muted); font-size: 12.5px; display: block; }
+    .tag-live { font-size: 11.5px; padding: 1px 7px; border-radius: 3px; border: 1px solid #bcd3bc; background: var(--ok-bg); color: var(--ok); font-weight: 600; } .tag-live.warn { background: var(--caution-bg); border-color: var(--caution-line); color: var(--caution); } .tag-live.bad { background: var(--bad-bg); border-color: #e0c0b8; color: var(--bad); }
+    pre.report { background: #fafbfc; border: 1px solid var(--line); border-radius: 6px; padding: 14px; max-height: 560px; overflow: auto; white-space: pre-wrap; font: 12.5px/1.5 var(--mono); }
+    .spinner { display: inline-block; width: 12px; height: 12px; margin-right: 8px; vertical-align: -1px; border: 2px solid #cdd6df; border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; } @keyframes spin { to { transform: rotate(360deg); } }
+    .method ol { padding-left: 20px; } .method li { margin-bottom: 8px; } .method .auto { font-size: 12px; color: var(--muted); display: block; }
+    @media (max-width: 900px) { .workspace { grid-template-columns: minmax(0, 1fr); } .ctx { position: static; } .hist { max-height: 220px; } .two { grid-template-columns: 1fr; } .btn.small-btn { padding: 8px 12px; } .linkbtn { padding: 6px 4px; } }
+    @media (max-width: 600px) { .wrap { padding: 12px 12px 40px; } .top { padding: 10px 12px; } .card { padding: 16px 14px; } h1 { font-size: 21px; } .num { flex-wrap: wrap; } .q.hl { margin: 6px 0; } }
+    @media print { .top, .stepper, .noprint, .ctx, .scope { display: none !important; } .workspace { display: block; } .card { break-inside: avoid; border-color: #bbb; } body { background: #fff; } details > * { display: block !important; } }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .spinner { animation-duration: 2s; } }
+  </style>
+</head>
+<body>
+<a class="skip" href="#stage">Skip to the current step</a>
+<header class="top">
+  <div class="brand"><div class="brand-mark" aria-hidden="true">A</div><div><div class="brand-name">ASTROFLARE</div><div class="brand-sub">Guided hazard screening for mission leads</div></div></div>
+  <div class="row noprint">
+    <button class="btn small-btn" id="saveBtn" type="button">Save in this browser</button>
+    <button class="btn small-btn" id="loadBtn" type="button">Load saved</button>
+    <button class="btn small-btn" id="restartBtn" type="button">Start over</button>
+  </div>
+</header>
+<div class="wrap">
+  <nav class="stepper" aria-label="Progress"><ol id="stepper"></ol></nav>
+  <div class="scope"><strong>What this is and is not.</strong> Astroflare screens a hypothetical scenario you describe. It is not connected to any spacecraft or sensor and cannot detect or report a real event. The output is a preliminary screening: it has not been validated against experiments or reviewed by a qualified safety authority, and it is not a safety determination.</div>
+  <div class="workspace">
+    <main id="stage" tabindex="-1" aria-live="polite"></main>
+    <aside class="ctx noprint" id="context" aria-label="Mission context"></aside>
+  </div>
+  <details class="sec noprint" id="envSec"><summary>Solar activity, last 30 days (context only)</summary><div class="in">
+    <div class="row sp"><span class="small">Not used in any assessment.</span><span class="tag-live" id="flareTag">Loading</span></div>
+    <p class="lede">Context for mission planning only. Solar flare records are not used in the assessment above and say nothing about cabin fires.</p>
+    <div class="small" id="flareMeta"></div><div id="flareSummary" role="status" style="margin:8px 0"></div><div id="flareList"></div>
+    <div class="row"><button class="btn small-btn" id="flareRetry" type="button" hidden>Try again</button></div><p class="small" id="flareProv" style="margin-top:8px"></p>
+  </div></details>
+  <details class="sec method noprint" id="methodSec"><summary>How an assessment is produced</summary><div class="in" id="methodBody"></div></details>
+</div>
+<script>
+(function () {
+  "use strict";
+  const $ = (id) => document.getElementById(id);
+  const REPORT_MS = 90000, ASK_MS = 90000, INTERPRET_MS = 90000;
+  const STAGES = [["mission", "Mission"], ["problem", "Problem"], ["info", "Information"], ["review", "Review"], ["results", "Results"], ["report", "Report"]];
+  const KINDS = { pathway: "Plausible pathway", condition: "Condition to review", gap: "Information gap", context: "Context" };
+  const BASIS_TEXT = { sourced: "Supported by cited sources (general statements)", inference: "Inference from supplied inputs; no source cited", calculation: "Deterministic calculation from supplied inputs", input: "Restates a supplied input" };
+  const CATEGORIES = { information: "Additional information needed", calculation: "Calculations", simulation: "Simulations", test: "Tests or demonstrations", independent_review: "Independent review" };
+  const HAZARD_NOTE = {
+    electrical: "Heating or arcing in wiring and electrical equipment. Gives a let-through energy (I²t) when fault data are supplied.",
+    battery: "Battery thermal events. Astroflare records the reported stored-energy situation only; it does not model cell chemistry or thermal propagation.",
+    material: "Ignition of cabin materials. Depends on how far flammability tests cover your atmosphere and gravity.",
+    smoke: "Combustion products after a fire: detection, ventilation and clean-up provisions."
+  };
+  const EXAMPLES = [
+    "I'm leading a crewed Mars transit mission and want to investigate the risk of a battery fire during cruise. Crew of four, 210 days.",
+    "Our lunar surface habitat runs at 26.5% oxygen and 10.2 psia. We're worried about electrical wiring overheating during a 60-day stay.",
+    "Could smoke detection fail in a compartment of an orbital habitat? Crew of six."
+  ];
+  const S = { schema: null, guide: null, examples: [], methodology: null, evidence: null, aiAvailable: false, stage: "mission", reached: { mission: true },
+    mission: { description: "", destination: null, aiInterpretation: false }, interp: null, goal: "investigate", answers: {}, flow: null, viewStep: null,
+    profile: null, ack: false, assessment: null, explain: null, log: [], pinned: null, reportMd: null, logSeq: 0, errors: {} };
+
+  // ---------------------------------------------------------------- helpers
+  function el(tag, props, children) {
+    const e = document.createElement(tag);
+    Object.keys(props || {}).forEach(function (k) { if (k === "text") e.textContent = props[k]; else if (k === "class") e.className = props[k]; else if (props[k] !== false && props[k] != null) e.setAttribute(k, props[k]); });
+    [].concat(children == null ? [] : children).forEach(function (c) { if (c != null && c !== false) e.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return e;
+  }
+  function clear(e) { while (e.firstChild) e.removeChild(e.firstChild); return e; }
+  function busy(e, text) { clear(e); e.appendChild(el("span", { class: "spinner", "aria-hidden": "true" })); e.appendChild(document.createTextNode(text)); }
+  function clock(iso) { const d = new Date(iso); return isNaN(d) ? "" : d.toLocaleString([], { dateStyle: "medium", timeStyle: "short" }); }
+  function download(name, type, text) { const url = URL.createObjectURL(new Blob([text], { type: type })); const a = el("a", { href: url, download: name }); document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
+  function safeUrl(u) { return /^https:\/\//.test(u || "") ? u : null; }
+  function table(heads, rows) { return el("div", { class: "tablewrap" }, [el("table", {}, [el("thead", {}, [el("tr", {}, heads.map(function (t) { return el("th", { text: t }); }))]), el("tbody", {}, rows)])]); }
+  function api(path, options, ms) {
+    if (location.protocol === "file:") return Promise.reject(new Error("Open Astroflare through its server (run server.py, then visit http://127.0.0.1:8000). Your answers are unchanged."));
+    const ctl = new AbortController(); const timer = setTimeout(function () { ctl.abort(); }, ms || 20000);
+    return fetch(path, Object.assign({ signal: ctl.signal, cache: "no-store" }, options || {}))
+      .catch(function (e) { throw new Error(e && e.name === "AbortError" ? "The request took too long. Your answers are unchanged; please retry." : "The Astroflare server could not be reached. Your answers are unchanged."); })
+      .then(function (res) { return res.json().catch(function () { throw new Error("The server sent an unexpected response."); }).then(function (body) { if (!res.ok) { const err = new Error((body && body.error) || "The request failed."); err.code = body && body.code; err.fields = body && body.fields; throw err; } return body; }); })
+      .then(function (b) { clearTimeout(timer); return b; }, function (e) { clearTimeout(timer); throw e; });
+  }
+  const post = (path, body, ms) => api(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }, ms);
+  const fieldOf = (id) => S.schema.fields.find(function (f) { return f.id === id; });
+
+  // ---------------------------------------------------------------- answers -> engine inputs
+  function hasValue(a) { return a && !a.unknown && a.value != null && String(a.value).trim() !== ""; }
+  function engineInputs() { const o = {}; Object.keys(S.answers).forEach(function (k) { if (hasValue(S.answers[k])) o[k] = String(S.answers[k].value).trim(); }); return o; }
+  function basisMap() { const o = {}; Object.keys(S.answers).forEach(function (k) { const a = S.answers[k]; if (hasValue(a) && a.basis) o[k] = a.basis; }); return o; }
+  function answersPayload() { const o = {}; Object.keys(S.answers).forEach(function (k) { const a = S.answers[k]; o[k] = { value: a.value == null ? null : String(a.value), unknown: !!a.unknown, basis: a.basis || null, source: a.source || "typed" }; }); return o; }
+  function missionPayload() { return { description: S.mission.description, destination: S.mission.destination, goal: S.goal, aiInterpretation: S.mission.aiInterpretation }; }
+  function displayValue(id) {
+    const a = S.answers[id], f = fieldOf(id); if (!hasValue(a)) return null;
+    if (f.kind === "select") { const o = f.options.find(function (x) { return x.value === a.value; }); return o ? o.label : a.value; }
+    const unit = id === "pressure" ? (S.answers.pressure_unit && S.answers.pressure_unit.value) || "" : f.unit || "";
+    return (String(a.value) + " " + unit).trim();
+  }
+
+  // ---------------------------------------------------------------- stage navigation
+  function goTo(stage, opts) {
+    S.stage = stage; S.reached[stage] = true; if (opts && opts.step) S.viewStep = opts.step;
+    renderStepper(); renderContext(); renderStage();
+    const st = $("stage"); const h = st.querySelector("h2"); if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
+    window.scrollTo({ top: 0 });
+  }
+  function canVisit(stage) {
+    if (stage === "mission") return true;
+    if (stage === "problem") return true;
+    if (stage === "info") return !!(S.answers.hazard && hasValue(S.answers.hazard));
+    if (stage === "review") return !!(S.flow && S.flow.readyToReview);
+    return !!S.assessment;
+  }
+  function renderStepper() {
+    const ol = clear($("stepper"));
+    STAGES.forEach(function (s, i) {
+      const ok = canVisit(s[0]); const b = el("button", { type: "button", class: S.reached[s[0]] && s[0] !== S.stage ? "done" : "", disabled: ok ? null : "true", "aria-current": S.stage === s[0] ? "step" : null, text: (i + 1) + ". " + s[1] });
+      b.addEventListener("click", function () { if (s[0] === "info") showInfo(); else if (s[0] === "review") showReview(); else goTo(s[0]); });
+      ol.appendChild(el("li", {}, [b]));
+    });
+  }
+  function renderStage() {
+    const st = clear($("stage"));
+    ({ mission: renderMission, problem: renderProblem, info: renderInfo, review: renderReview, running: renderRunning, results: renderResults, report: renderReportStage }[S.stage] || renderMission)(st);
+  }
+
+  // ---------------------------------------------------------------- context panel (always visible)
+  function renderContext() {
+    const c = clear($("context")); const card = el("div", { class: "card" }, [el("h3", { text: "Your mission" })]);
+    const dl = el("dl");
+    const d = S.mission.description;
+    dl.appendChild(el("dt", { text: "Description" })); dl.appendChild(el("dd", { text: d ? (d.length > 170 ? d.slice(0, 170) + "…" : d) : "Not entered yet." }));
+    if (S.mission.destination) { dl.appendChild(el("dt", { text: "Destination read from it" })); dl.appendChild(el("dd", { text: S.mission.destination })); }
+    const g = S.guide && S.guide.goals.find(function (x) { return x.id === S.goal; });
+    dl.appendChild(el("dt", { text: "Objective" })); dl.appendChild(el("dd", { text: g ? g.label : "" }));
+    dl.appendChild(el("dt", { text: "Hazard" })); dl.appendChild(el("dd", { text: displayValue("hazard") || "Not chosen yet." }));
+    card.appendChild(dl);
+    const ids = Object.keys(S.answers).filter(function (k) { return k !== "hazard" && k !== "question" && k !== "pressure_unit"; });
+    const known = ids.filter(function (k) { return hasValue(S.answers[k]); }), unk = ids.filter(function (k) { return !hasValue(S.answers[k]); });
+    card.appendChild(el("h4", { text: "Answers so far (" + known.length + " given, " + unk.length + " unknown)" }));
+    if (!ids.length) card.appendChild(el("p", { class: "small", text: "Nothing answered yet." }));
+    else {
+      const ul = el("ul", { class: "hist" });
+      ids.forEach(function (k) {
+        const f = fieldOf(k), a = S.answers[k]; const v = hasValue(a) ? displayValue(k) + (a.basis ? " · " + basisLabel(a.basis) : "") : "unknown";
+        const edit = el("button", { type: "button", class: "linkbtn", text: "Edit", "aria-label": "Edit " + f.label }); edit.addEventListener("click", function () { editField(k); });
+        ul.appendChild(el("li", {}, [el("span", {}, [f.label + ": ", el("span", { class: "v", text: v })]), edit]));
+      });
+      card.appendChild(ul);
+    }
+    c.appendChild(card);
+  }
+  function basisLabel(b) { const x = S.guide && S.guide.bases.find(function (y) { return y.value === b; }); return x ? x.label : b; }
+  function editField(id) {
+    const step = S.flow && S.flow.steps.find(function (s) { return s.questions.some(function (q) { return q.field === id; }); });
+    if (step && step.id !== "problem") showInfo(step.id); else goTo("problem");
+  }
+
+  // ---------------------------------------------------------------- stage 1: the mission
+  function renderMission(st) {
+    const card = el("div", { class: "card" }, [el("h2", { text: "What mission are you assessing?" }),
+      el("p", { class: "lede", text: "Describe it in your own words: the mission, the phase, and what you want to find out. You do not need technical terms. Astroflare reads the description for details it can use and shows you exactly what it understood. Nothing is used until you confirm it." })]);
+    const ta = el("textarea", { id: "missionText", maxlength: String(S.guide.maxMissionChars), "aria-label": "Mission description", placeholder: "For example: a crewed transit to Mars, and I'm worried about a battery fire during cruise." });
+    ta.value = S.mission.description; card.appendChild(ta);
+    card.appendChild(el("div", { class: "small mt", text: "Hypothetical examples you can use:" }));
+    EXAMPLES.forEach(function (t) { const b = el("button", { type: "button", class: "linkbtn", text: t, style: "display:block;text-align:left;margin:4px 0" }); b.addEventListener("click", function () { ta.value = t; ta.focus(); }); card.appendChild(b); });
+    const read = el("button", { type: "button", class: "btn primary", id: "readBtn", text: "Read my description" });
+    const skip = el("button", { type: "button", class: "btn", id: "skipBtn", text: "Skip: I'll answer the questions myself" });
+    read.addEventListener("click", readDescription); skip.addEventListener("click", function () { S.mission.description = ta.value.trim(); S.interp = null; goTo("problem"); });
+    card.appendChild(el("div", { class: "row mt" }, [read, skip]));
+    card.appendChild(el("div", { id: "interpBox", role: "status" }));
+    st.appendChild(card);
+    if (S.interp) renderInterp();
+  }
+  function readDescription() {
+    const text = $("missionText").value.trim(); const box = clear($("interpBox"));
+    if (!text) { box.appendChild(el("div", { class: "notice warn", text: "Write a sentence or two about the mission first, or skip this step." })); return; }
+    S.mission.description = text; $("readBtn").disabled = true; busy(box, "Reading your description");
+    post("/api/guide/interpret", { text: text, ai: false }, 20000).then(function (r) {
+      S.interp = { data: r.interpretation, aiNote: null, aiPending: false, picks: {}, hazardPick: null, aiMerged: false };
+      initPicks(); $("readBtn").disabled = false; renderInterp();
+      if (S.aiAvailable) refineWithAi(text);
+    }).catch(function (e) { $("readBtn").disabled = false; clear(box); box.appendChild(el("div", { class: "notice bad", text: e.message })); });
+  }
+  function initPicks() { S.interp.data.candidates.forEach(function (c) { if (!(c.field in S.interp.picks)) S.interp.picks[c.field] = c.certainty === "stated" && c.source === "keywords" && c.field !== "pressure_unit"; }); }
+  function refineWithAi(text) {
+    S.interp.aiPending = true; renderInterp();
+    post("/api/guide/interpret", { text: text, ai: true }, INTERPRET_MS).then(function (r) {
+      if (!S.interp) return; S.interp.aiPending = false; S.interp.aiNote = r.ai;
+      if (r.ai.status === "used") {
+        const have = {}; S.interp.data.candidates.forEach(function (c) { have[c.field] = true; });
+        r.interpretation.candidates.forEach(function (c) { if (!have[c.field]) { S.interp.data.candidates.push(c); S.interp.picks[c.field] = false; } else { const cur = S.interp.data.candidates.find(function (x) { return x.field === c.field; }); if (c.alternatives) cur.alternatives = c.alternatives; } });
+        S.interp.data.clarifications = r.interpretation.clarifications || []; S.interp.data.context = r.interpretation.context; S.interp.data.method = r.interpretation.method; S.interp.aiMerged = true;
+      }
+      if (S.stage === "mission") renderInterp();
+    }).catch(function (e) { if (!S.interp) return; S.interp.aiPending = false; S.interp.aiNote = { status: "unavailable", message: e.message }; if (S.stage === "mission") renderInterp(); });
+  }
+  function renderInterp() {
+    const box = $("interpBox"); if (!box || !S.interp) return; clear(box); const d = S.interp.data;
+    box.appendChild(el("h3", { text: "What Astroflare understood", style: "margin-top:18px" }));
+    box.appendChild(el("p", { class: "small", text: "Each item shows the words it came from. Tick the ones that are right; leave the rest. Items tagged 'inferred' are guesses from context and start unticked." }));
+    if (!d.candidates.length && !d.ambiguous.length) box.appendChild(el("div", { class: "notice", text: "Nothing could be read with confidence from that description. You can continue and answer the questions directly." }));
+    const unitCand = d.candidates.find(function (x) { return x.field === "pressure_unit"; });
+    d.candidates.forEach(function (c) {
+      if (c.field === "pressure_unit") return;
+      const shown = c.field === "pressure" && unitCand ? c.display + " " + unitCand.value : c.display;
+      const id = "cand_" + c.field; const cb = el("input", { type: "checkbox", id: id }); cb.checked = !!S.interp.picks[c.field];
+      cb.addEventListener("change", function () { S.interp.picks[c.field] = cb.checked; });
+      const tag = c.source === "ai" ? el("span", { class: "tagx auto", text: "automated suggestion" }) : c.certainty === "inferred" ? el("span", { class: "tagx inferred", text: "inferred" }) : el("span", { class: "tagx", text: "stated" });
+      const lab = el("label", { for: id, class: "cand" }, [cb, el("strong", { text: c.label + ": " }), shown, tag, el("span", { class: "quote", text: "from: “" + c.quote + "”" + (c.note ? " · " + c.note : "") })]);
+      if (c.alternatives && c.alternatives.length) lab.appendChild(el("span", { class: "quote", text: "The automated reading suggested " + c.alternatives.map(function (a) { return a.display + " (“" + a.quote + "”)"; }).join("; ") + " instead. Check the question later and correct it if needed." }));
+      box.appendChild(lab);
+    });
+    d.ambiguous.forEach(function (amb) {
+      const g = el("div", { class: "cand" }, [el("strong", { text: "Which hazard first? " }), amb.message]);
+      amb.options.forEach(function (o) { const r = el("input", { type: "radio", name: "ambHazard", value: o.value, id: "amb_" + o.value }); r.checked = S.interp.hazardPick === o.value; r.addEventListener("change", function () { S.interp.hazardPick = o.value; });
+        g.appendChild(el("label", { for: "amb_" + o.value, class: "quote", style: "display:block;margin-left:0" }, [r, " " + o.label + " — from “" + o.quote + "”"])); });
+      box.appendChild(g);
+    });
+    d.unsupported.forEach(function (u) { box.appendChild(el("div", { class: "notice warn" }, [el("strong", { text: u.label + " (from “" + u.quote + "”). " }), u.message + " Astroflare can screen the four fire-related hazards on the next step."])); });
+    d.notes.forEach(function (n) { box.appendChild(el("div", { class: "notice", text: n })); });
+    if (d.context && d.context.destination) box.appendChild(el("p", { class: "small", text: "Destination read from the description: " + d.context.destination + "." }));
+    if (d.clarifications && d.clarifications.length) { box.appendChild(el("h4", { text: "Questions worth thinking about (automated text analysis)" })); box.appendChild(el("ul", { class: "plain" }, d.clarifications.map(function (q) { return el("li", { text: q }); }))); }
+    if (S.interp.aiPending) { const s = el("p", { class: "small", role: "status" }); busy(s, "Reading your description more closely (optional automated text analysis)"); box.appendChild(s); }
+    else if (S.interp.aiNote && S.interp.aiNote.status !== "used" && S.interp.aiNote.status !== "not_requested") box.appendChild(el("p", { class: "small", text: "Automated text analysis was not used: " + S.interp.aiNote.message }));
+    else if (S.interp.aiNote && S.interp.aiNote.status === "used") box.appendChild(el("p", { class: "small", text: S.interp.aiNote.message }));
+    const go = el("button", { type: "button", class: "btn primary", id: "useInterp", text: "Use the ticked items and continue" }); go.addEventListener("click", applyInterp);
+    box.appendChild(el("div", { class: "row mt" }, [go]));
+  }
+  function applyInterp() {
+    const d = S.interp.data; let usedAi = false;
+    d.candidates.forEach(function (c) {
+      if (!S.interp.picks[c.field] || c.field === "pressure_unit") return;
+      S.answers[c.field] = { value: c.value, unknown: false, basis: null, source: "description" }; if (c.source === "ai") usedAi = true;
+    });
+    const uc = d.candidates.find(function (x) { return x.field === "pressure_unit"; });
+    if (S.interp.picks.pressure) { if (uc) S.answers.pressure_unit = { value: uc.value, unknown: false, basis: null, source: "description" }; else delete S.answers.pressure; }
+    if (S.interp.hazardPick) S.answers.hazard = { value: S.interp.hazardPick, unknown: false, basis: null, source: "description" };
+    S.mission.destination = d.context && d.context.destination ? d.context.destination : null; S.mission.aiInterpretation = usedAi;
+    goTo("problem");
+  }
+
+  // ---------------------------------------------------------------- stage 2: the problem
+  function refreshChoices() { document.querySelectorAll("label.choice").forEach(function (l) { const i = l.querySelector("input"); l.classList.toggle("sel", !!(i && i.checked)); }); }
+  function renderProblem(st) {
+    const card = el("div", { class: "card" }, [el("h2", { text: "What do you want to investigate?" }),
+      el("p", { class: "lede", text: "Astroflare has rules for four fire-related hazards. Pick the one closest to your concern; this decides which questions come next." })]);
+    if (S.interp && S.interp.data.unsupported.length) card.appendChild(el("div", { class: "notice warn", text: "Your description also mentions " + S.interp.data.unsupported.map(function (u) { return u.label.toLowerCase(); }).join(", ") + ". Astroflare does not model that. Choose one of the supported hazards below, or note the concern separately." }));
+    card.appendChild(el("h4", { text: "Hazard", style: "margin-top:4px" }));
+    const cur = hasValue(S.answers.hazard) ? S.answers.hazard.value : "";
+    S.guide.hazards.forEach(function (h) {
+      const r = el("input", { type: "radio", name: "hazard", value: h.value, id: "hz_" + h.value }); r.checked = cur === h.value;
+      const lab = el("label", { class: "choice" + (r.checked ? " sel" : ""), for: "hz_" + h.value }, [r, el("strong", { text: h.label }), el("span", { class: "d", text: HAZARD_NOTE[h.value] })]);
+      if (r.checked && S.answers.hazard.source === "description") lab.appendChild(el("span", { class: "d", text: "Read from your description. Confirm or choose another." }));
+      r.addEventListener("change", refreshChoices);
+      card.appendChild(lab);
+    });
+    card.appendChild(el("h4", { text: "What do you need from this assessment?" }));
+    S.guide.goals.forEach(function (g) {
+      const r = el("input", { type: "radio", name: "goal", value: g.id, id: "goal_" + g.id }); r.checked = S.goal === g.id;
+      r.addEventListener("change", refreshChoices);
+      card.appendChild(el("label", { class: "choice" + (r.checked ? " sel" : ""), for: "goal_" + g.id }, [r, el("strong", { text: g.label }), el("span", { class: "d", text: g.detail })]));
+    });
+    card.appendChild(el("h4", { text: "Your question (optional)" }));
+    const q = el("textarea", { id: "qText", "aria-label": "Your question", maxlength: "300", style: "min-height:64px", placeholder: "Leave blank to use the default screening question" }); q.value = hasValue(S.answers.question) ? S.answers.question.value : ""; card.appendChild(q);
+    card.appendChild(el("p", { class: "small", text: "Astroflare screens conditions. It cannot answer questions about probability or whether a design is acceptable." }));
+    card.appendChild(el("div", { id: "problemErr", class: "err small", role: "alert", style: "color:var(--bad)" }));
+    const back = el("button", { type: "button", class: "btn", text: "Back" }), next = el("button", { type: "button", class: "btn primary", id: "problemNext", text: "Continue" });
+    back.addEventListener("click", function () { goTo("mission"); }); next.addEventListener("click", function () {
+      const hz = document.querySelector("input[name=hazard]:checked"); if (!hz) { $("problemErr").textContent = "Choose a hazard to continue."; return; }
+      const g = document.querySelector("input[name=goal]:checked"); S.goal = g ? g.value : "investigate";
+      const prev = S.answers.hazard; S.answers.hazard = { value: hz.value, unknown: false, basis: null, source: prev && prev.value === hz.value ? prev.source : "typed" };
+      const qt = $("qText").value.trim(); if (qt) S.answers.question = { value: qt, unknown: false, basis: null, source: "typed" }; else delete S.answers.question;
+      S.assessment = null; showInfo();
+    });
+    card.appendChild(el("div", { class: "row mt" }, [back, next]));
+    st.appendChild(card);
+  }
+
+  // ---------------------------------------------------------------- stage 3: information, one group at a time
+  function refreshFlow() { return post("/api/guide/flow", { answers: answersPayload(), goal: S.goal }).then(function (f) { S.flow = f; return f; }); }
+  function showInfo(stepId) {
+    if (!hasValue(S.answers.hazard)) return goTo("problem");
+    return refreshFlow().then(function (f) {
+      const steps = f.steps.filter(function (s) { return s.id !== "problem"; });
+      let id = stepId || S.viewStep; if (!steps.find(function (s) { return s.id === id; })) id = f.current && f.current !== "problem" ? f.current : null;
+      if (!id) return showReview();
+      S.viewStep = id; goTo("info", { step: id });
+    }).catch(function (e) { S.errors.flow = e.message; goTo("problem"); $("problemErr").textContent = e.message; });
+  }
+  function visibleSteps() { return S.flow.steps.filter(function (s) { return s.id !== "problem"; }); }
+  function renderInfo(st) {
+    const steps = visibleSteps(); const idx = steps.findIndex(function (s) { return s.id === S.viewStep; }); const step = steps[idx];
+    const card = el("div", { class: "card" }, [el("div", { class: "small", text: "Step " + (idx + 1) + " of " + steps.length }), el("h2", { text: step.title }), el("p", { class: "lede", text: step.purpose })]);
+    const form = el("form", { id: "infoForm", novalidate: "true" });
+    step.questions.forEach(function (q) { form.appendChild(questionEl(q)); });
+    form.appendChild(el("p", { class: "small", text: "Anything left blank is recorded as unknown. Nothing is assumed in its place; it will appear as missing information." }));
+    const back = el("button", { type: "button", class: "btn", text: "Back" }), next = el("button", { type: "submit", class: "btn primary", id: "infoNext", text: idx === steps.length - 1 ? "Continue to review" : "Continue" });
+    back.addEventListener("click", function () { collectStep(step); if (idx === 0) goTo("problem"); else { S.viewStep = steps[idx - 1].id; refreshFlow().then(function () { renderStage(); renderContext(); }); } });
+    form.addEventListener("submit", function (ev) { ev.preventDefault(); continueInfo(step); });
+    form.appendChild(el("div", { class: "row mt" }, [back, next]));
+    card.appendChild(form); st.appendChild(card);
+  }
+  function questionEl(q) {
+    const f = fieldOf(q.field); const a = S.answers[q.field]; const id = "c_" + q.field;
+    const wrap = el("div", { class: "q" + (q.basisPrompt ? " hl" : "") + (q.state === "skipped" ? " skipped" : ""), id: "q_" + q.field });
+    wrap.appendChild(el("label", { for: id, class: "lbl", text: q.ask }));
+    if (q.state === "skipped") { wrap.appendChild(el("p", { class: "why", text: q.skipReason })); return wrap; }
+    wrap.appendChild(el("p", { class: "why", text: "Why it matters: " + q.why }));
+    let ctl;
+    if (q.kind === "select") {
+      ctl = el("select", { id: id }, [el("option", { value: "", text: "Choose…" })].concat(q.options.map(function (o) { return el("option", { value: o.value, text: o.label }); })));
+      ctl.value = hasValue(a) ? a.value : ""; wrap.appendChild(ctl);
+    } else {
+      ctl = el("input", { type: "text", id: id, inputmode: "decimal", autocomplete: "off", placeholder: q.placeholder || "" }); ctl.value = hasValue(a) ? a.value : "";
+      const parts = [ctl];
+      if (q.field === "pressure") { const u = el("select", { id: "pu_pressure", "aria-label": "Pressure unit" }, [el("option", { value: "", text: "Choose unit…" })].concat(q.units.map(function (x) { return el("option", { value: x, text: x }); }))); u.value = S.answers.pressure_unit && hasValue(S.answers.pressure_unit) ? S.answers.pressure_unit.value : ""; parts.push(u); }
+      else if (q.unit) parts.push(el("span", { class: "unit", text: q.unit }));
+      wrap.appendChild(el("div", { class: "num" }, parts));
+    }
+    const aux = el("div", { class: "aux" });
+    const unk = el("input", { type: "checkbox", id: "u_" + q.field }); unk.checked = !!(a && a.unknown && a.source !== "skipped");
+    unk.addEventListener("change", function () { ctl.disabled = unk.checked; const b = $("b_" + q.field); if (b) b.disabled = unk.checked; const u = $("pu_pressure"); if (u && q.field === "pressure") u.disabled = unk.checked; });
+    ctl.disabled = unk.checked;
+    aux.appendChild(el("label", { for: "u_" + q.field }, [unk, "I don't know"]));
+    if (q.allowBasis) {
+      const sel = el("select", { id: "b_" + q.field, "aria-label": "How do you know this?" }, [el("option", { value: "", text: "Basis: not stated" })].concat(S.guide.bases.map(function (b) { return el("option", { value: b.value, text: b.label }); })));
+      sel.value = a && a.basis ? a.basis : ""; sel.disabled = unk.checked;
+      const bl = el("span", { text: q.basisPrompt ? "What supports this reported provision? " : "How do you know this? " });
+      aux.appendChild(el("label", { for: "b_" + q.field }, [bl, sel]));
+      if (q.strongValue) ctl.addEventListener("change", function () { const strong = ctl.value === q.strongValue; wrap.classList.toggle("hl", strong); bl.textContent = strong ? "What supports this reported provision? " : "How do you know this? "; });
+    }
+    wrap.appendChild(aux);
+    if (q.error) wrap.appendChild(el("div", { class: "err", role: "alert", text: q.error }));
+    return wrap;
+  }
+  // Saves what is on screen. Only "Continue" (finishing the step) turns blanks into unknowns; going back keeps blanks as unanswered.
+  function collectStep(step, finishing) {
+    const before = JSON.stringify(S.answers);
+    step.questions.forEach(function (q) {
+      if (q.state === "skipped" || !$("c_" + q.field)) return;
+      const ctl = $("c_" + q.field), unk = $("u_" + q.field).checked, val = ctl.value.trim(), prev = S.answers[q.field];
+      const bas = $("b_" + q.field) ? $("b_" + q.field).value : "";
+      if (unk) S.answers[q.field] = { value: null, unknown: true, basis: null, source: "typed" };
+      else if (val === "") { if (finishing) S.answers[q.field] = { value: null, unknown: true, basis: null, source: "skipped" }; else delete S.answers[q.field]; }
+      else S.answers[q.field] = { value: val, unknown: false, basis: bas || null, source: prev && prev.value === val && prev.source === "description" ? "description" : "typed" };
+      if (q.field === "pressure") { const u = $("pu_pressure").value; if (!unk && val && u) S.answers.pressure_unit = { value: u, unknown: false, basis: null, source: "typed" }; else delete S.answers.pressure_unit; }
+    });
+    if (JSON.stringify(S.answers) !== before) S.dirty = true;
+  }
+  function continueInfo(step) {
+    collectStep(step, true); const btn = $("infoNext"); btn.disabled = true;
+    refreshFlow().then(function (f) {
+      const cur = f.steps.find(function (s) { return s.id === step.id; });
+      if (cur.questions.some(function (q) { return q.error; })) { btn.disabled = false; renderStage(); renderContext(); const bad = document.querySelector(".q .err"); if (bad) bad.scrollIntoView({ block: "center" }); return; }
+      const steps = visibleSteps(); const i = steps.findIndex(function (s) { return s.id === step.id; });
+      const next = steps.slice(i + 1).find(function (s) { return !s.complete; }) || steps.find(function (s) { return !s.complete; });
+      if (next) { S.viewStep = next.id; goTo("info", { step: next.id }); } else showReview();
+    }).catch(function (e) { btn.disabled = false; $("stage").prepend(el("div", { class: "notice bad", text: e.message })); });
+  }
+
+  // ---------------------------------------------------------------- stage 4: review the mission profile
+  function showReview() {
+    return refreshFlow().then(function (f) {
+      if (!f.readyToReview) { const n = f.steps.find(function (s) { return s.id !== "problem" && !s.complete; }); return n ? showInfo(n.id) : goTo("problem"); }
+      return post("/api/guide/profile", { answers: answersPayload(), goal: S.goal, mission: missionPayload() }).then(function (p) { S.profile = p; S.ack = false; goTo("review"); });
+    }).catch(function (e) { $("stage").prepend(el("div", { class: "notice bad", text: e.message })); });
+  }
+  function renderReview(st) {
+    const p = S.profile;
+    const card = el("div", { class: "card" }, [el("h2", { text: "Review your mission profile" }), el("p", { class: "lede", text: "This is everything Astroflare will use, and how you said you know it. Correct anything that is wrong; your other answers are kept." })]);
+    p.warnings.forEach(function (w) { card.appendChild(el("div", { class: "notice warn", text: w })); });
+    function rowsFor(list) { return list.map(function (r) { const b = el("button", { type: "button", class: "linkbtn", text: "Edit", "aria-label": "Edit " + r.label }); b.addEventListener("click", function () { editField(r.field); }); return el("tr", {}, [el("td", { text: r.label }), el("td", { text: r.display }), el("td", { text: r.basisLabel + (r.source === "description" ? " · from description" : "") }), el("td", {}, [b])]); }); }
+    const heads = ["Input", "Value", "Basis", ""];
+    card.appendChild(el("h4", { text: "Entered by you (" + p.entered.length + ")" })); card.appendChild(p.entered.length ? table(heads, rowsFor(p.entered)) : el("p", { class: "small", text: "None." }));
+    if (p.estimates.length) { card.appendChild(el("h4", { text: "Your estimates (" + p.estimates.length + ")" })); card.appendChild(table(heads, rowsFor(p.estimates))); }
+    if (p.assumptions.length) { card.appendChild(el("h4", { text: "Your working assumptions (" + p.assumptions.length + ")" })); card.appendChild(table(heads, rowsFor(p.assumptions))); }
+    card.appendChild(el("h4", { text: "Unknown to you (" + p.unknown.length + "): reported as missing, never assumed" }));
+    if (p.unknown.length) card.appendChild(el("ul", { class: "plain" }, p.unknown.map(function (u) { const b = el("button", { type: "button", class: "linkbtn", text: "Answer it", "aria-label": "Answer " + u.label }); b.addEventListener("click", function () { editField(u.field); }); return el("li", {}, [u.label + " ", b, el("span", { class: "small", style: "display:block", text: u.why })]); }))); else card.appendChild(el("p", { class: "small", text: "None." }));
+    if (p.notAsked.length) card.appendChild(el("details", { class: "sub" }, [el("summary", { text: "Not asked or not answered (" + p.notAsked.length + ")" }), el("ul", { class: "plain" }, p.notAsked.map(function (n) { return el("li", { text: n.label + ": " + n.reason }); }))]));
+    card.appendChild(el("h4", { text: "Derived by Astroflare from your inputs" }));
+    card.appendChild(p.derived.length ? table(["Quantity", "Value", "Formula"], p.derived.map(function (d) { return el("tr", {}, [el("td", { text: d.label }), el("td", { class: "num", text: d.display + " " + d.unit }), el("td", { class: "mono", text: d.formula })]); })) : el("p", { class: "small", text: "No calculation is possible yet from the numbers given." }));
+    card.appendChild(el("details", { class: "sub" }, [el("summary", { text: "Assumptions Astroflare itself introduces (" + p.analysisAssumptions.length + ")" }), el("ul", { class: "plain" }, p.analysisAssumptions.map(function (x) { return el("li", { text: x }); }))]));
+    const needsAck = p.estimates.length || p.assumptions.length || p.unknown.length || p.entered.some(function (r) { return r.source === "description"; });
+    let ack = null;
+    if (needsAck) { ack = el("input", { type: "checkbox", id: "ackBox" }); ack.checked = S.ack; ack.addEventListener("change", function () { S.ack = ack.checked; $("runBtn").disabled = !ack.checked; });
+      card.appendChild(el("label", { class: "notice warn", for: "ackBox", style: "display:block;margin-top:14px" }, [ack, " I have checked these. I understand that estimates and assumptions limit what the results can show, and that unknown items will be reported as missing."])); }
+    const back = el("button", { type: "button", class: "btn", text: "Back to questions" }), run = el("button", { type: "button", class: "btn primary", id: "runBtn", text: "Run the assessment" });
+    run.disabled = !!needsAck && !S.ack;
+    back.addEventListener("click", function () { showInfo(); }); run.addEventListener("click", runAssessment);
+    card.appendChild(el("div", { class: "row mt" }, [back, run])); st.appendChild(card);
+  }
+
+  // ---------------------------------------------------------------- stage 5: run, then investigate
+  function renderRunning(st) { const c = el("div", { class: "card" }, [el("h2", { text: "Running the assessment" })]); const p = el("p", { role: "status" }); busy(p, "Validating the inputs and applying the rules"); c.appendChild(p); st.appendChild(c); }
+  function runAssessment() {
+    const inputs = engineInputs(), basis = basisMap(); S.stage = "running"; renderStage();
+    post("/api/assess", { inputs: inputs, basis: basis }).then(function (a) {
+      S.assessment = a; S.explain = null; S.reportMd = null; S.dirty = false;
+      let chain = Promise.resolve();
+      if (S.pinned) chain = post("/api/compare", { baseline: S.pinned.inputs, baselineBasis: S.pinned.basis, current: inputs, currentBasis: basis }).then(function (r) { pushLog({ kind: "compare", comparison: r.comparison, from: S.pinned.id }); }).catch(function () {});
+      return chain.then(function () {
+        goTo("results");
+        const g = S.goal; if (g === "influence") investigate("influence"); else if (g === "gaps") investigate("missing");
+      });
+    }).catch(function (e) {
+      goTo("review"); const st = $("stage");
+      if (e.fields) { st.prepend(el("div", { class: "notice bad", role: "alert" }, [el("strong", { text: "Some inputs need attention: " }), e.fields.map(function (f) { return f.message; }).join(" ")])); }
+      else st.prepend(el("div", { class: "notice bad", role: "alert", text: "The assessment could not be completed. " + e.message + " Your answers are kept; you can run it again." }));
+    });
+  }
+  function pushLog(entry) { entry.id = ++S.logSeq; entry.assessmentId = S.assessment ? S.assessment.assessmentId : null; entry.at = new Date().toISOString(); S.log.unshift(entry); if (S.log.length > 30) S.log.pop(); renderLog(); return entry; }
+  function investigate(action, extra) {
+    const body = Object.assign({ inputs: engineInputs(), basis: basisMap(), mission: missionPayload(), action: action }, extra || {});
+    const pend = pushLog({ kind: "pending", label: "Working…" });
+    return post("/api/investigate", body, 30000).then(function (r) { replaceLog(pend.id, r); }).catch(function (e) { replaceLog(pend.id, { kind: "error", message: e.message }); });
+  }
+  function replaceLog(id, payload) { const i = S.log.findIndex(function (x) { return x.id === id; }); if (i >= 0) { S.log[i] = Object.assign({ id: id, assessmentId: S.log[i].assessmentId, at: S.log[i].at }, payload); renderLog(); const e = $("log_" + id); if (e) { e.scrollIntoView({ block: "start" }); const h = e.querySelector("h3"); if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); } } } }
+  function explainButton(a) {
+    const row = el("div", { class: "row noprint", style: "margin-top:8px" }); const gen = el("button", { class: "btn", id: "explainBtn", type: "button", text: S.explain ? "Regenerate explanation" : "Generate explanation for this mission" });
+    const st = el("span", { class: "small", id: "explainStatus", role: "status", text: S.aiAvailable ? "Optional. Adds an automatically generated, unreviewed explanation; the assessment stands without it." : "Not available on this installation. The assessment stands without it." });
+    gen.disabled = !S.aiAvailable; gen.addEventListener("click", function () { generateExplanation(); }); row.appendChild(gen); row.appendChild(st); return row;
+  }
+  function generateExplanation() {
+    const btn = $("explainBtn"), st = $("explainStatus"); btn.disabled = true; busy(st, "Preparing the explanation. This can take up to a minute.");
+    post("/api/report", { inputs: engineInputs(), basis: basisMap(), mission: missionPayload(), explain: true }, REPORT_MS).then(function (r) { S.explain = r.report.narrative; S.explainFor = r.report.assessment.assessmentId; renderStage(); })
+      .catch(function (e) { btn.disabled = false; clear(st); st.textContent = e.message; });
+  }
+  function narrativeFor(a) { return S.explain && S.explainFor === a.assessmentId ? S.explain : null; }
+  function claimMap(a) { const m = {}; a.evidence.claims.forEach(function (c) { m[c.id] = c; }); return m; }
+
+  function renderResults(st) {
+    const a = S.assessment;
+    if (S.dirty) st.appendChild(el("div", { class: "notice warn", role: "status", text: "You changed answers after this assessment was run, so what is shown below no longer matches them. Review and run the assessment again to update it." }));
+    const sc = el("div", { class: "card status-card" + (a.status.code === "incomplete" ? " incomplete" : "") });
+    sc.appendChild(el("div", {}, [el("span", { class: "status-label", text: a.status.label }), el("span", { class: "meta", text: "Assessment " + a.assessmentId })]));
+    sc.appendChild(el("p", { class: "small", text: a.status.reasons.join(" "), style: "margin-top:6px" }));
+    const c = a.status.checks;
+    sc.appendChild(el("div", { class: "chips" }, [el("span", { class: "chip", text: "Calculations performed: " + c.quantitativeChecks }), el("span", { class: "chip", text: "Cited statements: " + c.evidenceStatements + (c.sourcesCited ? " from " + c.sourcesCited + " sources (" + c.sourcesAbstractOnly + " abstract-level)" : "") }),
+      el("span", { class: "chip", text: "Independent validation: " + c.independentValidation.toLowerCase() }), el("span", { class: "chip", text: "Literature search: not performed" })]));
+    const tools = el("div", { class: "row noprint", style: "margin-top:12px" });
+    [["Edit answers", function () { showInfo(); }], ["Pin as baseline", pinBaseline], ["Prepare report", prepareReport]].forEach(function (t) { const b = el("button", { type: "button", class: t[0] === "Prepare report" ? "btn primary" : "btn", text: t[0] }); b.addEventListener("click", t[1]); if (t[0] === "Pin as baseline" && S.pinned && S.pinned.id === a.assessmentId) { b.textContent = "Baseline pinned"; } tools.appendChild(b); });
+    sc.appendChild(tools); st.appendChild(sc);
+    st.appendChild(renderOverview(a));
+    if (a.status.code !== "not_assessed") { st.appendChild(renderFindings(a)); st.appendChild(renderInvestigate(a)); }
+    st.appendChild(secDetails("Calculations and the heuristic index (" + a.derived.length + " calculations)", renderQuant(a)));
+    st.appendChild(secDetails("Uncertainty and limitations", renderLimits(a)));
+    st.appendChild(secDetails("Next investigative steps (" + a.nextSteps.length + ")", renderSteps(a)));
+    st.appendChild(secDetails("Protective layers as you reported them", renderLayers(a)));
+    st.appendChild(secDetails("Evidence and sources (" + a.evidence.sources.length + " cited)", renderSources(a)));
+  }
+  function secDetails(title, body) { return el("details", { class: "sec" }, [el("summary", { text: title }), el("div", { class: "in" }, [body])]); }
+  function renderOverview(a) {
+    const card = el("div", { class: "card" }, [el("h2", { text: "Assessment overview" })]);
+    card.appendChild(el("div", { class: "qbox" }, [el("div", { class: "q-label", text: a.question.isDefault ? "Screening question (default)" : "Your question" }), el("div", { text: a.question.text })]));
+    (a.summary.paragraphs || [a.summary.text]).forEach(function (t) { card.appendChild(el("p", { text: t })); });
+    const n = narrativeFor(a);
+    if (n && n.status === "included") {
+      card.appendChild(el("div", { class: "generated" }, [el("span", { class: "tag", text: n.label }), el("div", { text: n.summary })]));
+      if (n.uncertainty) card.appendChild(el("div", { class: "generated" }, [el("span", { class: "tag", text: "Automatically generated note on uncertainty (unreviewed explanation)" }), el("div", { text: n.uncertainty })]));
+    } else if (n) card.appendChild(el("div", { class: "notice" + (n.status === "unavailable" || n.status === "withheld" || n.status === "busy" ? " warn" : ""), text: n.message }));
+    else if (S.explain) card.appendChild(el("div", { class: "notice", text: "The answers changed after the last explanation was generated. Generate it again to match." }));
+    card.appendChild(explainButton(a)); return card;
+  }
+  function evidenceRefs(f, claims) {
+    if (!f.evidence.length) return null;
+    const d = el("details", { class: "sub" }, [el("summary", { text: "Evidence (" + f.evidence.length + " cited statement" + (f.evidence.length === 1 ? "" : "s") + ")" })]);
+    const ul = el("ul", { class: "plain" });
+    f.evidence.forEach(function (id) { const c = claims[id]; if (c) ul.appendChild(el("li", {}, [el("span", { class: "mono", text: id }), " " + c.text])); });
+    d.appendChild(ul); return d;
+  }
+  function renderFindings(a) {
+    const claims = claimMap(a); const n = narrativeFor(a);
+    const card = el("div", { class: "card" }, [el("h2", { text: "Key findings" }),
+      el("p", { class: "lede", text: "Each finding says what it rests on. Flagged conditions are things to review, not predictions, and the order is presentational rather than a ranking of risk." })]);
+    [["pathway", "Hazard pathway"], ["condition", "Conditions warranting review"], ["gap", "Information gaps"]].forEach(function (g) {
+      const list = a.findings.filter(function (f) { return f.kind === g[0]; }); if (!list.length) return;
+      card.appendChild(el("h4", { text: g[1] + " (" + list.length + ")" }));
+      list.forEach(function (f, i) {
+        const d = el("details", { class: "finding" }, [el("summary", {}, [el("span", { class: "kind " + f.kind, text: KINDS[f.kind] }), f.title])]);
+        const body = el("div", { class: "body" }, [el("p", { text: f.statement }), el("div", { class: "basis", text: "Basis: " + BASIS_TEXT[f.basis] + "." }), el("h4", { text: "Why this matters" }), el("p", { text: f.relevance }), el("h4", { text: "Reasoning" }), el("p", { text: f.reasoning })]);
+        if (f.limitations.length) { body.appendChild(el("h4", { text: "Limitations and competing explanations" })); body.appendChild(el("ul", { class: "plain" }, f.limitations.map(function (x) { return el("li", { text: x }); }))); }
+        const refs = evidenceRefs(f, claims); if (refs) body.appendChild(refs);
+        if (n && n.status === "included" && n.findingNotes && n.findingNotes[f.id]) body.appendChild(el("div", { class: "generated" }, [el("span", { class: "tag", text: "Automatically generated note (unreviewed)" }), el("div", { text: n.findingNotes[f.id] })]));
+        const acts = el("div", { class: "row noprint", style: "margin-top:10px" });
+        [["Show the reasoning and inputs", function () { investigate("finding", { id: f.id }); }]].forEach(function (x) { const b = el("button", { type: "button", class: "btn small-btn", text: x[0] }); b.addEventListener("click", x[1]); acts.appendChild(b); });
+        a.derived.filter(function (dv) { return dv.inputs.some(function (i) { return f.inputsUsed.indexOf(i) >= 0; }); }).slice(0, 2).forEach(function (dv) { const b = el("button", { type: "button", class: "btn small-btn", text: "Show calculation: " + dv.label }); b.addEventListener("click", function () { investigate("calc", { id: dv.id }); }); acts.appendChild(b); });
+        const srcIds = {}; f.evidence.forEach(function (cid) { if (claims[cid]) srcIds[claims[cid].sourceId] = true; });
+        Object.keys(srcIds).slice(0, 4).forEach(function (sid) { const b = el("button", { type: "button", class: "btn small-btn", text: "Open source " + sid }); b.addEventListener("click", function () { investigate("evidence", { id: sid }); }); acts.appendChild(b); });
+        body.appendChild(acts); d.appendChild(body); card.appendChild(d); if (i < 2 && g[0] !== "gap") d.open = i === 0;
+      });
+    });
+    if (a.evidence.tensions.length) { card.appendChild(el("h4", { text: "Competing evidence" })); a.evidence.tensions.forEach(function (t) { card.appendChild(el("div", { class: "notice warn" }, [el("strong", { text: t.topic + ": " }), t.note + " (" + t.claims.join(", ") + ")"])); }); }
+    return card;
+  }
+  function renderInvestigate(a) {
+    const card = el("div", { class: "card noprint", id: "investigate" }, [el("h2", { text: "Investigate further" }), el("p", { class: "lede", text: "These run real calculations on your assessment. Each result is added to the log below." })]);
+    const acts = [["Which answer matters most?", "influence"], ["What information is missing?", "missing"], ["What should I verify before relying on this?", "verify"], ["Show all calculations", "calc"], ["What do the cited sources establish?", "evidence"], ["How is the heuristic index built?", "index"]];
+    card.appendChild(el("div", { class: "row" }, acts.map(function (x) { const b = el("button", { type: "button", class: "btn", text: x[0] }); b.addEventListener("click", function () { investigate(x[1]); }); return b; })));
+    // what-if
+    card.appendChild(el("h4", { text: "Try a different answer (everything else held fixed)" }));
+    const hz = a.inputs.supplied.length ? S.answers.hazard.value : null;
+    const fields = S.schema.fields.filter(function (f) { return ["question", "hazard", "pressure_unit"].indexOf(f.id) < 0 && (!f.applies || f.applies.indexOf(hz) >= 0); });
+    const fsel = el("select", { id: "wiField", "aria-label": "Input to change" }, fields.map(function (f) { return el("option", { value: f.id, text: f.label }); }));
+    const vbox = el("div", { id: "wiValue", style: "flex:1 1 220px" });
+    function drawValue() { const f = fieldOf(fsel.value); clear(vbox); let c; if (f.kind === "select") c = el("select", { id: "wiVal", "aria-label": "New value" }, [el("option", { value: "", text: "Not provided" })].concat(f.options.map(function (o) { return el("option", { value: o.value, text: o.label }); }))); else c = el("input", { type: "text", id: "wiVal", inputmode: "decimal", "aria-label": "New value", placeholder: "New value" + (f.unit ? " (" + f.unit + ")" : f.units ? " (" + f.units.join(" or ") + ")" : "") }); vbox.appendChild(c); }
+    fsel.addEventListener("change", drawValue); drawValue();
+    const go = el("button", { type: "button", class: "btn", text: "Compare" }); go.addEventListener("click", function () { investigate("whatif", { field: fsel.value, value: $("wiVal").value }); });
+    card.appendChild(el("div", { class: "row" }, [el("div", { style: "flex:1 1 220px" }, [fsel]), vbox, go]));
+    // ask
+    card.appendChild(el("h4", { text: "Ask a question about this assessment" }));
+    const q = el("input", { type: "text", id: "askText", maxlength: String(S.guide.maxQuestionChars), "aria-label": "Your question", placeholder: "For example: which answer matters most, or how was the power figure calculated?" });
+    const ask = el("button", { type: "button", class: "btn primary", id: "askBtn", text: "Ask" });
+    const doAsk = function () { const t = q.value.trim(); if (!t) return; askQuestion(t); q.value = ""; };
+    ask.addEventListener("click", doAsk); q.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); doAsk(); } });
+    card.appendChild(el("div", { class: "row" }, [el("div", { style: "flex:1 1 280px" }, [q]), ask]));
+    card.appendChild(el("p", { class: "small", text: S.aiAvailable ? "Questions about influence, missing information, calculations, sources and verification use Astroflare's own logic. Other questions may use the optional text-generation service, whose answers are limited to this assessment and labelled unreviewed." : "The optional text-generation service is not available here. Questions about influence, missing information, calculations, sources and verification still work." }));
+    card.appendChild(el("div", { id: "logBox", role: "log", "aria-live": "polite" })); setTimeout(renderLog, 0); return card;
+  }
+  function askQuestion(text) {
+    const pend = pushLog({ kind: "pending", label: "Question: " + text });
+    post("/api/ask", { inputs: engineInputs(), basis: basisMap(), mission: missionPayload(), question: text }, ASK_MS).then(function (r) { replaceLog(pend.id, { kind: "ask", question: text, payload: r }); }).catch(function (e) { replaceLog(pend.id, { kind: "error", message: e.message }); });
+  }
+  function pinBaseline() { S.pinned = { id: S.assessment.assessmentId, inputs: engineInputs(), basis: basisMap() }; pushLog({ kind: "note", text: "Baseline pinned (" + S.assessment.assessmentId + "). After you edit answers and run again, the changes are compared automatically." }); renderStage(); }
+
+  // ---------------------------------------------------------------- the investigation log
+  function renderLog() {
+    const box = $("logBox"); if (!box) return; clear(box);
+    if (!S.log.length) { box.appendChild(el("p", { class: "small", text: "Nothing investigated yet." })); return; }
+    S.log.forEach(function (e) {
+      const stale = S.assessment && e.assessmentId && e.assessmentId !== S.assessment.assessmentId;
+      const entry = el("div", { class: "log-entry", id: "log_" + e.id }, []);
+      if (stale) entry.appendChild(el("div", { class: "stale", text: "From an earlier version of this assessment (" + e.assessmentId + "). Ask again to refresh." }));
+      entry.appendChild(renderEntry(e)); box.appendChild(entry);
+    });
+  }
+  function renderEntry(e) {
+    const w = el("div");
+    if (e.kind === "pending") { const p = el("p", { role: "status" }); busy(p, e.label); w.appendChild(p); }
+    else if (e.kind === "error") { w.appendChild(el("h3", { text: "Could not complete that" })); w.appendChild(el("p", { text: e.message })); }
+    else if (e.kind === "note") w.appendChild(el("p", { text: e.text }));
+    else if (e.kind === "influence") renderInfluence(w, e);
+    else if (e.kind === "calc" || e.kind === "calc-list") { w.appendChild(el("h3", { text: e.kind === "calc" ? "Calculation" : "All calculations" })); (e.items || [e]).forEach(function (c) { w.appendChild(calcBlock(c)); }); if (e.items && !e.items.length) w.appendChild(el("p", { text: "No calculation could be performed from the inputs given." })); }
+    else if (e.kind === "finding") findingBlock(w, e);
+    else if (e.kind === "index") indexBlock(w, e);
+    else if (e.kind === "evidence" || e.kind === "evidence-list") { w.appendChild(el("h3", { text: e.kind === "evidence" ? "Source" : "Sources cited in this assessment" })); (e.items || [e]).forEach(function (s) { w.appendChild(evidenceBlock(s)); }); }
+    else if (e.kind === "missing") missingBlock(w, e);
+    else if (e.kind === "verify") { w.appendChild(el("h3", { text: "Verify before relying on this" })); w.appendChild(el("ul", { class: "plain" }, e.items.map(function (i) { return el("li", {}, [el("strong", { text: i.area + ": " }), i.item]); }))); }
+    else if (e.kind === "whatif") whatifBlock(w, e);
+    else if (e.kind === "compare") { w.appendChild(el("h3", { text: "Changes since the pinned baseline" })); compareBlock(w, e.comparison); }
+    else if (e.kind === "ask") askBlock(w, e);
+    return w;
+  }
+  function renderInfluence(w, e) {
+    w.appendChild(el("h3", { text: "Which answers move the result" }));
+    if (!e.available) { w.appendChild(el("p", { text: e.reason })); return; }
+    if (e.indexNote) w.appendChild(el("p", { class: "small", text: e.indexNote }));
+    else w.appendChild(el("p", { class: "small", text: "Heuristic index now: " + e.baseIndex + " of " + e.indexMaximum + " points." }));
+    w.appendChild(table(["Input", "Currently", "Index range if changed", "Flagged items affected"], e.rows.map(function (r) {
+      return el("tr", {}, [el("td", { text: r.label + (r.supplied ? "" : " (not given)") }), el("td", { text: r.current || "not provided" }), el("td", { class: "num", text: r.indexRange ? (r.indexRange[0] > 0 ? "+" : "") + r.indexRange[0] + " to " + (r.indexRange[1] > 0 ? "+" : "") + r.indexRange[1] : "not compared" }), el("td", { class: "num", text: String(r.findingsAffected) })]); })));
+    const det = el("details", { class: "sub" }, [el("summary", { text: "What changes under each alternative" })]);
+    e.rows.slice(0, 8).forEach(function (r) { det.appendChild(el("h4", { text: r.label })); det.appendChild(el("ul", { class: "plain" }, r.alternatives.map(function (alt) { return el("li", { text: alt.label + (alt.indexDelta == null ? "" : ": index " + (alt.indexDelta > 0 ? "+" : "") + alt.indexDelta) + (alt.added.length ? "; newly flagged: " + alt.added.join(", ") : "") + (alt.removed.length ? "; no longer flagged: " + alt.removed.join(", ") : "") }); }))); });
+    w.appendChild(det);
+    if (e.numericNotVaried.length) w.appendChild(el("p", { class: "small", text: "Numeric inputs were not varied because Astroflare has no defensible range for them: " + e.numericNotVaried.join(", ") + ". Use 'Try a different answer' to test a specific value." }));
+    w.appendChild(el("div", { class: "notice warn", text: e.caveat }));
+  }
+  function calcBlock(c) {
+    const b = el("div", { style: "margin:10px 0" }, [el("strong", { text: c.title + ": " + c.result }), el("div", { class: "mono", text: c.formula }), el("div", { class: "small", text: "Units check: " + c.dimensionalCheck + ". " + c.precision })]);
+    b.appendChild(table(["Input", "Value", "Basis"], c.inputs.map(function (i) { return el("tr", {}, [el("td", { text: i.label }), el("td", { text: i.value }), el("td", { text: i.basis || "" })]); })));
+    b.appendChild(el("ul", { class: "plain" }, c.assumptions.map(function (x) { return el("li", { text: "Assumption: " + x }); }).concat(c.limitations.map(function (x) { return el("li", { text: "Limit: " + x }); })))); return b;
+  }
+  function findingBlock(w, f) {
+    w.appendChild(el("h3", { text: f.title })); w.appendChild(el("p", { class: "small", text: f.type + ". Basis: " + f.basisType + "." })); w.appendChild(el("p", { text: f.statement }));
+    w.appendChild(el("h4", { text: "Reasoning" })); w.appendChild(el("p", { text: f.reasoning })); w.appendChild(el("h4", { text: "Why this matters" })); w.appendChild(el("p", { text: f.relevance }));
+    if (f.inputs.length) { w.appendChild(el("h4", { text: "Your inputs behind it" })); w.appendChild(table(["Input", "Value", "Basis"], f.inputs.map(function (i) { return el("tr", {}, [el("td", { text: i.label }), el("td", { text: i.value }), el("td", { text: i.basis })]); }))); }
+    if (f.evidence.length) { w.appendChild(el("h4", { text: "Cited statements" })); w.appendChild(el("ul", { class: "plain" }, f.evidence.map(function (c) { return el("li", {}, [el("span", { class: "mono", text: c.claimId }), " " + c.text]); }))); }
+    if (f.limitations.length) { w.appendChild(el("h4", { text: "Limitations" })); w.appendChild(el("ul", { class: "plain" }, f.limitations.map(function (x) { return el("li", { text: x }); }))); }
+    if (f.needs.length) { w.appendChild(el("h4", { text: "What would help" })); w.appendChild(el("ul", { class: "plain" }, f.needs.map(function (s) { return el("li", { text: s.action }); }))); }
+  }
+  function indexBlock(w, x) {
+    w.appendChild(el("h3", { text: x.title })); w.appendChild(el("div", { class: "notice warn", text: "Heuristic only: developer-chosen point values; not calibrated, not validated, not a probability, not a measure of severity. " + x.scope }));
+    w.appendChild(el("p", { text: x.computed ? "Result: " + x.result + "." : x.reason })); w.appendChild(el("p", { class: "small", text: x.meaning }));
+    if (x.computed) w.appendChild(table(["Factor", "Points", "Max", "Rule"], x.factors.map(function (f) { return el("tr", {}, [el("td", { text: f.name }), el("td", { class: "num", text: String(f.points) }), el("td", { class: "num", text: String(f.maximum) }), el("td", { class: "mono", text: f.rule })]); })));
+    w.appendChild(el("p", { class: "small", text: x.changes }));
+  }
+  function evidenceBlock(s) {
+    const url = safeUrl(s.url); const b = el("div", { class: "source" }, [el("strong", {}, [s.id + " · ", url ? el("a", { href: url, target: "_blank", rel: "noreferrer noopener", text: s.title }) : s.title]),
+      el("div", { class: "cit", text: [s.issuer, s.date, s.identifier].filter(Boolean).join(" · ") }), el("div", { class: "chips" }, [el("span", { class: "chip", text: "Read: " + s.reviewDepth }), el("span", { class: "chip", text: "Record check: " + s.verification.status.replace(/_/g, " ") }), s.olderThanYears ? el("span", { class: "chip", text: "Published " + s.ageYears + " years ago" }) : null]),
+      el("p", { class: "small", text: s.plain }), el("h4", { text: "What it establishes (as recorded)" }), el("ul", { class: "plain" }, s.establishes.map(function (c) { return el("li", {}, [el("span", { class: "mono", text: c.id }), " " + c.text]); }))]);
+    if (s.usedBy.length) b.appendChild(el("p", { class: "small", text: "Used by: " + s.usedBy.map(function (u) { return u.title; }).join("; ") }));
+    b.appendChild(el("ul", { class: "plain" }, s.caveats.map(function (x) { return el("li", { class: "small", text: "Caveat: " + x }); }))); return b;
+  }
+  function missingBlock(w, e) {
+    w.appendChild(el("h3", { text: "What is missing" })); w.appendChild(el("p", { class: "small", text: e.note }));
+    w.appendChild(e.items.length ? el("ul", { class: "plain" }, e.items.map(function (i) { return el("li", {}, [(i.required ? "Required: " : "") + i.label, el("span", { class: "small", style: "display:block", text: i.why })]); })) : el("p", { text: "Nothing applicable is missing." }));
+    e.gaps.forEach(function (g) { w.appendChild(el("p", {}, [el("strong", { text: g.title + ". " }), g.statement + (g.needs.length ? " To resolve: " + g.needs.join(" ") : "")])); });
+  }
+  function whatifBlock(w, x) {
+    w.appendChild(el("h3", { text: "If " + x.label.toLowerCase() + " were different" })); w.appendChild(el("p", { class: "small", text: x.baseStatus + " → " + x.altStatus + (x.baseIndex != null && x.altIndex != null ? " · heuristic index " + x.baseIndex + " → " + x.altIndex : "") }));
+    compareBlock(w, x.comparison); if (x.derivedChanged.length) w.appendChild(el("p", {}, [el("strong", { text: "Calculations that change: " }), x.derivedChanged.map(function (d) { return d.label + " → " + d.to; }).join("; ")])); w.appendChild(el("p", { class: "small", text: x.note }));
+  }
+  function compareBlock(w, c) {
+    if (!c.changedInputs.length) { w.appendChild(el("p", { text: "The inputs match the baseline." })); return; }
+    w.appendChild(table(["Input", "Before", "Now"], c.changedInputs.map(function (x) { return el("tr", {}, [el("td", { text: x.label }), el("td", { text: x.from }), el("td", { text: x.to })]); })));
+    if (c.findingsAdded.length) w.appendChild(el("p", {}, [el("strong", { text: "Newly flagged: " }), c.findingsAdded.join("; ")]));
+    if (c.findingsRemoved.length) w.appendChild(el("p", {}, [el("strong", { text: "No longer flagged: " }), c.findingsRemoved.join("; ")]));
+    w.appendChild(el("p", { class: "small", text: c.indexDelta !== null ? "Heuristic index change: " + (c.indexDelta > 0 ? "+" : "") + c.indexDelta + " points (not a risk change)." : c.indexNote }));
+  }
+  function askBlock(w, e) {
+    const p = e.payload; w.appendChild(el("h3", { text: "Question: " + e.question }));
+    if (p.mode === "rules") { w.appendChild(el("p", { class: "small", text: "Answered by Astroflare's own logic (" + p.intent + ")." })); const inner = { id: e.id, assessmentId: e.assessmentId, at: e.at }; w.appendChild(renderEntry(Object.assign(inner, p.result))); }
+    else if (p.mode === "ai") { w.appendChild(el("div", { class: "generated" }, [el("span", { class: "tag", text: p.label }), el("div", { text: p.answer.answer })])); w.appendChild(el("p", { class: "small", text: (p.answer.status === "cannot_answer" ? "Astroflare's assessment cannot answer this. " : "") + (p.answer.uses.length ? "Based on: " + p.answer.uses.join(", ") : "") })); }
+    else w.appendChild(el("div", { class: "notice warn", text: p.message }));
+  }
+
+  // ---------------------------------------------------------------- results: detail sections
+  function renderQuant(a) {
+    const w = el("div"); w.appendChild(el("p", { class: "lede", text: "Arithmetic on the numbers you supplied, with units checked and results given to the significant figures of the inputs. A calculation appears only when its inputs were supplied." }));
+    if (a.derived.length) {
+      w.appendChild(table(["Quantity", "Value", "Formula", "Units check", "Sig. figs"], a.derived.map(function (d) { return el("tr", {}, [el("td", { text: d.label }), el("td", { class: "num", text: d.display + " " + d.unit }), el("td", { class: "mono", text: d.formula }), el("td", { text: d.dimensionalCheck }), el("td", { class: "num", text: d.sigfigs ? String(d.sigfigs) : "decimal places" })]); })));
+      a.derived.forEach(function (d) { w.appendChild(el("details", { class: "sub" }, [el("summary", { text: d.label + ": assumptions and limits" }), el("ul", { class: "plain" }, d.assumptions.concat(d.limitations).map(function (x) { return el("li", { text: x }); }))])); });
+    } else w.appendChild(el("p", { text: "No calculation could be performed from the inputs supplied." }));
+    const si = a.screeningIndex; const det = el("details", { class: "sub" }, [el("summary", { text: si.label + (si.computed ? ": " + si.value + " of " + si.maximum + " points" : ": not computed") })]);
+    det.appendChild(el("div", { class: "notice warn", text: "Heuristic only. The point values were chosen by the developer; the index is not calibrated, not validated, not a probability and not a measure of severity. " + si.scope })); det.appendChild(el("p", { class: "small", text: si.meaning }));
+    if (si.computed) det.appendChild(table(["Factor", "Points", "Max", "Rule"], si.factors.map(function (f) { return el("tr", {}, [el("td", { text: f.name }), el("td", { class: "num", text: String(f.points) }), el("td", { class: "num", text: String(f.maximum) }), el("td", { class: "mono", text: f.rule })]); }))); else det.appendChild(el("p", { text: si.reason }));
+    w.appendChild(det); return w;
+  }
+  function renderLimits(a) {
+    const w = el("div"); const names = { hazardIdentification: "Hazard", severity: "Severity", likelihood: "Likelihood", consequenceModifiers: "Consequence-modifying factors", informationCompleteness: "Information completeness", evidenceBase: "Evidence base", measuredUncertainty: "Measured uncertainty" };
+    w.appendChild(table(["Question", "Status", "Detail"], Object.keys(a.dimensions).map(function (k) { return el("tr", {}, [el("td", { text: names[k] || k }), el("td", { text: a.dimensions[k].status }), el("td", { text: a.dimensions[k].detail })]); })));
+    w.appendChild(el("h4", { text: "Limitations" })); w.appendChild(el("ul", { class: "plain" }, a.limitations.map(function (x) { return el("li", { text: x }); }))); return w;
+  }
+  function renderSteps(a) {
+    const n = narrativeFor(a); const w = el("div");
+    Object.keys(CATEGORIES).forEach(function (cat) {
+      const list = a.nextSteps.filter(function (s) { return s.category === cat; }); if (!list.length) return; w.appendChild(el("h4", { text: CATEGORIES[cat] }));
+      w.appendChild(el("ul", { class: "plain" }, list.map(function (s) { const li = el("li", {}, [el("strong", { text: s.action }), el("span", { class: "small", style: "display:block", text: "Why: " + s.why })]);
+        if (n && n.status === "included" && n.nextStepNotes && n.nextStepNotes[s.id]) li.appendChild(el("div", { class: "generated" }, [el("span", { class: "tag", text: "Automatically generated note (unreviewed)" }), el("div", { text: n.nextStepNotes[s.id] })])); return li; })));
+    });
+    if (!a.nextSteps.length) w.appendChild(el("p", { text: "No next steps were generated." })); return w;
+  }
+  function renderLayers(a) {
+    const w = el("div"); w.appendChild(el("p", { class: "lede", text: "What you reported for each layer of protection. This is not a rating: Astroflare cannot check these statements, and a proposed provision is not a demonstrated one." }));
+    const rows = []; a.layers.forEach(function (L) { L.items.forEach(function (it, i) { rows.push(el("tr", {}, [el("td", { text: i === 0 ? L.layer : "" }), el("td", { text: it.label }), el("td", { text: it.display }), el("td", { class: "small", text: it.levelText })])); }); });
+    w.appendChild(table(["Layer", "Input", "As reported", "Level on that input's scale"], rows)); return w;
+  }
+  function renderSources(a) {
+    const w = el("div"); w.appendChild(el("p", { class: "lede", text: "Every statement cited comes from a curated list of NASA documents. The library records how much of each document was actually read. A record check confirms the entry still exists at its publisher with the same title; it does not re-read or re-validate the content." }));
+    const row = el("div", { class: "row", style: "margin-bottom:8px" }); const vb = el("button", { class: "btn small-btn", type: "button", text: "Check source records now" }); const vs = el("span", { class: "small", role: "status" });
+    vb.addEventListener("click", function () { vb.disabled = true; busy(vs, "Checking source records"); post("/api/evidence/verify", {}, 90000).then(function (r) { vb.disabled = false; clear(vs); vs.textContent = r.verification.verified + " of " + r.verification.total + " records confirmed" + (r.verification.problems ? "; " + r.verification.problems + " could not be confirmed" : "") + "."; }).catch(function (e) { vb.disabled = false; clear(vs); vs.textContent = e.message; }); });
+    row.appendChild(vb); row.appendChild(vs); w.appendChild(row);
+    a.evidence.sources.forEach(function (s) {
+      const url = safeUrl(s.url); const item = el("div", { class: "source", id: "src-" + s.id }, [el("strong", {}, [s.id + " · ", url ? el("a", { href: url, target: "_blank", rel: "noreferrer noopener", text: s.title }) : s.title]),
+        el("div", { class: "cit", text: [s.authors && s.authors.length ? s.authors.join("; ") : s.issuer, s.date, s.identifier].filter(Boolean).join(". ") }),
+        el("div", { class: "chips" }, [el("span", { class: "chip", text: s.kind }), el("span", { class: "chip", text: "Read: " + s.review.depth }), el("span", { class: "chip", text: "Record check: " + s.verification.status.replace(/_/g, " ") + (s.verification.checkedAt ? " (" + clock(s.verification.checkedAt) + ")" : "") })])]);
+      item.appendChild(el("ul", { class: "plain" }, s.claims.map(function (c) { return el("li", { class: "small" }, [el("span", { class: "mono", text: c.id }), " " + c.text]); })));
+      item.appendChild(el("ul", { class: "plain" }, s.caveats.map(function (x) { return el("li", { class: "small", text: "Caveat: " + x }); }))); w.appendChild(item);
+    });
+    if (!a.evidence.sources.length) w.appendChild(el("p", { text: "No sources are cited by this assessment." })); return w;
+  }
+
+  // ---------------------------------------------------------------- stage 6: the report
+  function prepareReport() {
+    S.stage = "report"; S.reportMd = null; renderStepper(); renderStage(); const n = narrativeFor(S.assessment);
+    post("/api/report", { inputs: engineInputs(), basis: basisMap(), mission: missionPayload(), explain: false, includeInfluence: true, narrative: n && n.status === "included" ? n : null }, 60000).then(function (r) { S.reportMd = r.markdown; S.reportJson = r.report; renderStage(); })
+      .catch(function (e) { S.reportMd = null; S.reportErr = e.message; renderStage(); });
+  }
+  function renderReportStage(st) {
+    const card = el("div", { class: "card" }, [el("h2", { text: "Assessment report" }), el("p", { class: "lede", text: "A traceable record of what you entered, what was calculated, what the literature says, what is missing and what remains uncertain. It is not mission clearance, a safety certification or a go/no-go decision." })]);
+    if (!S.reportMd) { const p = el("p", { role: "status" }); if (S.reportErr) { p.textContent = "The report could not be prepared: " + S.reportErr; S.reportErr = null; } else busy(p, "Assembling the report"); card.appendChild(p); }
+    else {
+      const dl = el("button", { type: "button", class: "btn primary", text: "Download report (Markdown)" }), dj = el("button", { type: "button", class: "btn", text: "Download data (JSON)" }), pr = el("button", { type: "button", class: "btn", text: "Print" }), bk = el("button", { type: "button", class: "btn", text: "Back to results" });
+      dl.addEventListener("click", function () { download("astroflare-report.md", "text/markdown", S.reportMd); }); dj.addEventListener("click", function () { download("astroflare-assessment.json", "application/json", JSON.stringify({ report: S.reportJson, note: "Preliminary screening; not validated; not a safety determination." }, null, 2)); });
+      pr.addEventListener("click", function () { window.print(); }); bk.addEventListener("click", function () { goTo("results"); });
+      card.appendChild(el("div", { class: "row noprint" }, [dl, dj, pr, bk])); card.appendChild(el("pre", { class: "report", tabindex: "0", "aria-label": "Report preview", text: S.reportMd }));
+    }
+    st.appendChild(card);
+  }
+
+  // ---------------------------------------------------------------- NASA solar activity (context only)
+  function loadFlares() {
+    const tag = $("flareTag"), meta = $("flareMeta"), sum = $("flareSummary"), list = clear($("flareList")), retry = $("flareRetry");
+    retry.hidden = true; clear(meta); tag.className = "tag-live"; tag.textContent = "Loading"; busy(sum, "Retrieving scientific data");
+    api("/api/nasa/flares", null, 30000).then(function (d) {
+      if (!Array.isArray(d.flares)) throw new Error("The server sent an unexpected response.");
+      const counts = { X: 0, M: 0, C: 0, other: 0 }; d.flares.forEach(function (f) { const k = f.classType.charAt(0).toUpperCase(); counts[k in counts ? k : "other"]++; });
+      clear(sum); sum.textContent = d.flares.length ? d.flares.length + " records: " + counts.X + " class X, " + counts.M + " class M, " + counts.C + " class C, " + counts.other + " other (class as reported by the source)." : "No flare records were published for the last " + d.windowDays + " days.";
+      if (d.stale) { tag.className = "tag-live warn"; tag.textContent = "Last retrieved data"; retry.hidden = false; meta.textContent = "NASA's service is not responding now. Showing the last records retrieved, at " + clock(d.fetchedAt) + "."; }
+      else { tag.className = "tag-live"; tag.textContent = "Live · NASA DONKI"; meta.textContent = "Retrieved " + clock(d.fetchedAt) + " from " + d.host + (d.keyUsed === "none" ? " (no key needed)." : "."); }
+      const src = safeUrl(d.sourceUrl); clear($("flareProv")); $("flareProv").appendChild(document.createTextNode(d.provenance + " Request: ")); if (src) $("flareProv").appendChild(el("a", { href: src, target: "_blank", rel: "noreferrer noopener", class: "mono", text: src }));
+      d.flares.slice(0, 8).forEach(function (f) {
+        const link = safeUrl(f.link); const detail = [f.beginTime ? "begin " + f.beginTime : null, "peak " + f.peakTime, f.endTime ? "end " + f.endTime : null].filter(Boolean).join(" · ") + " UTC";
+        const sub = [f.sourceLocation ? "location " + f.sourceLocation : null, f.activeRegion ? "active region " + f.activeRegion : null, f.instruments.length ? "instrument " + f.instruments.join(", ") : null, f.id ? "id " + f.id : null].filter(Boolean).join(" · ");
+        list.appendChild(el("div", { class: "flare-row" }, [el("span", { class: "cls", text: f.classType }), el("span", {}, [detail, el("span", { class: "sub", text: sub })]), link ? el("a", { href: link, target: "_blank", rel: "noreferrer noopener", text: "Record ↗" }) : null]));
+      });
+    }).catch(function (e) { clear(sum); sum.textContent = e.message; tag.className = "tag-live bad"; tag.textContent = "Unavailable"; retry.hidden = false; });
+  }
+  function renderMethod() {
+    const m = S.methodology; const body = clear($("methodBody")); body.className = "in";
+    body.appendChild(el("p", { class: "lede", text: m.title + ". Each step says whether it is ordinary code, a curated list, or automatically generated text." }));
+    body.appendChild(el("ol", {}, m.steps.map(function (s) { return el("li", {}, [el("strong", { text: s.step + ". " }), s.how, el("span", { class: "auto", text: "Performed by: " + s.automated })]); })));
+    body.appendChild(el("p", {}, [el("strong", { text: "Where text generation is used (optional): " }), "reading the mission description for suggested values (each must quote your words and you confirm it), writing an explanation of the results, and answering typed questions that the built-in tools do not cover. Every calculation, finding, citation and comparison comes from deterministic code."]));
+    body.appendChild(el("h4", { text: "Not done" })); body.appendChild(el("ul", { class: "plain" }, m.notDone.map(function (x) { return el("li", { text: x }); })));
+  }
+
+  // ---------------------------------------------------------------- saving, restarting
+  const KEY = "astroflareSession";
+  function bindControls() {
+    $("saveBtn").addEventListener("click", function () { try { localStorage.setItem(KEY, JSON.stringify({ mission: S.mission, goal: S.goal, answers: S.answers })); note("Saved in this browser only."); } catch (e) { note("Browser storage is unavailable."); } });
+    $("loadBtn").addEventListener("click", function () { try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (!s || typeof s !== "object") { note("Nothing saved in this browser yet."); return; } S.mission = Object.assign(S.mission, s.mission || {}); S.goal = s.goal || "investigate"; S.answers = s.answers || {}; S.assessment = null; S.interp = null; S.explain = null; S.flow = null; S.log = []; note("Saved session loaded."); hasValue(S.answers.hazard) ? showInfo() : goTo("mission"); } catch (e) { note("The saved session could not be read."); } });
+    $("restartBtn").addEventListener("click", function () { if (Object.keys(S.answers).length && !confirm("Start over? Your current answers will be cleared (a saved copy in this browser is not touched).")) return; reset(); });
+    $("flareRetry").addEventListener("click", loadFlares);
+  }
+  function note(t) { const s = $("stage"); const old = s.querySelector(".top-note"); if (old) old.remove(); s.prepend(el("div", { class: "notice top-note", role: "status", text: t })); }
+  function reset() { S.stage = "mission"; S.reached = { mission: true }; S.mission = { description: "", destination: null, aiInterpretation: false }; S.interp = null; S.goal = "investigate"; S.answers = {}; S.flow = null; S.viewStep = null; S.profile = null; S.assessment = null; S.explain = null; S.log = []; S.pinned = null; S.reportMd = null; goTo("mission"); }
+
+  // ---------------------------------------------------------------- start
+  function start() {
+    bindControls();
+    Promise.all([api("/api/schema"), api("/api/status").catch(function () { return null; })]).then(function (r) {
+      S.schema = r[0].schema; S.guide = r[0].guide; S.examples = r[0].examples; S.methodology = r[0].methodology; S.aiAvailable = !!(r[1] && r[1].analysis && r[1].analysis.explanation.available);
+      renderMethod(); goTo("mission");
+    }).catch(function (e) { $("stage").appendChild(el("div", { class: "card" }, [el("h2", { text: "Astroflare could not start" }), el("p", { text: e.message })])); });
+    loadFlares();
+  }
+  document.addEventListener("DOMContentLoaded", start);
+  if (document.readyState !== "loading") start();
+}());
+</script>
+</body>
+</html>
