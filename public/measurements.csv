@@ -1,4 +1,4 @@
 sample,flame_spread_mm_s,flow_cm_s,initial_oxygen_percent,width_cm,length_cm,thickness_mm,gravity,direction,total_pressure,source_file,locator
-Saffire I sample 1-1,1.8,20,21.7,40.6,94,0.37,microgravity,concurrent,not specified in excerpt,20170008805.pdf,Slide 21 and Table I
-Saffire I sample 1-2,1.3,20,21.7,40.6,approximately 10,0.37,microgravity,opposed,not specified in excerpt,20170008805.pdf,Slide 21 and Table I
-Saffire II sample 2-5,2.1,20,22.1,5,29,0.37,microgravity,concurrent,not specified in excerpt,20170008805.pdf,Slide 21 and Table I
+Saffire I sample 1-1,1.8,20,21.7,40.6,94,0.37,microgravity,concurrent,not specified in excerpt,20170008805.pdf,Slide 21; Table I on page 29
+Saffire I sample 1-2,1.3,20,approximately 21.5,40.6,approximately 10,0.37,microgravity,opposed,not specified in excerpt,20170008805.pdf,Slide 21; Table I on page 29
+Saffire II sample 2-5,2.1,20,22.1,5,29,0.37,microgravity,concurrent,not specified in excerpt,20170008805.pdf,Slide 21; Table I on page 29

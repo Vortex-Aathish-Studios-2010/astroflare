@@ -11,6 +11,7 @@
     box.appendChild(el('h3',{text:'Unanswered input fields · '+missing.length}));
     box.appendChild(el('p',{class:'small',text:'These are missing scenario inputs, not unanswered scientific questions. The count does not measure research uncertainty.'}));
     if(missing.length)box.appendChild(el('ul',{class:'plain'},missing.map(x=>el('li',{text:typeof x==='string'?x:x.label||x.id||x.field}))));else box.appendChild(el('p',{text:'No missing fields reported by the engine for this assessment.'}));
+    box.appendChild(el('p',{class:'notice',text:'Electrical terminology: fault current integral (I²t) has units A²·s; it is not energy in joules. Resistive energy also requires resistance and the current history. Numerical results and units come from the original engine.'}));
     box.appendChild(el('h3',{text:'Scientific evidence limits'}));
     box.appendChild(el('p',{text:'The cited literature provides general findings, not validation of this design. Calculated quantities alone do not establish a design-specific ignition threshold here. Material, geometry, atmosphere and gravity must match before results can transfer.'}));
     box.appendChild(el('p',{class:'small',text:'This is a description of the evidence available to Astroflare, not a claim that these questions remain unresolved across all science. Findings are not ranked by consequence.'}));return box;

@@ -62,6 +62,10 @@ function evidenceAnswer(question,records){
  if(intent.measures.length!==1)return named.length?gap('Which measurement do you need: flame-spread rate, burn duration, airflow, oxygen or carbon monoxide?'):overviewEvidenceAnswer(question,records);
  if(/\b(?:at|under)\s+\d|\b(?:predict|estimate|calculate|extrapolate)\b/i.test(question))return gap('The curated evidence does not support a new numeric prediction for the requested conditions. Inspect the original test rows; no interpolation has been made.');
  const measure=intent.measures[0];
+ if(named[0]?.id==='PSI-98'&&measure==='spreadRate'&&(!intent.run||['1-1','1-2'].includes(intent.run))&&(!material||material==='fabric')){
+  const r=named[0],c=r.companion,rows=c.runs.filter(run=>!intent.run||run.id===intent.run);
+  return {gap:false,mode:'deterministic',text:r.name+'’s selected PSI table does not report a flame-spread rate.\n\nNASA’s companion presentation reports average rates: '+rows.map(run=>'sample '+run.id+' — '+run.spreadRate+', '+run.direction.toLowerCase()+' flow').join('; ')+'. '+(rows.length===2?'Both used':'The specimen used')+' SIBAL fabric in microgravity at 20 cm/s.\n\nTable I (page 29) gives O₂ as '+rows.map(run=>run.oxygen+' for '+run.id).join(' and ')+'. These values come from the companion presentation, not the PSI CSV.',citations:[r.id,c.id],sources:[{id:r.id,row:null,file:r.sourceFile,url:r.downloadUrl},{id:c.id,row:'samples '+rows.map(run=>run.id).join(' and ')+' · Table I, page 29',file:c.file,url:c.url,recordUrl:c.source}]};
+ }
  // A generic spread-rate lookup retrieves only records that have that quantity.
  const candidates=named.length?named:records.filter(r=>r.runs.some(x=>x.outcome.spreadRate&&x.outcome.spreadRate!=='Not reported'));
  if(!candidates.length)return gap('The currently retrieved PSI records do not report a flame-spread rate. Change the filters or name Saffire II.',[]);
@@ -106,6 +110,13 @@ function scenarioRecord(record,material='any'){
  r.outcome=runs.map(run=>run.outcome.spreadRate&&run.outcome.spreadRate!=='Not reported'?run.id+': flame spread '+run.outcome.spreadRate:run.outcome.finalCO!=null?run.id+': final CO '+run.outcome.finalCO+' ppm (initial '+run.outcome.initialCO+' ppm); spread rate Not reported':run.id+': burn time '+run.outcome.burnTime+'; spread rate Not reported').join('; ');
  return r;
 }
+function runCoverage(record,filters){
+ const r=scenarioRecord(record,filters.material),flow=filters.airflow;
+ const matches=r.runs.filter(run=>flow==='20'?parseFloat(run.airflow)===20:['concurrent','opposed'].includes(flow)?run.direction?.toLowerCase()===flow:true);
+ const directionRequested=['concurrent','opposed'].includes(flow);
+ const text=!matches.length?'Study-level match only. No curated run matches '+(filters.material==='any'?'the selected material':filters.material)+' and '+(directionRequested?flow+' flow':'the selected conditions')+' together. '+(r.runs.length?'Displayed '+r.runs.map(run=>'run '+run.id+(run.direction?' used '+run.direction.toLowerCase()+' flow':' has no reported run-level direction')).join('; ')+'. ':'No material-matched row is curated. ')+(directionRequested?'These displayed observations are not a measured '+flow+'-flow result for this selection.':''):'Curated run matches: '+matches.map(run=>run.id).join(', ')+'. '+(['variable','forced'].includes(flow)?'Flow scope is matched at investigation level; calibrated run velocity is only shown where reported.':'Conditions remain attached to each original row.');
+ return {matches,text};
+}
 function researchDecision(records,filters,scenario){
  const empty=!records.length,material=filters.material,gravity=scenario.gravity==='lunar'?'lunar surface':scenario.gravity==='any'?'the proposed scenario':scenario.gravity;
  const saffire=records.find(r=>r.id==='PSI-99');let measured,missing,step,fixed,variable='gravity regime',source,run;
@@ -127,8 +138,16 @@ function researchDecision(records,filters,scenario){
   step='Proposed next step: retrieve the material-specific run files and measure or derive a traceable spread-rate baseline before a gravity-transfer analysis.';
  }
  if(scenario.gravity==='microgravity'&&!empty){variable='airflow velocity';step='Proposed follow-up analysis: vary airflow around the documented configuration, holding gravity, material, oxygen, geometry, pressure, temperature and ignition fixed. Validate any computed rate against matched measurements.';missing='Microgravity context matches, but exact specimen and habitat conditions still need to be matched; no safety validation follows.';}
+ let coverage=source?runCoverage(source,filters):null;
+ if(coverage&&!coverage.matches.some(x=>x.id===run)){
+  missing=coverage.text+' '+missing;
+  step='Proposed next step: retrieve and verify a '+(material==='any'?'material-matched':material)+' '+(['concurrent','opposed'].includes(filters.airflow)?filters.airflow+'-flow ':'')+'run before selecting a quantitative baseline. The displayed observation does not establish a measurement under both selected conditions.';
+  variable='airflow direction / matched-run coverage';fixed='For a future comparison, hold the material, specimen geometry, oxygen, pressure, temperature, airflow speed and ignition protocol fixed. Verify these inputs in a run with the requested direction first; the displayed run is contextual evidence only.';
+ }
+ const rateBaseline=source?.id==='PSI-99'&&run==='2-5';
+ const rationale=source?(records[0].id===source.id?source.name+' ranks first and supplies the supporting '+(rateBaseline?'measured spread rate':'observation')+' used below.':records[0].name+' ranks first for the broad question; '+source.name+' supplies the '+(rateBaseline?'measured spread rate':'supporting observation')+' used in the proposed follow-up.'):'No study matches these filters, so there is no supporting measurement for a follow-up baseline.';
  const citations=source?[{id:source.id,row:run,url:source.downloadUrl,record:source.source}]:[];
- const text=['ASTROFLARE — PROPOSED RESEARCH BRIEF','Question: '+LUNAR_QUESTION,'Selected material: '+material+'; scenario gravity: '+scenario.gravity,'What NASA measured: '+measured,'What is missing: '+missing,'Next research step (proposal, not performed): '+step,'Variable to study: '+variable,'Hold fixed: '+fixed,...citations.map(c=>'Source: '+c.id+(c.row?' row '+c.row:'')+' | '+c.url+' | '+c.record),'No lunar fire-risk prediction or certification is implied.'].join('\n\n');
- return {empty,measured,missing,step,variable,fixed,citations,text};
+ const text=['ASTROFLARE — PROPOSED RESEARCH BRIEF','Question: '+LUNAR_QUESTION,'Selected material: '+material+'; scenario gravity: '+scenario.gravity+'; experiment gravity filter: '+filters.gravity+'; airflow filter: '+filters.airflow,'Evidence choice: '+rationale,coverage?.text,'What NASA measured: '+measured,'What is missing: '+missing,'Next research step (proposal, not performed): '+step,'Variable to study: '+variable,'Hold fixed: '+fixed,...citations.map(c=>'Source: '+c.id+(c.row?' row '+c.row:'')+' | '+c.url+' | '+c.record),'No lunar fire-risk prediction or certification is implied.'].filter(Boolean).join('\n\n');
+ return {empty,measured,missing,step,variable,fixed,citations,text,rationale,coverage};
 }
 function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit(question,resolve,onPending,onResult,onError){const id=++sequence;onPending(question);return Promise.resolve().then(()=>resolve(question)).then(answer=>{if(id===sequence)onResult(answer,question);},error=>{if(id===sequence)onError(error,question);});}};}

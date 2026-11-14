@@ -27,7 +27,7 @@ test('named spread-rate questions resolve aliases before rank and return only th
 });
 test('missing rate, lunar gravity, unsupported run and different quantities stay distinct',()=>{
  const rows=ctx.rank(ctx.preset,filter);
- for(const q of ['What was the flame spread rate in Saffire I?','How fast did flames spread in Saffire 1?','What was the flame spread rate in PSI-98?']){const a=ctx.answer(q,rows);assert.equal(a.gap,true);assert.match(a.text,/selected PSI table does not report a flame-spread rate/);assert.deepEqual(Array.from(a.citations),['PSI-98']);assert.doesNotMatch(a.text,/2.1|420|70 s|BASS/);}
+ for(const q of ['What was the flame spread rate in Saffire I?','How fast did flames spread in Saffire 1?','What was the flame spread rate in PSI-98?']){const a=ctx.answer(q,rows);assert.equal(a.gap,false);assert.match(a.text,/selected PSI table does not report a flame-spread rate/);assert.deepEqual(Array.from(a.citations),['PSI-98','NTRS-20170008805']);assert.match(a.text,/1-1 — 1.8 mm\/s, concurrent.*1-2 — 1.3 mm\/s, opposed/);assert.doesNotMatch(a.text,/2.1|420|70 s|BASS/);}
  const lunar=ctx.answer('What flame spread rate was measured in lunar gravity?',rows);assert.equal(lunar.gap,true);assert.match(lunar.text,/microgravity.*no direct lunar-gravity/);assert.doesNotMatch(lunar.text,/2.1 mm/);
  assert.match(ctx.answer('How long did Saffire II burn?',rows).text,/burn duration of 145 s/);
  assert.match(ctx.answer('What airflow was used in Saffire 2?',rows).text,/airflow of 20 cm\/s/);

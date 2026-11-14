@@ -2,6 +2,7 @@ import pathlib,json,re,zipfile,io,base64
 p=pathlib.Path(__file__).parent
 (p/"dist/server").mkdir(parents=True,exist_ok=True)
 h=(p/'sources/original-interface.html').read_text()
+h=re.sub(r'let[-\s\u2011\u2013]through energy(?: of the fault)?(?: \((?:I²t|I2t)\))?', 'fault current integral (I²t)', h, flags=re.I)
 h=h.replace('<title>Astroflare | Guided hazard assessment</title>','<title>Astroflare | Assessment & NASA combustion research</title>')
 h=h.replace('<div class="row noprint">','<div class="row noprint">\n    <button class="btn small-btn" id="demoBtn" type="button">Open hypothetical demo</button>\n    <button class="btn small-btn" id="researchBtn" type="button">NASA research</button>',1)
 h=h.replace('    const e = document.createElement(tag);','    const e = document.createElement(tag);\n    if (props && typeof props.text === "string") props.text = props.text.replace(/Most consequential unresolved issue/gi, "One condition to review (not ranked)");')
@@ -23,7 +24,7 @@ h=h.replace('S.stage = "mission"; S.reached = { mission: true };','S.demo=false;
 h=h.replace('S.assessment = null; S.interp = null;','S.demo=false; S.assessment = null; S.interp = null;')
 h=h.replace('    bindControls();\n    Promise.all([api("/api/schema"), api("/api/status").catch(function () { return null; })]).then(function (r) {\n      S.schema = r[0].schema; S.guide = r[0].guide; S.examples = r[0].examples; S.methodology = r[0].methodology; S.aiAvailable = !!(r[1] && r[1].analysis && r[1].analysis.explanation.available);\n      renderMethod(); goTo("mission");\n    }).catch(function (e) { $("stage").appendChild(el("div", { class: "card" }, [el("h2", { text: "Astroflare could not start" }), el("p", { text: e.message })])); });\n    loadFlares();', '''    S.schema=BOOTSTRAP.schema; S.guide=BOOTSTRAP.guide; S.examples=BOOTSTRAP.examples; S.methodology=BOOTSTRAP.methodology;
     bindControls(); renderMethod(); goTo("mission");
-    api("/api/status").then(r=>{S.aiAvailable=!!(r.analysis && r.analysis.explanation && r.analysis.explanation.available);}).catch(()=>{});''')
+    api("/api/status").then(r=>{S.aiAvailable=AI_ENABLED && !!(r.analysis && r.analysis.explanation && r.analysis.explanation.available);}).catch(()=>{});''')
 h=h.replace('  function start() {','  let started=false;\n  function start() {\n    if(started)return; started=true;')
 h=h.replace('S.reportMd = r.markdown; S.reportJson = r.report;', 'S.reportMd = r.markdown.replace(/Most consequential unresolved issue/gi, "One condition to review (not ranked)"); S.reportJson = JSON.parse(JSON.stringify(r.report).replace(/Most consequential unresolved issue/gi, "One condition to review (not ranked)"));')
 h=h.replace('  function renderMission(st) {','''  function renderMission(st) {
@@ -52,7 +53,7 @@ h=h.replace('st.querySelector("h2")','st.querySelector("h1,h2")')
 h=h.replace('bindControls(); renderMethod(); goTo("mission");','bindControls(); renderMethod(); goTo(location.hash === "#lunar-demo" ? "research" : "home");')
 h=h.replace('class: "tablewrap"', 'class: "tablewrap", tabindex: "0", role: "region", "aria-label": "Scrollable comparison or data table"')
 h=h.replace('Interface copied from', 'Screening interface adapted from')
-h=h.replace('</style>',(p/'public/explorer.css').read_text()+'\n</style>',1)
+h=h.replace('</style>',(p/'public/font-faces.css').read_text()+'\n'+(p/'public/explorer.css').read_text()+'\n</style>',1)
 
 # Judge reliability: stage history, persistent report errors and explicit recovery.
 h=h.replace('    renderStepper(); renderContext(); renderStage();', '    renderStepper(); renderContext(); renderStage(); syncNavigation(stage);',1)
@@ -61,17 +62,24 @@ h=h.replace('S.stage = "report"; S.reportMd = null;', 'S.stage = "report"; S.rep
 h=h.replace('S.reportErr = null; } else busy(p, "Assembling the report"); card.appendChild(p);', '''} else busy(p, "Assembling the report"); card.appendChild(p);
       if(S.reportErr){const retry=el("button",{type:"button",class:"btn primary",text:"Retry report"});retry.addEventListener("click",prepareReport);const back=el("button",{type:"button",class:"btn",text:"Back to results"});back.addEventListener("click",()=>goTo("results"));const research=el("button",{type:"button",class:"btn",text:"Open NASA lunar demo"});research.addEventListener("click",openLunarDemo);card.appendChild(el("div",{class:"row"},[retry,back,research]));}''')
 
+h=h.replace('then(function (b) { clearTimeout(timer); return b; }', 'then(function (b) { clearTimeout(timer); return correctAssessmentTerminology(b); }')
+h=h.replace('  function askQuestion(text) {', '''  function askQuestion(text) {
+    if(!AI_ENABLED){const action=/missing|unknown|gap/i.test(text)?"missing":/calculation|calculated|power|current|I²t/i.test(text)?"calc":/source|evidence|citation/i.test(text)?"evidence":/verify|verification/i.test(text)?"verify":/index/i.test(text)?"index":/influence|matters most/i.test(text)?"influence":null;if(action)return investigate(action);pushLog({kind:"note",text:"AI remains inactive pending the API key. Use the calculation, missing-input, verification or source tools above; no generated answer has been requested."});return;}
+''')
+h=h.replace('Not available on this installation. The assessment stands without it.', 'AI remains inactive pending the API key. The assessment stands without it.')
 # Everything needed for the immediate demo and research is local, including bootstrap schema.
 bootstrap=json.loads((p/'sources/schema.json').read_text());demo=json.loads((p/'demo.json').read_text())
 dataset=json.loads((p/'public/dataset.json').read_text())
-payload='const PSI_DATA='+json.dumps(dataset)+';\n'+'const BOOTSTRAP='+json.dumps(bootstrap)+';\nconst DEMO='+json.dumps(demo)+';\n'+(p/'public/research.js').read_text()
+payload='const AI_ENABLED=false;\n'+(p/'public/terminology.js').read_text()+'\nconst PSI_DATA='+json.dumps(dataset)+';\n'+'const BOOTSTRAP=correctAssessmentTerminology('+json.dumps(bootstrap)+');\nconst DEMO=correctAssessmentTerminology('+json.dumps(demo)+');\n'+(p/'public/research.js').read_text()
 h=h.replace('<script>','<script>\n'+payload,1)
-h=h.replace('  // ---------------------------------------------------------------- start\n', (p/'public/enhancements.js').read_text()+'\n'+(p/'public/explorer.js').read_text()+'\n'+(p/'public/motion.js').read_text()+'\n  // ---------------------------------------------------------------- start\n')
+h=h.replace('  // ---------------------------------------------------------------- start\n', (p/'public/enhancements.js').read_text()+'\n'+(p/'public/explorer.js').read_text()+'\n'+(p/'public/motion.js').read_text()+'\n'+(p/'public/plate.js').read_text()+'\n  // ---------------------------------------------------------------- start\n')
 (p/'public/index.html').write_text(h)
 assets={'/verification':{'body':(p/'VERIFICATION.md').read_text(),'type':'text/plain; charset=utf-8'},'/':{'body':h,'type':'text/html; charset=utf-8'},'/measurements.csv':{'body':(p/'public/measurements.csv').read_text(),'type':'text/csv; charset=utf-8'},'/documentation':{'body':(p/'README.md').read_text() if (p/'README.md').exists() else 'Documentation in preparation','type':'text/plain; charset=utf-8'}}
 assets['/dataset.json']={'body':(p/'public/dataset.json').read_text(),'type':'application/json; charset=utf-8'}
 for id in ['PSI-25','PSI-98','PSI-99']:
     assets['/sources/'+id+'-table.csv']={'body':base64.b64encode((p/'sources'/(id+'-table.csv')).read_bytes()).decode(),'base64':True,'type':'text/csv; charset=utf-8'}
+for font in (p/'public').glob('*.ttf'):
+    assets['/'+font.name]={'body':base64.b64encode(font.read_bytes()).decode(),'base64':True,'type':'font/ttf'}
 bundle=io.BytesIO()
 with zipfile.ZipFile(bundle,'w',zipfile.ZIP_DEFLATED) as z:
     files=['build.py','worker.js','server.mjs','package.json','package-lock.json','README.md','VERIFICATION.md','render.yaml','demo.json','.gitignore']

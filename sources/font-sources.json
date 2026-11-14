@@ -1,0 +1,22 @@
+[
+  {
+    "file": "InstrumentSans-400.ttf",
+    "url": "https://fonts.gstatic.com/s/instrumentsans/v4/pximypc9vsFDm051Uf6KVwgkfoSxQ0GsQv8ToedPibnr-yp2JGEJOH9npSTF-Qf1.ttf",
+    "sha256": "01689ad055025ff1891607b077513c9389f73360d471dcffa036e326af179b00"
+  },
+  {
+    "file": "InstrumentSans-600.ttf",
+    "url": "https://fonts.gstatic.com/s/instrumentsans/v4/pximypc9vsFDm051Uf6KVwgkfoSxQ0GsQv8ToedPibnr-yp2JGEJOH9npSQb_gf1.ttf",
+    "sha256": "5e39a358a65a72b6b74b56b384bbe17a61d8899d33cc255d49112e6522e3df0d"
+  },
+  {
+    "file": "InstrumentSans-700.ttf",
+    "url": "https://fonts.gstatic.com/s/instrumentsans/v4/pximypc9vsFDm051Uf6KVwgkfoSxQ0GsQv8ToedPibnr-yp2JGEJOH9npSQi_gf1.ttf",
+    "sha256": "d25efe5b0dcf3b36607d9a0fb046932547a5dfec407ea17162ca126d63b33d42"
+  },
+  {
+    "file": "InstrumentSerif-400.ttf",
+    "url": "https://fonts.gstatic.com/s/instrumentserif/v5/jizBRFtNs2ka5fXjeivQ4LroWlx-2zI.ttf",
+    "sha256": "a99e3db50076202713812ed541feeb23ffeebb61db1fa6b1cf48fe590d37ef18"
+  }
+]

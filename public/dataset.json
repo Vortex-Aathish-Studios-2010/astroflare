@@ -178,9 +178,9 @@
           }
         }
       ],
-      "approachQuote": "To summarize, BASS-II's approach, microgravity combustion tests were performed aboard the International Space Station. Active crew support for real-time \u201clab partner\u201d operations. The wind tunnel was installed in the Microgravity Science Glovebox which supplied power, imaging, and a level of containment. Fuel samples were mounted inside a small wind tunnel which could impose airflow speeds up to 40 cm/s. Main variables are airflow speed and oxygen concentration (oxygen varied below 21% by adding nitrogen). Flame appearance, flame growth, and spread rates were determined in both the opposed and concurrent flow.",
-      "material": "Selected runs: 2 cm SIBAL fabric; 100 \u03bcm PMMA film, 2 cm wide.",
-      "oxygen": "T1, T2, T4: initial calibrated O\u2082 18.5%, 18.5%, 18.7% by volume. B1: 22.2%.",
+      "approachQuote": "To summarize, BASS-II's approach, microgravity combustion tests were performed aboard the International Space Station. Active crew support for real-time “lab partner” operations. The wind tunnel was installed in the Microgravity Science Glovebox which supplied power, imaging, and a level of containment. Fuel samples were mounted inside a small wind tunnel which could impose airflow speeds up to 40 cm/s. Main variables are airflow speed and oxygen concentration (oxygen varied below 21% by adding nitrogen). Flame appearance, flame growth, and spread rates were determined in both the opposed and concurrent flow.",
+      "material": "Selected runs: 2 cm SIBAL fabric; 100 μm PMMA film, 2 cm wide.",
+      "oxygen": "T1, T2, T4: initial calibrated O₂ 18.5%, 18.5%, 18.7% by volume. B1: 22.2%.",
       "airflow": "Forced flow; facility can impose up to 40 cm/s. Calibrated velocity for these curated rows: Not reported.",
       "flowValues": [],
       "directions": [
@@ -287,9 +287,9 @@
           }
         }
       ],
-      "approachQuote": "The Saffire-II experiment was performed on the Orbital Science\u2019s Cygnus resupply vehicle after it deberthed from the ISS. As a follow on to the Saffire-I investigation, the Saffire-II investigation added more samples including SIBAL, silicone, structure PMMA, flat PMMA, and PMMA with Nomex. The Saffire-1I flight unit had a sample card installed in the middle of a large flow duct. Air is drawn through the flow duct by fans located at the top of the duct with flow straighteners at the bottom of the experiment module. Saffire-II has a sample card that contains 9 samples, each 5 cm x 29 cm. Depending on the sample material, the Saffire-II was conducted at an air flow velocity of either 20 or 30 cm/s, the flow being either concurrent or opposed.  Once the sample was ignited flame images were captured using two cameras. In addition, thermocouples provided flow, flame, and plume temperatures, two radiometers recorded flame radiation, solid state sensors were used to measure pressure, CO2 and O2 mole faction, and two anemometer tracked flow velocity. All data was compressed, and subsequently downlinked. Details related to samples and experimental parameters are provided in the Experimental Details file in the Science document folder.",
+      "approachQuote": "The Saffire-II experiment was performed on the Orbital Science’s Cygnus resupply vehicle after it deberthed from the ISS. As a follow on to the Saffire-I investigation, the Saffire-II investigation added more samples including SIBAL, silicone, structure PMMA, flat PMMA, and PMMA with Nomex. The Saffire-1I flight unit had a sample card installed in the middle of a large flow duct. Air is drawn through the flow duct by fans located at the top of the duct with flow straighteners at the bottom of the experiment module. Saffire-II has a sample card that contains 9 samples, each 5 cm x 29 cm. Depending on the sample material, the Saffire-II was conducted at an air flow velocity of either 20 or 30 cm/s, the flow being either concurrent or opposed.  Once the sample was ignited flame images were captured using two cameras. In addition, thermocouples provided flow, flame, and plume temperatures, two radiometers recorded flame radiation, solid state sensors were used to measure pressure, CO2 and O2 mole faction, and two anemometer tracked flow velocity. All data was compressed, and subsequently downlinked. Details related to samples and experimental parameters are provided in the Experimental Details file in the Science document folder.",
       "material": "SIBAL cotton/fiberglass, silicone and PMMA/Nomex configurations.",
-      "oxygen": "Selected row 2-5: approximately 22.1% O\u2082. CSV Note 1: derived from measured CO\u2082 production, referenced to initial ISS O\u2082.",
+      "oxygen": "Selected row 2-5: approximately 22.1% O₂. CSV Note 1: derived from measured CO₂ production, referenced to initial ISS O₂.",
       "airflow": "Selected rows 2-5 and 2-1: 20 cm/s, concurrent flow.",
       "flowValues": [
         20
@@ -299,9 +299,9 @@
         "opposed"
       ],
       "outcome": "2-5: reported spread rate 2.1 mm/s; burn time 145 s.",
-      "qualitative": "Sample 2-1 silicone burn time is reported qualitatively as \u201cInsignificant\u201d. CSV Note 2 states that in sample 2-7 the PMMA portion was consumed and Nomex did not ignite. These findings are configuration-specific.",
+      "qualitative": "Sample 2-1 silicone burn time is reported qualitatively as “Insignificant”. CSV Note 2 states that in sample 2-7 the PMMA portion was consumed and Nomex did not ignite. These findings are configuration-specific.",
       "interpretation": "Useful material contrast and a reported spread-rate example at a documented flow. It cannot establish a universal ranking of material safety.",
-      "limits": "The PSI rate is stored under a mislabelled \u201c?-g Spread Length\u201d header; mm/s identifies it as a rate, corroborated by NASA NTRS 20170008805. PSI Approach says 20 or 30 cm/s, while selected CSV rows say 20. Another row 2-6 says 20 in PSI but 25 cm/s in NTRS; do not use that row for a flow-effect claim. Thickness strings such as \u201c037 mm\u201d are not silently corrected.",
+      "limits": "The PSI rate is stored under a mislabelled “?-g Spread Length” header; mm/s identifies it as a rate, corroborated by NASA NTRS 20170008805. PSI Approach says 20 or 30 cm/s, while selected CSV rows say 20. Another row 2-6 says 20 in PSI but 25 cm/s in NTRS; do not use that row for a flow-effect claim. Thickness strings such as “037 mm” are not silently corrected.",
       "evidence": "Experimental table rows 2-5, 2-1 and note 2; NTRS 20170008805 slide 21 corroborates 2.1 mm/s."
     },
     {
@@ -388,9 +388,9 @@
           }
         }
       ],
-      "approachQuote": "The Saffire-1 experiments was performed on the Orbital Science\u2019s Cygnus resupply vehicle after it deberthed from the ISS. The sample material for Saffire-I is a composite fabric called Sibal consisting of cotton on a fiberglass substrate (75% cotton, 25% fiberglass by weight). It has been used in many space experiments because it burns like cotton but maintains structural integrity after the cotton is consumed. The sample was approximately 0.94 meters long and 0.4 meters wide, simulating a large piece of flammable fabric. The Saffire-1 flight unit had a sample card installed in the middle of a large flow duct. Air is drawn through the flow duct by fans located at the top of the duct with flow straighteners at the bottom of the experiment module. Saffire-I was conducted at an air flow velocity of 20 cm/s. Once the sample was ignited flame images were captured using two cameras. In addition, thermocouples provided flow, flame, and plume temperatures, two radiometers recorded flame radiation, solid state sensors were used to measure pressure, CO2 and O2 mole faction, and two anemometer tracked flow velocity. All data was compressed, and subsequently downlinked.",
+      "approachQuote": "The Saffire-1 experiments was performed on the Orbital Science’s Cygnus resupply vehicle after it deberthed from the ISS. The sample material for Saffire-I is a composite fabric called Sibal consisting of cotton on a fiberglass substrate (75% cotton, 25% fiberglass by weight). It has been used in many space experiments because it burns like cotton but maintains structural integrity after the cotton is consumed. The sample was approximately 0.94 meters long and 0.4 meters wide, simulating a large piece of flammable fabric. The Saffire-1 flight unit had a sample card installed in the middle of a large flow duct. Air is drawn through the flow duct by fans located at the top of the duct with flow straighteners at the bottom of the experiment module. Saffire-I was conducted at an air flow velocity of 20 cm/s. Once the sample was ignited flame images were captured using two cameras. In addition, thermocouples provided flow, flame, and plume temperatures, two radiometers recorded flame radiation, solid state sensors were used to measure pressure, CO2 and O2 mole faction, and two anemometer tracked flow velocity. All data was compressed, and subsequently downlinked.",
       "material": "SIBAL: 75% cotton / 25% fiberglass by weight (PSI Approach).",
-      "oxygen": "S1: 21.5\u201321.7%; S2: approximately 21.5% (PSI table).",
+      "oxygen": "S1: 21.5–21.7%; S2: approximately 21.5% (PSI table).",
       "airflow": "20 cm/s. S1 concurrent; S2 opposed.",
       "flowValues": [
         20
@@ -400,10 +400,40 @@
         "opposed"
       ],
       "outcome": "S1 reported burn time: 420 s; S2: 70 s. Spread-rate outcome in this PSI table: Not reported.",
-      "qualitative": "PSI Approach describes a large fabric specimen, approximately 0.94 m \u00d7 0.4 m, with imagery, temperature, radiation and gas instrumentation.",
+      "qualitative": "PSI Approach describes a large fabric specimen, approximately 0.94 m × 0.4 m, with imagery, temperature, radiation and gas instrumentation.",
       "interpretation": "Provides large-scale fabric-burning context alongside the smaller BASS-II specimens. Burn duration is not a measure of hazard severity or likelihood.",
-      "limits": "The PSI table lists thickness as 0.37 cm and length/width as 40.6/94 cm; Approach describes approximately 94 \u00d7 40 cm and NTRS reports 0.37 mm thickness. Geometry is therefore flagged as inconsistent, not silently reconciled. No direct lunar test.",
-      "evidence": "Experimental table rows S1 and S2; PSI Approach; geometry conflict checked against NTRS 20170008805 Table I."
+      "limits": "The PSI table lists thickness as 0.37 cm and length/width as 40.6/94 cm; Approach describes approximately 94 × 40 cm and NTRS reports 0.37 mm thickness. Geometry is therefore flagged as inconsistent, not silently reconciled. No direct lunar test.",
+      "evidence": "Experimental table rows S1 and S2; PSI Approach; geometry conflict checked against NTRS 20170008805 Table I.",
+      "companion": {
+        "id": "NTRS-20170008805",
+        "title": "Results of Large-Scale Spacecraft Flammability Tests",
+        "source": "https://ntrs.nasa.gov/citations/20170008805",
+        "url": "https://ntrs.nasa.gov/api/citations/20170008805/downloads/20170008805.pdf#page=29",
+        "file": "20170008805.pdf",
+        "location": "Table I, page 29; average rates discussed on slide 21",
+        "sha256": "e38ec36f54817aa97e0c01a05f12b212521d6320ce3f4cb7a38bb7c837cfea8d",
+        "runs": [
+          {
+            "id": "1-1",
+            "material": "Cotton-fiberglass (SIBAL)",
+            "gravity": "microgravity",
+            "airflow": "20 cm/s",
+            "direction": "Concurrent",
+            "oxygen": "21.7 to 21.5% (Table I, Note i)",
+            "spreadRate": "1.8 mm/s"
+          },
+          {
+            "id": "1-2",
+            "material": "Cotton-fiberglass (SIBAL)",
+            "gravity": "microgravity",
+            "airflow": "20 cm/s",
+            "direction": "Opposed",
+            "oxygen": "approximately 21.5% (Table I, Note i)",
+            "spreadRate": "1.3 mm/s"
+          }
+        ],
+        "note": "Companion sample identifiers are retained separately from PSI identifiers S1/S2. The PSI CSV still does not report spread rates."
+      }
     }
   ]
 }

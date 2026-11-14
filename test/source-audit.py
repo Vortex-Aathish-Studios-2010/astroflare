@@ -24,3 +24,13 @@ for record in data['records']:
    if run['id']=='2-5':assert outcome['spreadRate']==row['?-g Spread Length']=='2.1 mm/s'
    else:assert outcome['spreadRate']=='Not reported'
  print('PASS',record['id'],len(record['runs']),'curated rows; raw values, units and conditions match pinned original')
+# The companion table is separate evidence; never overwrite the missing PSI rates.
+companion=next(r for r in data['records'] if r['id']=='PSI-98')['companion']
+layout=(p/'sources/20170008805-layout.txt').read_text().split('\f')[28]
+import re
+for run in companion['runs']:
+ pattern=rf"{run['id']}\s+Cotton-Fiberglass\s+40.6 cm.*?20 cm/s\s+{run['direction']}"
+ assert re.search(pattern,layout)
+ assert re.search(rf"{run['id']}\s+182 W\s+8s.*?{re.escape(run['spreadRate'])}",layout)
+assert companion['runs'][1]['oxygen'].startswith('approximately 21.5%')
+print('PASS NASA NTRS Table I, page 29: samples 1-1/1-2, directions and spread rates; PSI missing rates unchanged')

@@ -1,0 +1,19 @@
+  function experimentPlate(){
+    const figure=el('figure',{class:'experiment-plate',id:'experiment-plate','aria-labelledby':'plate-caption'});
+    figure.appendChild(el('div',{class:'plate-topline'},[el('span',{class:'eyebrow',text:'Field notes / 01'}),el('span',{class:'mono',text:'NASA · SAFFIRE II'})]));
+    const controls=el('div',{class:'plate-controls',role:'group','aria-label':'Choose a Saffire II material'}),body=el('div',{class:'plate-body',id:'plate-body','aria-live':'polite','aria-atomic':'true'});
+    let selected='fabric';const buttons=new Map();
+    function render(material,animate=false){selected=material;const silicone=material==='silicone',record=PSI_DATA.records.find(r=>r.id==='PSI-99'),run=record.runs.find(r=>r.id===(silicone?'2-1':'2-5'));
+      buttons.forEach((b,key)=>b.setAttribute('aria-pressed',String(key===material)));clear(body);body.dataset.run=run.id;
+      body.appendChild(el('p',{class:'plate-material',text:silicone?'Silicone specimen':'SIBAL cotton/fiberglass specimen'}));
+      body.appendChild(el('p',{class:'plate-flow',text:'Airflow → 20 cm/s · concurrent test configuration'}));
+      const diagram=el('div',{class:'plate-diagram'});
+      // Direction and specimen are schematic only: no inferred apparatus, ignition hardware or dimensions.
+      diagram.innerHTML='<svg viewBox="0 0 460 180" role="img" aria-label="'+(silicone?'Silicone specimen with airflow to the right. No measured spread direction is inferred.':'Fabric specimen; airflow and flame spread both point to the right (concurrent).')+'"><defs><pattern id="fabric-hatch" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M0 0V12M0 0H12" fill="none" stroke="#b7ac9b" stroke-width="0.7"/></pattern><marker id="air-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10" fill="none" stroke="#355f79" stroke-width="1.5"/></marker><marker id="spread-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10" fill="none" stroke="#963f32" stroke-width="1.5"/></marker></defs><path d="M44 28H410" fill="none" stroke="#355f79" stroke-width="2" marker-end="url(#air-arrow)"/><rect x="44" y="60" width="368" height="74" fill="'+(silicone?'#ded8ce':'url(#fabric-hatch)')+'" stroke="#625b51" stroke-width="1.5"/>'+(silicone?'':'<path d="M100 158H355" fill="none" stroke="#963f32" stroke-width="2" marker-end="url(#spread-arrow)"/>')+'</svg>';
+      body.appendChild(diagram);body.appendChild(el('p',{class:'plate-direction',text:silicone?'Flame-spread direction: not inferred from this qualitative row.':'Flame spread → same direction as the airflow.'}));
+      body.appendChild(el('div',{class:'plate-data'},[el('p',{class:'plate-value'+(silicone?' qualitative':''),text:silicone?'“Insignificant”':'2.1 mm/s'}),el('p',{class:'plate-observation',text:silicone?'Burn time, as described in the table. Flame-spread rate: Not reported.':'Reported flame-spread rate · microgravity'}),el('p',{class:'plate-run',text:'Saffire II · run '+run.id}),el('p',{class:'small',text:'O₂ '+run.oxygen+'% (derived per table Note 1).'}),el('a',{class:'plate-source',href:record.downloadUrl,target:'_blank',rel:'noopener noreferrer','data-source-row':run.id,text:'NASA original table · row '+run.id+' ↗'})]));
+      if(animate)animateArrival(body);
+    }
+    [['fabric','SIBAL fabric'],['silicone','Silicone']].forEach(([key,label])=>{const b=el('button',{type:'button',class:'plate-control',id:'plate-'+key,'aria-controls':'plate-body','aria-pressed':String(key===selected),text:label});b.addEventListener('click',()=>render(key,true));buttons.set(key,b);controls.appendChild(b);});
+    figure.appendChild(controls);figure.appendChild(body);figure.appendChild(el('figcaption',{id:'plate-caption',text:'Test schematic · not to scale.'}));render('fabric');return figure;
+  }
