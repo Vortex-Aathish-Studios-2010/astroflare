@@ -258,10 +258,12 @@
     "reason": "Original remote assessment service rate limit; input retention and recovery passed with explicit fixtures."
   },
   "github": {
-    "status": "Blocked",
+    "status": "Repository available",
     "owner": "Vortex-Aathish-Studios-2010",
-    "requested_repository": "astroflare",
-    "error": "Resource not accessible by integration (createRepository)",
-    "owner_action": "Create an empty private repository, grant the connection access, and provide its URL."
+    "repository": "astroflare",
+    "url": "https://github.com/Vortex-Aathish-Studios-2010/astroflare",
+    "visibility": "public",
+    "branch": "main",
+    "note": "Owner created the repository after automatic creation was blocked. Original starter commit and Sites source history are retained; consult GitHub for branch and CI status."
   }
 }

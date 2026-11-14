@@ -12,9 +12,20 @@ The full control inventory and verification boundaries are in [CONTROL_AUDIT.md]
 
 **AI remains inactive pending the API key.** Existing integration code is preserved; no provider was activated. The inactive client makes no background AI availability request.
 
-### GitHub handoff
+### GitHub repository
 
-Requested owner: `Vortex-Aathish-Studios-2010`; requested repository name: `astroflare`, private by default. Automatic creation was attempted but GitHub returned `Resource not accessible by integration (createRepository)`. This is an integration permission boundary, not a source/build error. Owner action: create an empty private repository at https://github.com/new (without README, licence or .gitignore), allow the connected GitHub integration access, and provide its URL. Keep the existing Sites `origin` remote; add GitHub as a second remote and push **main**. No GitHub repository creation is claimed until the push is verified. `.github/workflows/ci.yml` runs the build, Node regressions, source audit and Worker syntax check without credentials or external services.
+Source: [Vortex-Aathish-Studios-2010/astroflare](https://github.com/Vortex-Aathish-Studios-2010/astroflare), branch **main**. The owner created this public repository; its initial commit is retained alongside the existing AstroFlare source history. `.github/workflows/ci.yml` runs the build, Node regressions, source audit and Worker syntax check without API keys.
+
+```sh
+git clone https://github.com/Vortex-Aathish-Studios-2010/astroflare.git
+cd astroflare
+npm ci
+npm run build
+npm test
+npm start
+```
+
+Open http://localhost:3000 after the start command. Node 22+ and Python 3 are required. The current public site continues using its existing Sites deployment; pushing to this GitHub repository does not automatically publish to Sites or Render. The optional Render setup is documented below. No API key is needed for the NASA evidence explorer; fresh mission assessments still depend on the separate original service.
 
 The source ZIP at `/source.zip` contains the project, test fixtures, pinned sources, fonts with their licences, Render configuration and CI workflow. It deliberately omits Sites identity, credentials, node_modules and Git history. For local use: `npm ci`, `npm run build`, `npm test`, then `npm start`. Node 22+ and Python 3 are required; open the port printed by `server.mjs`.
 

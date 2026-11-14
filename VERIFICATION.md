@@ -16,7 +16,7 @@
 | Motion and accessibility logic | Pass programmatically | Focus, native semantic controls, Enter submission, reduced-motion suppression, absent/throwing animation APIs and declared color contrast. |
 | Rendered desktop/tablet/mobile and native-device checks | Blocked | No callable browser-control tool; actual layout/overflow, native clipboard/print, touch and OS reduced-motion appearance not verified. |
 | Official challenge brief | Blocked | External URL returned HTTP 503; NASA source links passed independently. |
-| GitHub creation/upload | Blocked | Integration rejects repository creation; owner must create the empty private repository and grant access. Existing Sites source is committed. |
+| GitHub repository | Available | Owner-created public repository at https://github.com/Vortex-Aathish-Studios-2010/astroflare; source targets main and preserves its initial commit. Existing Sites deployment remains separate. |
 
 The complete before-change control inventory is `/control-audit`. This release adds regression coverage for custom-question opening/validation/draft retention, comparison removal and disclosure state, mission draft persistence, corrupt/denied storage, cancellation of obsolete interpretation/flow/assessment/report/investigation responses, unknown/unit/basis controls, profile failure retry, Back network failure, every investigation action, source-verification recovery, pinned baseline comparison, and opening Report from the stepper. Motion-API absence/failure and reduced-motion preferences must leave content visible and controls functional.
 
@@ -26,7 +26,7 @@ The current design uses flat charcoal/midnight surfaces, Instrument Serif/Sans, 
 
 Post-publish acceptance repeats core and scientific checks at DOM widths 1280/390 and new reliability checks at 1280/768/390, using anonymously downloaded production HTML. Original NASA links, pinned CSV hashes, source archive, documentation, dataset, fonts and control audit are checked separately over HTTP. A fresh screening/report attempt must be reported separately from fixture success.
 
-GitHub creation is currently **Blocked** by `Resource not accessible by integration (createRepository)`. The owner must create an empty private `astroflare` repository and permit the connection to access it. A CI workflow is included and the project remains saved in its existing Sites Git repository.
+The earlier repository-creation permission blocker is resolved by the owner creating the public GitHub repository. This source includes a CI workflow and retains the original Sites history. GitHub Actions results should be checked on the repository; the published application acceptance above predates this source handoff.
 
 **AI remains inactive pending the API key.** No generated requests or simulated AI responses. **Real browser visual/native checks remain Blocked** because no browser-control tool is callable. Earlier release results below are historical and are not substituted for current live-service acceptance.
 
