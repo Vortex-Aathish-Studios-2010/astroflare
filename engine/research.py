@@ -11,6 +11,7 @@ validates what comes back. Like the mission AI, it is checked for consistency, n
 """
 import json
 import os
+import re
 from pathlib import Path
 
 import report as R
@@ -66,6 +67,22 @@ def valid_ids(dataset):
     return ids
 
 
+_REF = re.compile(r"(PSI-\d+)(?:\W+(?:runs?\W+|rows?\W+|samples?\W+)?([A-Za-z0-9][A-Za-z0-9-]*))?", re.I)
+
+
+def normalise_ref(text, ids):
+    """Map a cited reference to a real id. Models write "PSI-99:2-5", "PSI-99 row 2-5" or "PSI-99, run 2-5"; any of
+    these means the same run. A run that does not exist falls back to its record; anything else is not a reference."""
+    m = _REF.match(text.strip()) if isinstance(text, str) else None
+    if not m:
+        return None
+    record = m.group(1).upper()
+    run = "%s:%s" % (record, m.group(2)) if m.group(2) else None
+    if run in ids:
+        return run
+    return record if record in ids else None
+
+
 def ask_request(dataset, question, ids=None):
     """(system prompt, user message, data dict). `ids` narrows the records to the investigations on screen."""
     wanted = {i for i in (ids or []) if isinstance(i, str)}
@@ -89,7 +106,12 @@ def validate_answer(text, data, question, dataset):
     if reason:
         return None, [reason]
     ids = valid_ids(dataset)
-    good = [u for u in (uses if isinstance(uses, list) else []) if isinstance(u, str) and u in ids][:10]
+    good = []
+    for u in (uses if isinstance(uses, list) else []):
+        ref = normalise_ref(u, ids)
+        if ref and ref not in good:
+            good.append(ref)
+    good = good[:10]
     if status == "answered" and not good:
         return None, ["no_valid_references"]
     return {"status": status, "answer": answer.strip(), "uses": good}, []

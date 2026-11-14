@@ -914,6 +914,7 @@ def answer_research_question(question, ids, client=None):
     ans, notes = research_lib.validate_answer(reply, data, question, dataset)
     diag["validationNotes"] = notes
     if ans is None:
+        print("Research explanation withheld: %s" % ",".join(notes))  # internal reason codes only; never text or keys
         return {"mode": "withheld", "message": "An explanation was produced but withheld because it did not pass the consistency checks. The evidence answer above is unaffected."}, diag
     return {"mode": "ai", "answer": ans["answer"], "uses": ans["uses"], "status": ans["status"],
             "label": "Automatically generated explanation based only on the curated NASA PSI records. Not written or reviewed by a person; checked for consistency, not scientific correctness."}, diag

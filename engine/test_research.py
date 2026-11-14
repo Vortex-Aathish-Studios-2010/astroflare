@@ -99,6 +99,21 @@ class Route(Base):
         self.assertEqual((code, body["mode"]), (200, "withheld"))
         self.assertNotIn("9.9", json.dumps(body))
 
+    def test_citation_format_variants_resolve_to_real_ids(self):
+        ids = research.valid_ids(DATASET)
+        for text, want in (("PSI-99:2-5", "PSI-99:2-5"), ("PSI-99 row 2-5", "PSI-99:2-5"), ("PSI-99, run 2-5", "PSI-99:2-5"),
+                           ("psi-99 sample 2-5", "PSI-99:2-5"), ("PSI-99", "PSI-99"), ("PSI-99:9-9", "PSI-99"), ("PSI-77", None), ("2-5", None), (5, None)):
+            self.assertEqual(research.normalise_ref(text, ids), want, text)
+        ans, notes = check(reply(uses=("PSI-99 row 2-5", "PSI-99:2-5")))
+        self.assertEqual((notes, ans["uses"]), ([], ["PSI-99:2-5"]))  # variants of one run count once
+
+    def test_a_withheld_reply_logs_only_the_reason_code(self):
+        self.responder = lambda req, timeout: completion(content=reply(answer="It reached 9.9 mm/s."))
+        self.ask()
+        log = self.out.getvalue()
+        self.assertIn("Research explanation withheld: unsupported_number", log)
+        self.assertNotIn("9.9", log)
+
     def test_without_a_configured_service_it_says_so_and_calls_nothing(self):
         del os.environ["FREELLMAPI_API_KEY"]
         code, body, _ = self.ask()
