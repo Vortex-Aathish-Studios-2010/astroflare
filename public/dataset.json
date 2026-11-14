@@ -1,0 +1,409 @@
+{
+  "version": "2026-11-14.2",
+  "source": "NASA Physical Sciences Informatics",
+  "records": [
+    {
+      "id": "PSI-25",
+      "name": "BASS-II",
+      "title": "Burning and Suppression of Solids - II",
+      "version": 4,
+      "doi": "10.60555/4qc4-de67",
+      "order": 0,
+      "tags": [
+        "solid",
+        "flame",
+        "flow",
+        "oxygen",
+        "microgravity",
+        "smoke"
+      ],
+      "materials": [
+        "pmma",
+        "fabric"
+      ],
+      "gravity": "microgravity",
+      "gravityLabel": "Microgravity (ISS)",
+      "flowMode": "forced",
+      "coverage": "variable",
+      "source": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25",
+      "metadataUrl": "https://psi.nasa.gov/geode-py/ws/repo/investigations/PSI-25",
+      "sourceFile": "PSI-25_Experimental table_BASS-II.csv",
+      "fileVersion": 1,
+      "sha256": "71e792bf6b5fb5ea620c5dd70fbbac05515992e12aefcf5dff47312caa48c042",
+      "verifiedOn": "2026-11-14",
+      "downloadUrl": "https://psi.nasa.gov/geode-py/ws/studies/PSI-25/download?file=PSI-25_Experimental+table_BASS-II.csv&version=1",
+      "runs": [
+        {
+          "id": "T1",
+          "sample": "128",
+          "material": "2 cm SIBAL",
+          "date": "2/14/2014",
+          "oxygenInitial": "18.5",
+          "oxygenFinal": "18.5",
+          "oxygenUnit": "% by volume",
+          "airflow": "Not reported",
+          "fanDisplay": "80",
+          "airDisplay": "10",
+          "outcome": {
+            "initialCO": 0.0,
+            "finalCO": 40.0,
+            "unit": "ppm"
+          },
+          "raw": {
+            "PI": "T'ien",
+            "Test #": "T1",
+            "Date": "2/14/2014",
+            "GMT": "45",
+            "Sample #": "128",
+            "Fuel Sample Material": "2 cm SIBAL",
+            "Flow restrictor": "2",
+            "Fan display": "80",
+            "Air display": "10",
+            "Radiometer gain   (1000   250   50   10)": "50",
+            "Total Frames Shot": "85",
+            "Calibrated  initial O2 % by vol": "18.5",
+            "Calibrated final O2 % by vol": "18.5",
+            "Initial CO2 % by vol": "0.35",
+            "Final CO2 % by vol": "0.41",
+            "Initial CO (ppm)": "0",
+            "Final CO (ppm)": "40"
+          }
+        },
+        {
+          "id": "T2",
+          "sample": "129",
+          "material": "2 cm SIBAL",
+          "date": "2/14/2014",
+          "oxygenInitial": "18.5",
+          "oxygenFinal": "18.5",
+          "oxygenUnit": "% by volume",
+          "airflow": "Not reported",
+          "fanDisplay": "80   59   55",
+          "airDisplay": "9   5   4",
+          "outcome": {
+            "initialCO": 40.0,
+            "finalCO": 78.0,
+            "unit": "ppm"
+          },
+          "raw": {
+            "PI": "T'ien",
+            "Test #": "T2",
+            "Date": "2/14/2014",
+            "GMT": "45",
+            "Sample #": "129",
+            "Fuel Sample Material": "2 cm SIBAL",
+            "Flow restrictor": "2",
+            "Fan display": "80   59   55",
+            "Air display": "9   5   4",
+            "Radiometer gain   (1000   250   50   10)": "50",
+            "Total Frames Shot": "100",
+            "Calibrated  initial O2 % by vol": "18.5",
+            "Calibrated final O2 % by vol": "18.5",
+            "Initial CO2 % by vol": "0.41",
+            "Final CO2 % by vol": "0.45",
+            "Initial CO (ppm)": "40",
+            "Final CO (ppm)": "78"
+          }
+        },
+        {
+          "id": "T4",
+          "sample": "130",
+          "material": "2 cm SIBAL",
+          "date": "2/14/2014",
+          "oxygenInitial": "18.7",
+          "oxygenFinal": "18.7",
+          "oxygenUnit": "% by volume",
+          "airflow": "Not reported",
+          "fanDisplay": "80   46",
+          "airDisplay": "9  1",
+          "outcome": {
+            "initialCO": 59.0,
+            "finalCO": 72.0,
+            "unit": "ppm"
+          },
+          "raw": {
+            "PI": "T'ien",
+            "Test #": "T4",
+            "Date": "2/14/2014",
+            "GMT": "45",
+            "Sample #": "130",
+            "Fuel Sample Material": "2 cm SIBAL",
+            "Flow restrictor": "2",
+            "Fan display": "80   46",
+            "Air display": "9  1",
+            "Radiometer gain   (1000   250   50   10)": "50",
+            "Total Frames Shot": "97",
+            "Calibrated  initial O2 % by vol": "18.7",
+            "Calibrated final O2 % by vol": "18.7",
+            "Initial CO2 % by vol": "0.44",
+            "Final CO2 % by vol": "0.45",
+            "Initial CO (ppm)": "59",
+            "Final CO (ppm)": "72"
+          }
+        },
+        {
+          "id": "B1",
+          "sample": "147",
+          "material": "100 micron PMMA film   2 cm wide",
+          "date": "2/19/2014",
+          "oxygenInitial": "22.2",
+          "oxygenFinal": "22.2",
+          "oxygenUnit": "% by volume",
+          "airflow": "Not reported",
+          "fanDisplay": "62",
+          "airDisplay": "5",
+          "outcome": {
+            "initialCO": 0.0,
+            "finalCO": 6.0,
+            "unit": "ppm"
+          },
+          "raw": {
+            "PI": "Bhattacharjee",
+            "Test #": "B1",
+            "Date": "2/19/2014",
+            "GMT": "50",
+            "Sample #": "147",
+            "Fuel Sample Material": "100 micron PMMA film   2 cm wide",
+            "Flow restrictor": "2",
+            "Fan display": "62",
+            "Air display": "5",
+            "Radiometer gain   (1000   250   50   10)": "50",
+            "Total Frames Shot": "57",
+            "Calibrated  initial O2 % by vol": "22.2",
+            "Calibrated final O2 % by vol": "22.2",
+            "Initial CO2 % by vol": "0.44",
+            "Final CO2 % by vol": "0.44",
+            "Initial CO (ppm)": "0",
+            "Final CO (ppm)": "6"
+          }
+        }
+      ],
+      "approachQuote": "To summarize, BASS-II's approach, microgravity combustion tests were performed aboard the International Space Station. Active crew support for real-time \u201clab partner\u201d operations. The wind tunnel was installed in the Microgravity Science Glovebox which supplied power, imaging, and a level of containment. Fuel samples were mounted inside a small wind tunnel which could impose airflow speeds up to 40 cm/s. Main variables are airflow speed and oxygen concentration (oxygen varied below 21% by adding nitrogen). Flame appearance, flame growth, and spread rates were determined in both the opposed and concurrent flow.",
+      "material": "Selected runs: 2 cm SIBAL fabric; 100 \u03bcm PMMA film, 2 cm wide.",
+      "oxygen": "T1, T2, T4: initial calibrated O\u2082 18.5%, 18.5%, 18.7% by volume. B1: 22.2%.",
+      "airflow": "Forced flow; facility can impose up to 40 cm/s. Calibrated velocity for these curated rows: Not reported.",
+      "flowValues": [],
+      "directions": [
+        "opposed",
+        "concurrent"
+      ],
+      "outcome": "T1 final CO: 40 ppm (initial 0 ppm); T2: 78 ppm (initial 40 ppm); T4: 72 ppm (initial 59 ppm).",
+      "qualitative": "PSI Approach states that flame appearance, growth and spread rates were determined in opposed and concurrent flow. This describes the investigation; the selected CSV does not provide spread rates.",
+      "interpretation": "Best starting point for a review of how forced flow and oxygen variation affect solid fuels. Use the experiment files for further analysis; the gas readings shown here are not flammability thresholds.",
+      "limits": "Lunar surface gravity is not reproduced. Fan and air displays are not treated as calibrated cm/s. Initial CO differs between runs; final CO cannot be compared as an emission yield. Summary Approach says oxygen was varied below 21%, while run B1 lists 22.2%; retain row-specific values.",
+      "evidence": "Experimental table rows T1, T2, T4 and B1; PSI Approach; no direct lunar-gravity measurement."
+    },
+    {
+      "id": "PSI-99",
+      "name": "Saffire II",
+      "title": "Spacecraft Fire Experiment-II",
+      "version": 5,
+      "doi": "10.60555/2chp-m469",
+      "order": 1,
+      "tags": [
+        "solid",
+        "flame",
+        "flow",
+        "oxygen",
+        "microgravity"
+      ],
+      "materials": [
+        "fabric",
+        "silicone",
+        "pmma"
+      ],
+      "gravity": "microgravity",
+      "gravityLabel": "Microgravity (Cygnus after ISS departure)",
+      "flowMode": "forced",
+      "coverage": "fixed",
+      "source": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-99",
+      "metadataUrl": "https://psi.nasa.gov/geode-py/ws/repo/investigations/PSI-99",
+      "sourceFile": "PSI-99_Experimental table_SAFFIRE-2.csv",
+      "fileVersion": 1,
+      "sha256": "3c24390b9ef86f3d1ebaab911a1a3cc95a8759aebf42062371370e6d4b31b8ac",
+      "verifiedOn": "2026-11-14",
+      "downloadUrl": "https://psi.nasa.gov/geode-py/ws/studies/PSI-99/download?file=PSI-99_Experimental+table_SAFFIRE-2.csv&version=1",
+      "runs": [
+        {
+          "id": "2-5",
+          "material": "Cotton-Fiberglass (SIBAL)",
+          "oxygen": "~ 22.1",
+          "oxygenUnit": "%",
+          "airflow": "20 cm/s",
+          "direction": "Concurrent",
+          "outcome": {
+            "spreadRate": "2.1 mm/s",
+            "burnTime": "145 s"
+          },
+          "raw": {
+            "Sample Number": "2-5",
+            "Material": "Cotton-Fiberglass (SIBAL)",
+            "Samle Thickness": "037 mm",
+            "Sample Length": "29 cm",
+            "Sample Width (cm)": "5 cm",
+            "Air Flow (cm/s)": "20 cm/s",
+            "Percent O2 (Note 1)": "~ 22.1",
+            "Ignition Power (W)": "80 W",
+            "Ignition Time (s)": "9.2 s",
+            "Burn Time (s)": "145 s",
+            "Flow Direction": "Concurrent",
+            "?-g Burn Length": "29 cm",
+            "?-g Spread Length": "2.1 mm/s",
+            "1-g Burn Length": "Complete",
+            "1-g Spread Rate": "Acceleratory",
+            "Camera 1": "S5C1",
+            "Camera 2": "S5C2"
+          }
+        },
+        {
+          "id": "2-1",
+          "material": "Silicone",
+          "oxygen": "~ 21.5",
+          "oxygenUnit": "%",
+          "airflow": "20 cm/s",
+          "direction": "Concurrent",
+          "outcome": {
+            "spreadRate": "Not reported",
+            "burnTime": "Insignificant"
+          },
+          "raw": {
+            "Sample Number": "2-1",
+            "Material": "Silicone",
+            "Samle Thickness": "0.27 mm",
+            "Sample Length": "29 cm",
+            "Sample Width (cm)": "5 cm",
+            "Air Flow (cm/s)": "20 cm/s",
+            "Percent O2 (Note 1)": "~ 21.5",
+            "Ignition Power (W)": "80 W",
+            "Ignition Time (s)": "9.2 s",
+            "Burn Time (s)": "Insignificant",
+            "Flow Direction": "Concurrent",
+            "?-g Burn Length": "~ 0",
+            "?-g Spread Length": "n/a",
+            "1-g Burn Length": "Complete",
+            "1-g Spread Rate": "Acceleratory",
+            "Camera 1": "S1C1",
+            "Camera 2": "S1C2"
+          }
+        }
+      ],
+      "approachQuote": "The Saffire-II experiment was performed on the Orbital Science\u2019s Cygnus resupply vehicle after it deberthed from the ISS. As a follow on to the Saffire-I investigation, the Saffire-II investigation added more samples including SIBAL, silicone, structure PMMA, flat PMMA, and PMMA with Nomex. The Saffire-1I flight unit had a sample card installed in the middle of a large flow duct. Air is drawn through the flow duct by fans located at the top of the duct with flow straighteners at the bottom of the experiment module. Saffire-II has a sample card that contains 9 samples, each 5 cm x 29 cm. Depending on the sample material, the Saffire-II was conducted at an air flow velocity of either 20 or 30 cm/s, the flow being either concurrent or opposed.  Once the sample was ignited flame images were captured using two cameras. In addition, thermocouples provided flow, flame, and plume temperatures, two radiometers recorded flame radiation, solid state sensors were used to measure pressure, CO2 and O2 mole faction, and two anemometer tracked flow velocity. All data was compressed, and subsequently downlinked. Details related to samples and experimental parameters are provided in the Experimental Details file in the Science document folder.",
+      "material": "SIBAL cotton/fiberglass, silicone and PMMA/Nomex configurations.",
+      "oxygen": "Selected row 2-5: approximately 22.1% O\u2082. CSV Note 1: derived from measured CO\u2082 production, referenced to initial ISS O\u2082.",
+      "airflow": "Selected rows 2-5 and 2-1: 20 cm/s, concurrent flow.",
+      "flowValues": [
+        20
+      ],
+      "directions": [
+        "concurrent",
+        "opposed"
+      ],
+      "outcome": "2-5: reported spread rate 2.1 mm/s; burn time 145 s.",
+      "qualitative": "Sample 2-1 silicone burn time is reported qualitatively as \u201cInsignificant\u201d. CSV Note 2 states that in sample 2-7 the PMMA portion was consumed and Nomex did not ignite. These findings are configuration-specific.",
+      "interpretation": "Useful material contrast and a reported spread-rate example at a documented flow. It cannot establish a universal ranking of material safety.",
+      "limits": "The PSI rate is stored under a mislabelled \u201c?-g Spread Length\u201d header; mm/s identifies it as a rate, corroborated by NASA NTRS 20170008805. PSI Approach says 20 or 30 cm/s, while selected CSV rows say 20. Another row 2-6 says 20 in PSI but 25 cm/s in NTRS; do not use that row for a flow-effect claim. Thickness strings such as \u201c037 mm\u201d are not silently corrected.",
+      "evidence": "Experimental table rows 2-5, 2-1 and note 2; NTRS 20170008805 slide 21 corroborates 2.1 mm/s."
+    },
+    {
+      "id": "PSI-98",
+      "name": "Saffire I",
+      "title": "Spacecraft Fire Safety Experiment-I",
+      "version": 4,
+      "doi": "10.60555/0t15-1z43",
+      "order": 2,
+      "tags": [
+        "solid",
+        "flame",
+        "flow",
+        "oxygen",
+        "microgravity"
+      ],
+      "materials": [
+        "fabric"
+      ],
+      "gravity": "microgravity",
+      "gravityLabel": "Microgravity (Cygnus after ISS departure)",
+      "flowMode": "forced",
+      "coverage": "fixed",
+      "source": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98",
+      "metadataUrl": "https://psi.nasa.gov/geode-py/ws/repo/investigations/PSI-98",
+      "sourceFile": "PSI-98_Experimental table_SAFFIRE-1.csv",
+      "fileVersion": 1,
+      "sha256": "c01f29c62455f0a3b512290ab85e5687ecded326733189f002f580368402308d",
+      "verifiedOn": "2026-11-14",
+      "downloadUrl": "https://psi.nasa.gov/geode-py/ws/studies/PSI-98/download?file=PSI-98_Experimental+table_SAFFIRE-1.csv&version=1",
+      "runs": [
+        {
+          "id": "S1",
+          "material": "SIBAL Fabric",
+          "oxygen": "21.5 - 21.7",
+          "oxygenUnit": "%",
+          "airflow": "20 cm/s",
+          "direction": "Concurrent",
+          "outcome": {
+            "burnTime": "420 s",
+            "spreadRate": "Not reported"
+          },
+          "raw": {
+            "Sample Number": "S1",
+            "Material": "SIBAL Fabric",
+            "Sample Thickness (cm)": "0.37",
+            "Sample Length (cm)": "40.6",
+            "Sample Width (cm)": "94",
+            "Air Flow (cm/s)": "20",
+            "Percent O2": "21.5 - 21.7",
+            "Ignition Power (W)": "182",
+            "Ignition Time (s)": "8",
+            "Burn Time (s)": "420",
+            "Flow Direction": "Concurrent",
+            "Camera 1": "S1C1",
+            "Camera 2": "S1C2"
+          }
+        },
+        {
+          "id": "S2",
+          "material": "SIBAL Fabric",
+          "oxygen": "~ 21.5",
+          "oxygenUnit": "%",
+          "airflow": "20 cm/s",
+          "direction": "Opposed",
+          "outcome": {
+            "burnTime": "70 s",
+            "spreadRate": "Not reported"
+          },
+          "raw": {
+            "Sample Number": "S2",
+            "Material": "SIBAL Fabric",
+            "Sample Thickness (cm)": "0.37",
+            "Sample Length (cm)": "40.6",
+            "Sample Width (cm)": "94",
+            "Air Flow (cm/s)": "20",
+            "Percent O2": "~ 21.5",
+            "Ignition Power (W)": "182",
+            "Ignition Time (s)": "8",
+            "Burn Time (s)": "70",
+            "Flow Direction": "Opposed",
+            "Camera 1": "S2C1",
+            "Camera 2": "S2C2"
+          }
+        }
+      ],
+      "approachQuote": "The Saffire-1 experiments was performed on the Orbital Science\u2019s Cygnus resupply vehicle after it deberthed from the ISS. The sample material for Saffire-I is a composite fabric called Sibal consisting of cotton on a fiberglass substrate (75% cotton, 25% fiberglass by weight). It has been used in many space experiments because it burns like cotton but maintains structural integrity after the cotton is consumed. The sample was approximately 0.94 meters long and 0.4 meters wide, simulating a large piece of flammable fabric. The Saffire-1 flight unit had a sample card installed in the middle of a large flow duct. Air is drawn through the flow duct by fans located at the top of the duct with flow straighteners at the bottom of the experiment module. Saffire-I was conducted at an air flow velocity of 20 cm/s. Once the sample was ignited flame images were captured using two cameras. In addition, thermocouples provided flow, flame, and plume temperatures, two radiometers recorded flame radiation, solid state sensors were used to measure pressure, CO2 and O2 mole faction, and two anemometer tracked flow velocity. All data was compressed, and subsequently downlinked.",
+      "material": "SIBAL: 75% cotton / 25% fiberglass by weight (PSI Approach).",
+      "oxygen": "S1: 21.5\u201321.7%; S2: approximately 21.5% (PSI table).",
+      "airflow": "20 cm/s. S1 concurrent; S2 opposed.",
+      "flowValues": [
+        20
+      ],
+      "directions": [
+        "concurrent",
+        "opposed"
+      ],
+      "outcome": "S1 reported burn time: 420 s; S2: 70 s. Spread-rate outcome in this PSI table: Not reported.",
+      "qualitative": "PSI Approach describes a large fabric specimen, approximately 0.94 m \u00d7 0.4 m, with imagery, temperature, radiation and gas instrumentation.",
+      "interpretation": "Provides large-scale fabric-burning context alongside the smaller BASS-II specimens. Burn duration is not a measure of hazard severity or likelihood.",
+      "limits": "The PSI table lists thickness as 0.37 cm and length/width as 40.6/94 cm; Approach describes approximately 94 \u00d7 40 cm and NTRS reports 0.37 mm thickness. Geometry is therefore flagged as inconsistent, not silently reconciled. No direct lunar test.",
+      "evidence": "Experimental table rows S1 and S2; PSI Approach; geometry conflict checked against NTRS 20170008805 Table I."
+    }
+  ]
+}

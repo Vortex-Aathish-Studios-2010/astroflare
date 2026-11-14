@@ -1,0 +1,50 @@
+[
+  {
+    "id": "PSI-25",
+    "record": {
+      "status": 200,
+      "contentType": "text/html; charset=utf-8"
+    },
+    "metadata": {
+      "status": 200,
+      "contentType": "application/json"
+    },
+    "csv": {
+      "status": 200,
+      "contentType": "text/csv",
+      "matchesPinnedHash": true
+    }
+  },
+  {
+    "id": "PSI-99",
+    "record": {
+      "status": 200,
+      "contentType": "text/html; charset=utf-8"
+    },
+    "metadata": {
+      "status": 200,
+      "contentType": "application/json"
+    },
+    "csv": {
+      "status": 200,
+      "contentType": "application/vnd.ms-excel",
+      "matchesPinnedHash": true
+    }
+  },
+  {
+    "id": "PSI-98",
+    "record": {
+      "status": 200,
+      "contentType": "text/html; charset=utf-8"
+    },
+    "metadata": {
+      "status": 200,
+      "contentType": "application/json"
+    },
+    "csv": {
+      "status": 200,
+      "contentType": "application/vnd.ms-excel",
+      "matchesPinnedHash": true
+    }
+  }
+]

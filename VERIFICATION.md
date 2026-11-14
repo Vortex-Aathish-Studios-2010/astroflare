@@ -1,23 +1,33 @@
-# Verification
+# Verification — research-first upgrade
 
-Original repository and original tests: unavailable. Original deployment branch: unknown. Existing Render service: unchanged.
+Project upgraded in place: appgprj_6af7a9a4f6748191bdc90847b966765a, branch main. Public access explicitly enabled at the user's request. Original Render service untouched.
 
-Recorded results: 7 automated tests passed; live original-engine equality passed for electrical_transit, electrical_transit_complete, lunar_battery and mars_material. Live guide flow and profile calls passed.
+## Completed checks
 
-Automated checks for this copy:
-- JavaScript syntax checks for the generated Worker and inline interface.
-- Worker tests for immutable upstream forwarding, methods, route allowlist, body-size limit and failure handling.
-- DOM interaction tests for one-click immediate demo results without an assessment request, explorer ranking, comparison selection, assessment/research isolation, save/load and original guided interactions.
-- Data checks for NASA source IDs, transcribed rates, and separate research ranking.
-- Live original-API integration checks for guide/profile/assessment and remote response equality.
+- 11 automated tests pass: deterministic preset ordering/points; material/gravity/airflow filters; unknown calibrated velocities excluded; empty result cases; cited evidence answers and unsupported questions; exact source hashes and measurements; unchanged engine relay output; route/method/size/error handling; offline local assets; homepage/demo/filter/comparison DOM flow; secondary screening/save-load/rerun/report; responsive CSS/accessibility structure.
+- JavaScript syntax checks pass for the generated Worker and interface script.
+- Three original NASA PSI pages, three metadata endpoints and three original table downloads returned HTTP 200. All original CSV downloads matched the local pinned SHA-256 hashes.
+- Headline scientific claims were traced to PSI Approach, exact selected CSV rows and, for the Saffire II spread-rate cross-check, NASA NTRS 20170008805 slide 21. Source discrepancies remain disclosed, never silently resolved.
+- Unsupported and numeric prediction questions return an evidence gap. Local retrieval/filtering works with the remote AI/status API deliberately unavailable.
+- Default comparison includes BASS-II and Saffire II. Changing airflow to documented 20 cm/s removes BASS-II and promotes Saffire II; filtering lunar gravity produces an explicit empty result with reset.
+- Earlier live original-engine checks passed for all four example scenarios and guide flow/profile. The relay and numerical engine contract remain unchanged in this upgrade.
+- Source ZIP rebuild is checked before publication.
 
-Browser QA limitation: the selected managed environment exposes no callable desktop/browser JavaScript tool (`cua_repl.js`). Per the Sites managed-preview instructions, a preview server or substitute browser-control path was not started. Desktop/mobile layout and touch interaction have not been visually verified. Existing responsive CSS is preserved and new controls use wrapping layouts, small-screen breakpoints and scrollable comparison tables; this is not a substitute for browser testing.
+## Public access and verification boundaries
 
-Manual acceptance checklist for a browser:
-1. Desktop 1440 × 900 and mobile 390 × 844: demo opens results in one click with an obvious hypothetical banner.
-2. Edit a demo answer, complete review and rerun; result reflects the new input and no longer shows a cached-demo banner.
-3. Ask a wire/ventilation question: ETFE ranks first with explicit matched topics. Ask an unrelated question: no-match status appears.
-4. Select any two experiments; a third is refused with a readable status. Uncheck one and replace it. Compare metadata and original-source links.
-5. Inspect chart, units, source filename, conditions, zero baseline and CSV download.
-6. Verify missing input fields and evidence limits are separately labelled; investigations are collapsed; solar activity is footer-only and fetches only after expansion.
-7. Save/load a scenario, prepare/download a report, and confirm hypothesis labelling and wording.
+The native Sites access policy confirms **public**. Anonymous HTTP requests without cookies or authorization receive the app rather than a ChatGPT sign-in redirect. Final post-publication checks record the exact live URL, assets, demo interactions in a fresh DOM session and NASA source links.
+
+This environment has no callable `cua_repl.js` or browser-control tool. Per the Sites managed-preview instructions, no substitute browser-control path or preview server was started. DOM tests establish interaction behavior, focus updates and labels; HTTP checks establish anonymous delivery. They do not establish visual rendering or touch behavior in a real signed-out desktop/mobile browser. Those visual checks remain unverified.
+
+The official challenge page returned HTTP 503. NASA PSI and the supporting NTRS report were accessible. The app does not claim it retrieved inaccessible challenge details.
+
+## Manual acceptance before judging
+
+Use a real signed-out browser on desktop and a 390 × 844 mobile viewport:
+1. Open the live URL, confirm no gate, click Run the lunar habitat demo.
+2. Read BASS-II's rank explanation, source link and lunar transfer warning.
+3. Choose Airflow evidence → Documented 20 cm/s. Observe BASS-II removed and Saffire II first.
+4. Restore Any airflow; compare BASS-II and Saffire II; scroll the table and open NASA sources.
+5. Choose Experiment gravity → Lunar surface. Observe coverage gap; reset.
+6. Ask which material is safest. Observe unsupported/evidence-gap response; ask about oxygen/airflow and open its citations.
+7. Keyboard-tab through filters, comparison controls, scrollable table and source links. Confirm mobile readability, touch controls and source downloads.

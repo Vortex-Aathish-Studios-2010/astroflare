@@ -41,13 +41,30 @@ css='''
 .research-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.research-grid h3{margin:8px 0}.research-grid p{margin-top:10px}.match-note{font-size:13px;color:var(--accent)}.compare-label{display:block;border-top:1px solid var(--line);margin-top:16px;padding-top:12px;cursor:pointer}.measurement-row{display:grid;grid-template-columns:200px 1fr 35px;align-items:center;gap:12px;margin:18px 0}.bar-track{background:#eef1f5;height:24px}.measurement-bar{background:#2b5d8a;height:100%}.axis{margin-left:212px;white-space:pre;font:11px var(--mono);color:var(--muted);overflow:hidden}.measurement-chart{padding:8px 0}.research-grid .card{margin-bottom:0}th[scope=row]{min-width:120px}.tablewrap td{min-width:180px}.btn{min-height:40px}footer details{margin-top:16px}
 @media(max-width:900px){.research-grid{grid-template-columns:1fr}.measurement-row{grid-template-columns:145px 1fr 30px;gap:8px}.axis{margin-left:153px}.brand-sub{max-width:230px}.top .row{width:100%}}@media(max-width:400px){.measurement-row{grid-template-columns:110px 1fr 28px;font-size:12px}.axis{margin-left:118px}.top .btn{flex:1 1 auto}}'''
 h=h.replace('</style>',css+'\n</style>',1)
+# Research-first upgrade; preserve the same project, legacy assessment and relay.
+h=h.replace('<title>Astroflare | Assessment & NASA combustion research</title>','<title>AstroFlare | Flame in Freefall evidence explorer</title>')
+h=h.replace('Guided hazard screening for mission leads','Flame in Freefall · NASA PSI evidence')
+h=h.replace('<button class="btn small-btn" id="demoBtn" type="button">Open hypothetical demo</button>', '<button class="btn small-btn" id="homeBtn" type="button">Home</button><button class="btn small-btn" id="demoBtn" type="button">Lunar habitat demo</button><button class="btn small-btn" id="missionBtn" type="button">Mission screening</button>')
+h=h.replace('$("demoBtn").addEventListener("click", openDemo);','$("demoBtn").addEventListener("click", openLunarDemo);$("homeBtn").addEventListener("click",()=>goTo("home"));$("missionBtn").addEventListener("click",()=>goTo("mission"));')
+h=h.replace('research: renderResearch }','research: renderResearch, home: renderHome }')
+h=h.replace('S.stage = stage; S.reached[stage] = true;', 'S.stage = stage; document.body.classList.toggle("research-active", stage === "research" || stage === "home"); S.reached[stage] = true;')
+h=h.replace('st.querySelector("h2")','st.querySelector("h1,h2")')
+h=h.replace('bindControls(); renderMethod(); goTo("mission");','bindControls(); renderMethod(); goTo(location.hash === "#lunar-demo" ? "research" : "home");')
+h=h.replace('class: "tablewrap"', 'class: "tablewrap", tabindex: "0", role: "region", "aria-label": "Scrollable comparison or data table"')
+h=h.replace('Interface copied from', 'Screening interface adapted from')
+h=h.replace('</style>',(p/'public/explorer.css').read_text()+'\n</style>',1)
+
 # Everything needed for the immediate demo and research is local, including bootstrap schema.
 bootstrap=json.loads((p/'sources/schema.json').read_text());demo=json.loads((p/'demo.json').read_text())
-payload='const BOOTSTRAP='+json.dumps(bootstrap)+';\nconst DEMO='+json.dumps(demo)+';\n'+(p/'public/research.js').read_text()
+dataset=json.loads((p/'public/dataset.json').read_text())
+payload='const PSI_DATA='+json.dumps(dataset)+';\n'+'const BOOTSTRAP='+json.dumps(bootstrap)+';\nconst DEMO='+json.dumps(demo)+';\n'+(p/'public/research.js').read_text()
 h=h.replace('<script>','<script>\n'+payload,1)
-h=h.replace('  // ---------------------------------------------------------------- start\n', (p/'public/enhancements.js').read_text()+'\n  // ---------------------------------------------------------------- start\n')
+h=h.replace('  // ---------------------------------------------------------------- start\n', (p/'public/enhancements.js').read_text()+'\n'+(p/'public/explorer.js').read_text()+'\n  // ---------------------------------------------------------------- start\n')
 (p/'public/index.html').write_text(h)
 assets={'/verification':{'body':(p/'VERIFICATION.md').read_text(),'type':'text/plain; charset=utf-8'},'/':{'body':h,'type':'text/html; charset=utf-8'},'/measurements.csv':{'body':(p/'public/measurements.csv').read_text(),'type':'text/csv; charset=utf-8'},'/documentation':{'body':(p/'README.md').read_text() if (p/'README.md').exists() else 'Documentation in preparation','type':'text/plain; charset=utf-8'}}
+assets['/dataset.json']={'body':(p/'public/dataset.json').read_text(),'type':'application/json; charset=utf-8'}
+for id in ['PSI-25','PSI-98','PSI-99']:
+    assets['/sources/'+id+'-table.csv']={'body':base64.b64encode((p/'sources'/(id+'-table.csv')).read_bytes()).decode(),'base64':True,'type':'text/csv; charset=utf-8'}
 bundle=io.BytesIO()
 with zipfile.ZipFile(bundle,'w',zipfile.ZIP_DEFLATED) as z:
     files=['build.py','worker.js','server.mjs','package.json','package-lock.json','README.md','VERIFICATION.md','render.yaml','demo.json','.gitignore']

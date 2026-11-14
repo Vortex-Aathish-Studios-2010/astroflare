@@ -1,21 +1,32 @@
-// Verified document metadata, not a comprehensive experiment database.
-const RESEARCH = [
- {id:'saffire12',name:'Saffire I & II · large-scale flame spread',year:'2017 report',facility:'Uncrewed Cygnus spacecraft; orbital microgravity',material:'SIBAL cotton/fiberglass fabric; additional silicone and PMMA samples',conditions:'Fabric comparison: 20 cm/s airflow; 21.7% initial O₂ for Saffire I, 22.1% for Saffire II (ISS readings). Sample widths differ.',measures:'Average flame-spread rate (mm/s); flame power estimates (W).',scope:'Large-scale material burning, flame spread and ventilation effects.',limits:'Different widths and initial oxygen fractions confound a direct size-effect comparison. These tests do not validate a spacecraft design.',source:'20170008805',file:'20170008805.pdf',locator:'Slides 20–21; Table I',tags:['material','flow','microgravity','flame']},
- {id:'etfe',name:'ETFE insulated wire · weak opposed flow',year:'2004 NTRS record / 2003 proceedings',facility:'JAMIC 10-second dropshaft and NASA KC-135 aircraft',material:'ETFE-insulated copper wire, AWG28; 0.32 mm core, 0.15 mm insulation thickness',conditions:'Duct flow controlled over 0–30 cm/s; varied oxygen concentration and N₂ or CO₂ dilution. Illustrated flame photographs use 35% O₂ with CO₂.',measures:'Flame-spread behavior and rate versus external flow; no digitized measurements included here.',scope:'Wire-insulation combustion under weak ventilation and different diluents.',limits:'Short microgravity time and thin, oxygen-enriched samples limit transfer to operational wiring systems. This is a NASA-hosted partner study, not an ISS flight experiment.',source:'20040053553',file:'20040053553.pdf',locator:'Proceedings pp. 177–181; Experimental section p. 178',tags:['wire','flow','microgravity','flame','oxygen']},
- {id:'saffire6',name:'Saffire VI · combustion products and fire growth',year:'2024 paper',facility:'Orbiting Cygnus spacecraft; final Saffire flight',material:'Cotton/fiberglass sheet, thick PMMA and other configurations; paper focuses on selected tests',conditions:'Reduced-pressure, oxygen-adjusted spacecraft atmosphere; conditions vary by sample (paper Table 1).',measures:'Gas concentrations, temperature and oxygen-consumption heat-release estimates.',scope:'Practical-scale fire growth and hazardous combustion products, including smoke/gas monitoring.',limits:'Preliminary, selected-test results; not a complete flight dataset. Conditions must be matched by sample before quantitative comparison.',source:'20240002981',file:'Saffire-ICES-2024-ICES-365-accepted final.pdf',locator:'ICES-2024-365, pp. 1–7; Table 1',tags:['smoke','material','microgravity','oxygen','flame']}
-];
-const TOPICS = {
- wire:{label:'electrical wiring',words:['wire','wires','wiring','electrical','etfe','insulation','arc']},
- flow:{label:'ventilation / flow',words:['flow','airflow','ventilation','velocity','vent','opposed','concurrent']},
- material:{label:'solid materials',words:['material','materials','fabric','cotton','fiberglass','pmma','polymer','solid']},
- microgravity:{label:'microgravity',words:['microgravity','micro','gravity','orbital','spacecraft','space']},
- flame:{label:'flame spread',words:['flame','flames','spread','spreading','combustion','burning','flammability']},
- oxygen:{label:'oxygen / atmosphere',words:['oxygen','o2','enriched','pressure','dilution','co2']},
- smoke:{label:'smoke / combustion products',words:['smoke','detection','detector','gas','gases','toxic','products','monoxide']}
-};
-function rankResearch(question) {
- const tokens=new Set(question.toLowerCase().match(/[a-z0-9]+/g)||[]);
- const topics=Object.keys(TOPICS).filter(k=>TOPICS[k].words.some(w=>tokens.has(w)));
- return RESEARCH.map((r,index)=>{const matched=topics.filter(k=>r.tags.includes(k));return {...r,matched:matched.map(k=>TOPICS[k].label),points:matched.length,order:index};}).sort((a,b)=>b.points-a.points||a.order-b.order);
+// Pure deterministic retrieval: no model calls and no fire-risk inputs.
+const LUNAR_QUESTION='Which NASA experiments can inform a review of solid-material flammability in a ventilated lunar habitat?';
+const TOPICS={solid:{label:'solid materials',words:['solid','solids','material','materials','fabric','cotton','fiberglass','pmma','silicone','fuel','fuels']},flame:{label:'flame spread / flammability',words:['flame','flames','spread','spreading','burn','burning','flammability','combustion']},flow:{label:'ventilation / airflow',words:['flow','airflow','ventilation','ventilated','vent','velocity','opposed','concurrent']},oxygen:{label:'oxygen / atmosphere',words:['oxygen','o2','atmosphere','enriched','concentration']},microgravity:{label:'microgravity',words:['microgravity','weightless','freefall','orbital']},smoke:{label:'combustion gases',words:['smoke','co','monoxide','gas','gases','products']}};
+function tokensFor(q){return new Set((q.toLowerCase().match(/[a-z0-9]+/g)||[]));}
+function topicsFor(q){const t=tokensFor(q);return Object.keys(TOPICS).filter(k=>TOPICS[k].words.some(w=>t.has(w)));}
+function rankResearch(question,filters={material:'any',gravity:'any',airflow:'any'},scenario={gravity:'lunar'}){
+ const topics=topicsFor(question),tokens=tokensFor(question);const material=['pmma','fabric','silicone'].find(x=>tokens.has(x))||(tokens.has('cotton')||tokens.has('fiberglass')?'fabric':null);
+ return PSI_DATA.records.filter(r=>
+  (filters.material==='any'||filters.material==='solid'||r.materials.includes(filters.material))&&
+  (filters.gravity==='any'||r.gravity===filters.gravity)&&
+  (filters.airflow==='any'||filters.airflow==='forced'&&r.flowMode==='forced'||filters.airflow==='variable'&&r.coverage==='variable'||filters.airflow==='20'&&r.flowValues.includes(20)||r.directions.includes(filters.airflow))
+ ).map(r=>{const matched=topics.filter(k=>r.tags.includes(k));const components=matched.map(k=>({label:TOPICS[k].label,points:2}));
+  if(topics.includes('flow')&&r.coverage==='variable')components.push({label:'variable-flow investigation coverage',points:1});
+  if(material&&r.materials.includes(material))components.push({label:'specific material '+material,points:2});
+  if(material===null&&filters.material!=='any'&&filters.material!=='solid'&&r.materials.includes(filters.material))components.push({label:'selected material '+filters.material,points:2});
+  if(scenario.gravity===r.gravity)components.push({label:'scenario gravity match',points:1});
+  const mismatch=scenario.gravity!=='any'&&r.gravity!==scenario.gravity;
+  return {...r,matched:matched.map(k=>TOPICS[k].label),points:components.reduce((a,x)=>a+x.points,0),components,gravityMismatch:mismatch};
+ }).sort((a,b)=>b.points-a.points||a.order-b.order);
 }
-if(typeof module!=='undefined')module.exports={RESEARCH,TOPICS,rankResearch};
+function evidenceAnswer(question,records){
+ if(!records.length)return {gap:true,text:'Evidence gap: no investigations match the current filters. Reset a filter to retrieve evidence.',citations:[]};
+ if(/\b(safe|safest|probability|certify|certification|threshold|prediction|predict|battery|lithium|human|survive)\b/i.test(question))return {gap:true,text:'Evidence gap: these records cannot establish a safe operating limit, predict a fire, certify a lunar habitat, or answer battery/health questions. The ranking is research relevance only.',citations:records.slice(0,2).map(r=>r.id)};
+ if(/\d/.test(question)&&/\b(at|for|when|predict|estimate|rate)\b/i.test(question)||/lunar|moon/i.test(question)&&/\b(rate|speed|velocity|threshold)\b/i.test(question))return {gap:true,text:'Evidence gap: no numeric prediction is supported for the requested conditions. No lunar-surface rate is measured in these records. Inspect each original test row; do not interpolate or transfer a microgravity rate to a lunar habitat.',citations:records.slice(0,2).map(r=>r.id)};
+ const topics=topicsFor(question);
+ if(!topics.length)return {gap:true,text:'Evidence gap: this question has no supported topic in the curated records. Try material, airflow, oxygen, microgravity or combustion gases. No answer has been inferred.',citations:[]};
+ const matched=records.filter(r=>topics.some(t=>r.tags.includes(t)));
+ if(!matched.length)return {gap:true,text:'Evidence gap: no currently filtered record covers the recognized topic.',citations:[]};
+ let text=matched.slice(0,2).map(r=>`[${r.id}] ${topics.includes('flow')?r.airflow+' ':''}${topics.includes('oxygen')?r.oxygen+' ':''}${topics.includes('smoke')||topics.includes('flame')?r.outcome+' ':''}${r.interpretation}`).join('\n\n');
+ if(/lunar|moon|gravity/i.test(question))text+='\n\nLunar applicability: these are microgravity investigations, not lunar surface tests. Buoyancy, material geometry and ventilation must be evaluated at lunar gravity before transferring a result.';
+ return {gap:false,text,citations:matched.slice(0,2).map(r=>r.id)};
+}
