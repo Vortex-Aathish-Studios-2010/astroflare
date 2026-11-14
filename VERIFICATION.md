@@ -2,6 +2,22 @@
 
 ## Current midnight/control-audit release
 
+**Current result:** 34/34 automated tests passed. Anonymous production HTTP and DOM acceptance passed on application commit `eb4c14aaae8cefdc6a6971bd8cd6463070090e06`; homepage delivery was 872 ms in that run. Full machine-readable conditions/results: `/release-checks.json`. This timing is HTTP delivery, not a human or rendered-browser stopwatch.
+
+| Current acceptance area | Status | Conditions |
+| --- | --- | --- |
+| Public homepage, docs and downloads | Pass | Anonymous HTTP 200; no account, cookies or bypass token; source ZIP exactly matches tested local archive and rebuilds the HTML/Worker. |
+| Lunar demo, filters, comparison, research brief | Pass | Fresh production DOM sessions at configured widths 1280 and 390; all 21 filter cases, comparison limits/removal, Silicone/Opposed run gap, reset/empty recovery, copied payload and denied-clipboard fallback. |
+| Questions, aliases, evidence gaps and rapid submissions | Pass | Published HTML; exact/alias Saffire II, separate Saffire I PSI/NTRS citations, silicone and lunar gaps, blank/unrelated queries, mouse/Enter/examples and latest-answer assertions. |
+| Custom editor, disclosures, drafts and storage | Pass | Published DOM at 1280, 768 and 390; unsent drafts preserved, explicit remove controls, focus/state retention, save/load, corrupt and denied storage, reset confirmation. |
+| NASA original sources | Pass | All three PSI records, metadata endpoints, original CSVs and pinned hashes; NTRS record/PDF returned 200. Units/run fields checked against pinned raw sources. |
+| Mission validation, async cancellation, baseline/tools, reports | Pass with fixtures | Explicit service fixtures exercise real UI actions and export payloads; no substituted production results. All 34 local tests passed. |
+| Fresh production mission/report | Blocked | Published `/api/guide/flow` returned 429; separate original assessment service must restore availability. No fresh report success claimed. |
+| Motion and accessibility logic | Pass programmatically | Focus, native semantic controls, Enter submission, reduced-motion suppression, absent/throwing animation APIs and declared color contrast. |
+| Rendered desktop/tablet/mobile and native-device checks | Blocked | No callable browser-control tool; actual layout/overflow, native clipboard/print, touch and OS reduced-motion appearance not verified. |
+| Official challenge brief | Blocked | External URL returned HTTP 503; NASA source links passed independently. |
+| GitHub creation/upload | Blocked | Integration rejects repository creation; owner must create the empty private repository and grant access. Existing Sites source is committed. |
+
 The complete before-change control inventory is `/control-audit`. This release adds regression coverage for custom-question opening/validation/draft retention, comparison removal and disclosure state, mission draft persistence, corrupt/denied storage, cancellation of obsolete interpretation/flow/assessment/report/investigation responses, unknown/unit/basis controls, profile failure retry, Back network failure, every investigation action, source-verification recovery, pinned baseline comparison, and opening Report from the stepper. Motion-API absence/failure and reduced-motion preferences must leave content visible and controls functional.
 
 Local source audit preserves all eight NASA PSI rows plus the separately cited Saffire I companion results. No measurement or relevance formula changes in this release. Both current report formats retain the corrected fault current integral (I²t) terminology and exact numeric values.

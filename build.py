@@ -85,7 +85,7 @@ payload='const AI_ENABLED=false;\n'+(p/'public/terminology.js').read_text()+'\nc
 h=h.replace('<script>','<script>\n'+payload,1)
 h=h.replace('  // ---------------------------------------------------------------- start\n', (p/'public/enhancements.js').read_text()+'\n'+(p/'public/explorer.js').read_text()+'\n'+(p/'public/motion.js').read_text()+'\n'+(p/'public/plate.js').read_text()+'\n'+(p/'public/reliability.js').read_text()+'\n'+(p/'public/experience.js').read_text()+'\n  // ---------------------------------------------------------------- start\n')
 (p/'public/index.html').write_text(h)
-assets={'/control-audit':{'body':(p/'CONTROL_AUDIT.md').read_text(),'type':'text/plain; charset=utf-8'},'/verification':{'body':(p/'VERIFICATION.md').read_text(),'type':'text/plain; charset=utf-8'},'/':{'body':h,'type':'text/html; charset=utf-8'},'/measurements.csv':{'body':(p/'public/measurements.csv').read_text(),'type':'text/csv; charset=utf-8'},'/documentation':{'body':(p/'README.md').read_text() if (p/'README.md').exists() else 'Documentation in preparation','type':'text/plain; charset=utf-8'}}
+assets={'/release-checks.json':{'body':(p/'RELEASE_CHECKS.json').read_text(),'type':'application/json; charset=utf-8'},'/control-audit':{'body':(p/'CONTROL_AUDIT.md').read_text(),'type':'text/plain; charset=utf-8'},'/verification':{'body':(p/'VERIFICATION.md').read_text(),'type':'text/plain; charset=utf-8'},'/':{'body':h,'type':'text/html; charset=utf-8'},'/measurements.csv':{'body':(p/'public/measurements.csv').read_text(),'type':'text/csv; charset=utf-8'},'/documentation':{'body':(p/'README.md').read_text() if (p/'README.md').exists() else 'Documentation in preparation','type':'text/plain; charset=utf-8'}}
 assets['/dataset.json']={'body':(p/'public/dataset.json').read_text(),'type':'application/json; charset=utf-8'}
 for id in ['PSI-25','PSI-98','PSI-99']:
     assets['/sources/'+id+'-table.csv']={'body':base64.b64encode((p/'sources'/(id+'-table.csv')).read_bytes()).decode(),'base64':True,'type':'text/csv; charset=utf-8'}
@@ -93,7 +93,7 @@ for font in (p/'public').glob('*.ttf'):
     assets['/'+font.name]={'body':base64.b64encode(font.read_bytes()).decode(),'base64':True,'type':'font/ttf'}
 bundle=io.BytesIO()
 with zipfile.ZipFile(bundle,'w',zipfile.ZIP_DEFLATED) as z:
-    files=['build.py','worker.js','server.mjs','package.json','package-lock.json','README.md','VERIFICATION.md','render.yaml','CONTROL_AUDIT.md','.github/workflows/ci.yml','demo.json','.gitignore']
+    files=['build.py','worker.js','server.mjs','package.json','package-lock.json','README.md','VERIFICATION.md','render.yaml','CONTROL_AUDIT.md','RELEASE_CHECKS.json','.github/workflows/ci.yml','demo.json','.gitignore']
     files += [str(f.relative_to(p)) for d in ['sources','test','public'] for f in (p/d).glob('*') if f.is_file() and f.name not in ['source.zip','index.html']]
     for f in sorted(files):
         info=zipfile.ZipInfo(f,date_time=(2026,11,14,0,0,0)); info.compress_type=zipfile.ZIP_DEFLATED;z.writestr(info,(p/f).read_bytes())

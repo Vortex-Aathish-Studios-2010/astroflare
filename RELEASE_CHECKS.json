@@ -1,0 +1,267 @@
+{
+  "application_commit": "eb4c14aaae8cefdc6a6971bd8cd6463070090e06",
+  "local_tests": {
+    "passed": 34,
+    "failed": 0
+  },
+  "source_audit": "PASS: eight raw PSI rows and separate NTRS companion results",
+  "published": {
+    "url": "https://astroflare-research-2026.ajuponnu2009.chatgpt.site/",
+    "anonymousHTTP": true,
+    "deliveryMs": 872,
+    "sessions": [
+      {
+        "width": 1280,
+        "mode": "fresh unauthenticated JSDOM; not a rendering browser",
+        "demoClickToCitedTakeawayMs": 59,
+        "filterCases": 21,
+        "comparisonStates": "0, 1, 2, rejected third, selected study filtered out",
+        "questionCases": 7,
+        "rapidSubmissionBatches": 12,
+        "blankCancelsPending": true,
+        "briefCopyAndDeniedFallback": true,
+        "backForwardAndRefreshState": true,
+        "uncaughtDomErrors": 0
+      },
+      {
+        "width": 390,
+        "mode": "fresh unauthenticated JSDOM; not a rendering browser",
+        "demoClickToCitedTakeawayMs": 9,
+        "filterCases": 21,
+        "comparisonStates": "0, 1, 2, rejected third, selected study filtered out",
+        "questionCases": 7,
+        "rapidSubmissionBatches": 12,
+        "blankCancelsPending": true,
+        "briefCopyAndDeniedFallback": true,
+        "backForwardAndRefreshState": true,
+        "uncaughtDomErrors": 0
+      }
+    ],
+    "journal": [
+      {
+        "domWidth": 1280,
+        "plateBothMaterials": true,
+        "plateFocusAndReducedMotion": true,
+        "studyVsRunGapAndBrief": true,
+        "dynamicEvidenceChoice": true,
+        "separatelyCitedSaffireI": true,
+        "saffireII": true,
+        "lunarGap": true,
+        "uncaughtDomErrors": 0
+      },
+      {
+        "domWidth": 390,
+        "plateBothMaterials": true,
+        "plateFocusAndReducedMotion": true,
+        "studyVsRunGapAndBrief": true,
+        "dynamicEvidenceChoice": true,
+        "separatelyCitedSaffireI": true,
+        "saffireII": true,
+        "lunarGap": true,
+        "uncaughtDomErrors": 0
+      }
+    ],
+    "reliability": [
+      {
+        "width": 1280,
+        "mode": "DOM logic, not a rendered browser",
+        "customQuestionAndValidation": true,
+        "questionDraftSurvivesFilters": true,
+        "comparisonRemoveAndDisclosureState": true,
+        "missionDraftSaveAndLoad": true,
+        "storageDeniedAndCorruption": true,
+        "hazardValidationAndReset": true,
+        "uncaughtDomErrors": 0
+      },
+      {
+        "width": 768,
+        "mode": "DOM logic, not a rendered browser",
+        "customQuestionAndValidation": true,
+        "questionDraftSurvivesFilters": true,
+        "comparisonRemoveAndDisclosureState": true,
+        "missionDraftSaveAndLoad": true,
+        "storageDeniedAndCorruption": true,
+        "hazardValidationAndReset": true,
+        "uncaughtDomErrors": 0
+      },
+      {
+        "width": 390,
+        "mode": "DOM logic, not a rendered browser",
+        "customQuestionAndValidation": true,
+        "questionDraftSurvivesFilters": true,
+        "comparisonRemoveAndDisclosureState": true,
+        "missionDraftSaveAndLoad": true,
+        "storageDeniedAndCorruption": true,
+        "hazardValidationAndReset": true,
+        "uncaughtDomErrors": 0
+      }
+    ],
+    "links": [
+      {
+        "id": "PSI-25",
+        "kind": "NASA PSI record",
+        "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-25",
+        "status": 200
+      },
+      {
+        "id": "PSI-25",
+        "kind": "NASA metadata",
+        "url": "https://psi.nasa.gov/geode-py/ws/repo/investigations/PSI-25",
+        "status": 200
+      },
+      {
+        "id": "PSI-25",
+        "kind": "original table",
+        "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-25/download?file=PSI-25_Experimental+table_BASS-II.csv&version=1",
+        "status": 200,
+        "sha256Matches": true
+      },
+      {
+        "id": "PSI-25",
+        "kind": "pinned table",
+        "url": "https://astroflare-research-2026.ajuponnu2009.chatgpt.site/sources/PSI-25-table.csv",
+        "status": 200,
+        "sha256Matches": true
+      },
+      {
+        "id": "PSI-99",
+        "kind": "NASA PSI record",
+        "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-99",
+        "status": 200
+      },
+      {
+        "id": "PSI-99",
+        "kind": "NASA metadata",
+        "url": "https://psi.nasa.gov/geode-py/ws/repo/investigations/PSI-99",
+        "status": 200
+      },
+      {
+        "id": "PSI-99",
+        "kind": "original table",
+        "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-99/download?file=PSI-99_Experimental+table_SAFFIRE-2.csv&version=1",
+        "status": 200,
+        "sha256Matches": true
+      },
+      {
+        "id": "PSI-99",
+        "kind": "pinned table",
+        "url": "https://astroflare-research-2026.ajuponnu2009.chatgpt.site/sources/PSI-99-table.csv",
+        "status": 200,
+        "sha256Matches": true
+      },
+      {
+        "id": "PSI-98",
+        "kind": "NASA PSI record",
+        "url": "https://psi.nasa.gov/physci/repo/data/investigations/PSI-98",
+        "status": 200
+      },
+      {
+        "id": "PSI-98",
+        "kind": "NASA metadata",
+        "url": "https://psi.nasa.gov/geode-py/ws/repo/investigations/PSI-98",
+        "status": 200
+      },
+      {
+        "id": "PSI-98",
+        "kind": "original table",
+        "url": "https://psi.nasa.gov/geode-py/ws/studies/PSI-98/download?file=PSI-98_Experimental+table_SAFFIRE-1.csv&version=1",
+        "status": 200,
+        "sha256Matches": true
+      },
+      {
+        "id": "PSI-98",
+        "kind": "pinned table",
+        "url": "https://astroflare-research-2026.ajuponnu2009.chatgpt.site/sources/PSI-98-table.csv",
+        "status": 200,
+        "sha256Matches": true
+      }
+    ],
+    "downloads": [
+      {
+        "path": "/documentation",
+        "status": 200,
+        "bytes": 32165
+      },
+      {
+        "path": "/control-audit",
+        "status": 200,
+        "bytes": 13263
+      },
+      {
+        "path": "/verification",
+        "status": 200,
+        "bytes": 14015
+      },
+      {
+        "path": "/source.zip",
+        "status": 200,
+        "bytes": 403378
+      },
+      {
+        "path": "/dataset.json",
+        "status": 200,
+        "bytes": 20153
+      },
+      {
+        "path": "/measurements.csv",
+        "status": 200,
+        "bytes": 586
+      },
+      {
+        "path": "/healthz",
+        "status": 200,
+        "bytes": 93
+      },
+      {
+        "path": "/InstrumentSans-400.ttf",
+        "status": 200,
+        "bytes": 48616
+      },
+      {
+        "path": "/InstrumentSans-600.ttf",
+        "status": 200,
+        "bytes": 48732
+      },
+      {
+        "path": "/InstrumentSans-700.ttf",
+        "status": 200,
+        "bytes": 48552
+      },
+      {
+        "path": "/InstrumentSerif-400.ttf",
+        "status": 200,
+        "bytes": 62284
+      }
+    ],
+    "additionalSources": [
+      {
+        "url": "https://ntrs.nasa.gov/citations/20170008805",
+        "status": 200
+      },
+      {
+        "url": "https://ntrs.nasa.gov/api/citations/20170008805/downloads/20170008805.pdf",
+        "status": 200
+      },
+      {
+        "url": "https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/",
+        "status": 503
+      }
+    ],
+    "aiActive": false,
+    "visualQA": "BLOCKED: no callable browser-control tool; DOM widths are not rendered viewports",
+    "nativeClipboardAndOSPrint": "BLOCKED: payloads and rejection fallback tested through DOM adapters, not native UI"
+  },
+  "live_mission": {
+    "status": "Blocked",
+    "route": "/api/guide/flow",
+    "http_status": 429,
+    "reason": "Original remote assessment service rate limit; input retention and recovery passed with explicit fixtures."
+  },
+  "github": {
+    "status": "Blocked",
+    "owner": "Vortex-Aathish-Studios-2010",
+    "requested_repository": "astroflare",
+    "error": "Resource not accessible by integration (createRepository)",
+    "owner_action": "Create an empty private repository, grant the connection access, and provide its URL."
+  }
+}
