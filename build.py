@@ -59,7 +59,7 @@ bootstrap=json.loads((p/'sources/schema.json').read_text());demo=json.loads((p/'
 dataset=json.loads((p/'public/dataset.json').read_text())
 payload='const PSI_DATA='+json.dumps(dataset)+';\n'+'const BOOTSTRAP='+json.dumps(bootstrap)+';\nconst DEMO='+json.dumps(demo)+';\n'+(p/'public/research.js').read_text()
 h=h.replace('<script>','<script>\n'+payload,1)
-h=h.replace('  // ---------------------------------------------------------------- start\n', (p/'public/enhancements.js').read_text()+'\n'+(p/'public/explorer.js').read_text()+'\n  // ---------------------------------------------------------------- start\n')
+h=h.replace('  // ---------------------------------------------------------------- start\n', (p/'public/enhancements.js').read_text()+'\n'+(p/'public/explorer.js').read_text()+'\n'+(p/'public/motion.js').read_text()+'\n  // ---------------------------------------------------------------- start\n')
 (p/'public/index.html').write_text(h)
 assets={'/verification':{'body':(p/'VERIFICATION.md').read_text(),'type':'text/plain; charset=utf-8'},'/':{'body':h,'type':'text/html; charset=utf-8'},'/measurements.csv':{'body':(p/'public/measurements.csv').read_text(),'type':'text/csv; charset=utf-8'},'/documentation':{'body':(p/'README.md').read_text() if (p/'README.md').exists() else 'Documentation in preparation','type':'text/plain; charset=utf-8'}}
 assets['/dataset.json']={'body':(p/'public/dataset.json').read_text(),'type':'application/json; charset=utf-8'}

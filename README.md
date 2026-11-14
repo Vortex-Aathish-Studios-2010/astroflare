@@ -106,3 +106,25 @@ The existing Sites project is deployed in place. A Render deployment is optional
 4. Deploy. Verify homepage → lunar demo → 20 cm/s filter → comparison → NASA source in a signed-out window. For later revisions, push main and use **Manual Deploy → Deploy latest commit**, or enable auto-deploy on main. Rollback: Events → prior successful deployment → Rollback.
 
 No changes were made to the separate original Render service. Its original repository/configured branch remain unavailable. Numerical screening still calls that original engine through a fixed-route relay. Cookies/authorization are not forwarded; requests have size/method/route checks and a timeout. Fresh screening data goes to the original service; browser saves remain local. Research does not send its question to that engine.
+
+## Research-decision and instrument-layout upgrade
+
+The lunar demo now ends in **What should we test next?**, beside the top result on desktop and directly after it in the single-column mobile layout. Default evidence is Saffire II row 2-5: 2.1 mm/s, SIBAL fabric, microgravity, concurrent 20 cm/s flow and approximately 22.1% O₂ (derived per source Note 1). The panel separates this observation from the missing lunar/habitat validation and an **AstroFlare proposed analysis**, not a NASA recommendation or a completed experiment. The proposed independent variable is gravity; material, airflow, atmosphere, geometry and ignition must be held fixed, and missing pressure/temperature plus the thickness ambiguity must be resolved before a credible protocol. The copy action includes these qualifications and the original NASA citations. If clipboard access is denied, a selected read-only brief appears for manual copying.
+
+Material filtering now projects material-matched rows into cards and comparisons. Silicone uses PSI-99 row 2-1 (approximately 21.5% O₂, 20 cm/s concurrent flow), whose burn outcome is qualitatively “Insignificant”. There is no selected numeric silicone flame-spread rate, and no zero is invented. PMMA coverage without a matching selected run is labelled missing, rather than borrowing SIBAL measurements. An empty filter result produces an evidence-gap decision panel with no invented baseline.
+
+All evidence submission paths—mouse, Enter and three example buttons—call the same latest-request-wins coordinator. Submitting immediately clears the previous answer, shows status and the latest submitted question, and snapshots the current retrieved records. Late responses from older/cancelled requests are ignored. Filter/scenario changes invalidate pending answers. Input drafts are separate from submitted questions, and answer updates replace only the answer panel while preserving focus, selection and scroll position.
+
+The visual system uses graphite surfaces, warm-white text, ember actions and cool-blue source links. The homepage has a split headline/abstract-flame hero, explicitly labelled illustrative rather than experimental imagery. Ranked evidence and the research decision lead the workspace; comparison follows immediately. Detailed run notes and interpretation/limitations expand separately. Brief entrance, ranked-order movement and answer-arrival animations never hide results; reduced-motion settings suppress both CSS and JavaScript motion. Responsive rules stack the hero and decision panel and retain focusable horizontal comparison scrolling. Real-browser visual verification remains an explicit environment limitation.
+
+### AI activation status
+
+AI is **not active**. The deployed project has no runtime AI credentials, and no supported research inference endpoint is connected. The available OpenAI Developers plugin was discovered but is not installed. The next owner action is to install OpenAI Developers and complete its approved API-key setup, then configure a server-side secret through Sites. The Sites identity/secrets guidance requires using that plugin's `openai-platform-api-key` skill and its approval for `OPENAI_API_KEY`; no credential was invented, copied from another service, exposed in the browser or configured without authorization. The existing screening AI remains scoped to the original assessment engine and cannot be represented as research AI. The deterministic cited lookup remains fully usable and is labelled accurately.
+
+### Updated 30-second judging recording
+
+1. 0–5 s: open the public URL and click **Run the lunar habitat demo**.
+2. 5–12 s: show **What NASA measured**, the lunar/habitat evidence gap and **Next research step** alongside the top-ranked evidence.
+3. 12–19 s: choose **Material / fuel → Silicone**. Show the row 2-1 qualitative result and the changed research takeaway, rather than 2.1 mm/s.
+4. 19–25 s: click **Copy research brief + citations**, then **View comparison** to show the material-matched outcome and NASA source together.
+5. 25–30 s: open **Original NASA table · PSI-99 · row 2-1** from the decision panel (or its original table link in the comparison).
