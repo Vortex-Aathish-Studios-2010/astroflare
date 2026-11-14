@@ -1,7 +1,7 @@
 /* AstroFlare: plain, typographic, light. Loaded last; it resets the earlier themes.
    White page, near-black text, hairline rules, a serif for titles and a small tracked sans for labels.
    No cards, tints, rounded corners, shadows, badges or decorative art. */
-:root{color-scheme:light;--blue:#d9ebf7;--blue-soft:#eef6fb;--blue-deep:#2b6f9e;--green:#d8f0dc;--green-soft:#eef8f0;--green-deep:#2f7a47;--gutter:clamp(20px,5vw,64px);--measure:min(1180px,100% - 2*var(--gutter));--ink:#111;--muted:#555;--faint:#767676;--bg:#fff;--card:#fff;--soft:#f6f5f2;--line:#dcdad5;--rule:#111;
+:root{color-scheme:light;--blue:#b9ddf3;--blue-soft:#eef6fb;--blue-deep:#2b6f9e;--green:#b9e6c5;--green-soft:#eef8f0;--green-deep:#2f7a47;--gutter:clamp(20px,5vw,64px);--measure:min(1180px,100% - 2*var(--gutter));--ink:#111;--muted:#555;--faint:#767676;--bg:#fff;--card:#fff;--soft:#f6f5f2;--line:#dcdad5;--rule:#111;
  --nav:#fff;--accent:#111;--accent-soft:transparent;--electric:#111;--ember:#2b6f9e;
  --caution:#111;--caution-bg:transparent;--caution-line:#111;--ok:#111;--ok-bg:transparent;--bad:#111;--bad-bg:transparent;
  --serif:'Instrument Serif',Georgia,'Times New Roman',serif;--sans:'Instrument Sans',Inter,system-ui,-apple-system,'Segoe UI',sans-serif}
@@ -154,3 +154,34 @@ footer.wrap p{max-width:78ch}
 @media (prefers-contrast:more){:root{--line:#767676}.notice,#ai-explain-answer{border-left-width:4px!important}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 th,#comparison th,th[scope=row]{color:#1d2a33!important;background:var(--blue-soft)!important;opacity:1!important}
+
+/* Colour is an accent, never a surface: baby blue and baby green appear as small marks, rules and underlines only. */
+.research-hero{background:none!important;padding:clamp(4px,1.5vw,16px) 0 0!important;margin-bottom:clamp(48px,8vw,88px)}
+.research-hero::before{content:'';display:block;width:64px;height:10px;background:var(--blue);margin-bottom:clamp(22px,3.4vw,40px)}
+.research-hero .btn:not(.primary){background:transparent}
+.hero-question{border-left:4px solid var(--green);padding-left:18px;color:var(--muted)}
+
+.notice,.notice.warn,.notice.bad,.notice.ok,.scope,#stage .notice{background:none!important;padding:2px 0 2px 18px!important}
+.notice,.notice.warn,.notice.bad,#stage .notice{border-left:4px solid var(--blue)!important}
+.notice.ok{border-left:4px solid var(--green)!important}
+
+.decision-panel,#research-decision{background:none!important;border-top:4px solid var(--green)!important;padding:28px 0 0!important}
+#ai-explain-answer{background:none!important;border-left:4px solid var(--green)!important;padding:4px 0 4px 18px!important}
+
+th,#comparison th,th[scope=row]{background:none!important;color:var(--ink)!important;border-bottom:3px solid var(--blue)!important}
+details>summary:hover{background:none;color:var(--blue-deep)}
+.compare-label:has(input:checked){background:none}
+.compare-label:has(input:checked)::after{content:'';width:28px;height:4px;background:var(--green);margin-left:auto}
+.bar-track{background:none;border-bottom:1px solid var(--line)}
+.measurement-bar{background:var(--blue);box-shadow:inset 0 -3px 0 var(--blue-deep)!important}
+
+/* In-text links get a marker-style baby-blue underline; the current menu item and hovers get the same mark */
+a{text-decoration-color:var(--blue);text-decoration-thickness:3px;text-underline-offset:2px}
+a:hover{color:var(--ink);text-decoration-color:var(--green)}
+#homeBtn[aria-current=page],#demoBtn[aria-current=page],#missionBtn[aria-current=page],#researchBtn[aria-current=page]{border-bottom:3px solid var(--blue)!important}
+#homeBtn:hover,#demoBtn:hover,#missionBtn:hover,#researchBtn:hover{border-bottom:3px solid var(--green)!important}
+.btn.primary:hover{background:var(--ink);color:#fff;box-shadow:inset 0 -4px 0 var(--green)!important}
+.btn:not(.primary):hover{background:transparent;color:var(--ink);box-shadow:inset 0 -4px 0 var(--blue)!important}
+.stepper li button[aria-current=step]{border-bottom:3px solid var(--blue)}
+.rank-strip li:first-child strong{background:none;box-shadow:inset 0 -.45em 0 var(--blue);padding:0}
+@media (hover:none){.btn.primary:hover,.btn:not(.primary):hover{box-shadow:none!important}}
