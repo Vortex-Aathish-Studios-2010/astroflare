@@ -37,3 +37,20 @@ test('the built interface turns the AI features on and offers the optional evide
  assert.match(html,/const AI_ENABLED=true;/);assert.doesNotMatch(html,/AI remains inactive/);
  assert.match(html,/\/api\/research\/ask/);assert.match(html,/Explain with AI \(optional\)/);
 });
+
+test('the home page carries a CSP whose script hash matches its one inline script, plus hardening headers',async()=>{
+ const res=await handleRequest(new Request('https://site.test/'));const html=await res.text();
+ const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];assert.equal(scripts.length,1);
+ const hash=(await import('node:crypto')).createHash('sha256').update(scripts[0][1],'utf8').digest('base64');
+ const csp=res.headers.get('Content-Security-Policy');
+ assert.ok(csp.includes("script-src 'self' 'sha256-"+hash+"'"),'CSP must allow exactly this inline script');
+ for(const rule of ["default-src 'self'","connect-src 'self'","frame-ancestors 'none'","base-uri 'none'","form-action 'none'","object-src 'none'"])assert.ok(csp.includes(rule),rule);
+ assert.doesNotMatch(csp,/script-src[^;]*unsafe-inline|unsafe-eval/);
+ assert.equal(res.headers.get('X-Frame-Options'),'DENY');assert.equal(res.headers.get('X-Content-Type-Options'),'nosniff');
+ assert.match(res.headers.get('Strict-Transport-Security'),/max-age=\d+/);assert.match(res.headers.get('Permissions-Policy'),/camera=\(\)/);
+});
+
+test('HSTS follows the connection, and non-page assets carry no page policy',async()=>{
+ const plain=await handleRequest(new Request('http://site.test/dataset.json'));assert.equal(plain.headers.get('Strict-Transport-Security'),null);assert.equal(plain.headers.get('Content-Security-Policy'),null);
+ const proxied=await handleRequest(new Request('http://site.test/dataset.json',{headers:{'x-forwarded-proto':'https'}}));assert.ok(proxied.headers.get('Strict-Transport-Security'));
+});

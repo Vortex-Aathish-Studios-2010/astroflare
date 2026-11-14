@@ -3,6 +3,12 @@ const ALLOWED = new Map([
  ['/api/schema','GET'],['/api/status','GET'],['/api/evidence','GET'],['/api/nasa/flares','GET'],
  ...['guide/interpret','guide/flow','guide/profile','assess','compare','investigate','report','ask','evidence/verify','research/ask'].map(p=>['/api/'+p,'POST'])
 ]);
+function assetHeaders(asset,request,url){
+ const h={'Content-Type':asset.type,'X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','Cache-Control':'no-cache'};
+ if(asset.csp){h['Content-Security-Policy']=asset.csp;h['X-Frame-Options']='DENY';h['Permissions-Policy']='camera=(), microphone=(), geolocation=(), payment=()';h['Cross-Origin-Opener-Policy']='same-origin';}
+ if(url.protocol==='https:'||request.headers.get('x-forwarded-proto')==='https')h['Strict-Transport-Security']='max-age=15552000';
+ return h;
+}
 export async function handleRequest(request, fetcher=fetch, upstreamBase=UPSTREAM) {
  const base=(upstreamBase||UPSTREAM).replace(/\/+$/,'');
  const url=new URL(request.url);
@@ -23,6 +29,6 @@ export async function handleRequest(request, fetcher=fetch, upstreamBase=UPSTREA
  if(request.method!=='GET'&&request.method!=='HEAD')return new Response('Method not allowed',{status:405});
  if(url.pathname==='/favicon.ico')return new Response(null,{status:204});
  const asset=ASSETS[url.pathname];if(!asset)return new Response('Not found',{status:404});
- return new Response(request.method==='HEAD'?null:(asset.base64?Uint8Array.from(atob(asset.body),c=>c.charCodeAt(0)):asset.body),{headers:{'Content-Type':asset.type,'X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','Cache-Control':'no-cache'}});
+ return new Response(request.method==='HEAD'?null:(asset.base64?Uint8Array.from(atob(asset.body),c=>c.charCodeAt(0)):asset.body),{headers:assetHeaders(asset,request,url)});
 }
 export default {fetch:(request,env)=>handleRequest(request,fetch,env&&env.ASTROFLARE_UPSTREAM)};

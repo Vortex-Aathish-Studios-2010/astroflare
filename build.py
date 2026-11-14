@@ -86,6 +86,11 @@ h=h.replace('<script>','<script>\n'+payload,1)
 h=h.replace('  // ---------------------------------------------------------------- start\n', (p/'public/enhancements.js').read_text()+'\n'+(p/'public/explorer.js').read_text()+'\n'+(p/'public/motion.js').read_text()+'\n'+(p/'public/plate.js').read_text()+'\n'+(p/'public/reliability.js').read_text()+'\n'+(p/'public/experience.js').read_text()+'\n  // ---------------------------------------------------------------- start\n')
 (p/'public/index.html').write_text(h)
 assets={'/release-checks.json':{'body':(p/'RELEASE_CHECKS.json').read_text(),'type':'application/json; charset=utf-8'},'/control-audit':{'body':(p/'CONTROL_AUDIT.md').read_text(),'type':'text/plain; charset=utf-8'},'/verification':{'body':(p/'VERIFICATION.md').read_text(),'type':'text/plain; charset=utf-8'},'/':{'body':h,'type':'text/html; charset=utf-8'},'/measurements.csv':{'body':(p/'public/measurements.csv').read_text(),'type':'text/csv; charset=utf-8'},'/documentation':{'body':(p/'README.md').read_text() if (p/'README.md').exists() else 'Documentation in preparation','type':'text/plain; charset=utf-8'}}
+scripts=re.findall(r'<script>(.*?)</script>',h,re.S)
+assert len(scripts)==1,'the page must have exactly one inline script for its CSP'
+import hashlib
+script_hash=base64.b64encode(hashlib.sha256(scripts[0].encode('utf-8')).digest()).decode()
+assets['/']['csp']="default-src 'self'; script-src 'self' 'sha256-"+script_hash+"'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'; object-src 'none'"
 assets['/dataset.json']={'body':(p/'public/dataset.json').read_text(),'type':'application/json; charset=utf-8'}
 for id in ['PSI-25','PSI-98','PSI-99']:
     assets['/sources/'+id+'-table.csv']={'body':base64.b64encode((p/'sources'/(id+'-table.csv')).read_bytes()).decode(),'base64':True,'type':'text/csv; charset=utf-8'}
