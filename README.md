@@ -72,7 +72,7 @@ The comparison supports two investigations, with source links and separate rows 
 
 **There is no generative research AI integration configured.** The existing remote `/api/ask` endpoint only accepts its own mission-assessment context; it cannot ingest the curated PSI evidence. Reusing it to explain these records would misrepresent its grounding.
 
-The working alternative resolves a named investigation and requested measurement before relevance ranking. Saffire II / Saffire 2 / PSI-99 map only to PSI-99; Saffire I / Saffire 1 / PSI-98 map only to PSI-98. Named lookups use the curated catalogue independently of dashboard filters; general questions use filtered records. Flame-spread rate, burn time, airflow, oxygen and CO are separate quantities. The direct answer is the first line, followed by conditions, original table link, filename and row ID. Missing selected-table measurements and direct lunar-gravity measurements are explicit gaps. Two clickable examples demonstrate a success and a lunar evidence gap. No model is active. Unsupported questions, safety certification, predictions, battery/health questions and unmeasured numeric/lunar rates return an evidence-gap message. It remains functional when the AI/status API fails. Ranking never depends on a model. The secondary mission workflow retains its optional original AI integration as before.
+The working alternative resolves a named investigation and requested measurement before relevance ranking. Saffire II / Saffire 2 / PSI-99 map only to PSI-99; Saffire I / Saffire 1 / PSI-98 map only to PSI-98. Named lookups use the curated catalogue independently of dashboard filters; general questions use filtered records. Flame-spread rate, burn time, airflow, oxygen and CO are separate quantities. The direct answer is the first line, followed by conditions, original table link, filename and row ID. Missing selected-table measurements and direct lunar-gravity measurements are explicit gaps. Three clickable examples demonstrate a successful Saffire II lookup, a lunar evidence gap and a Saffire I missing measurement. No model is active. Unsupported questions, safety certification, predictions, battery/health questions and unmeasured numeric/lunar rates return an evidence-gap message. It remains functional when the AI/status API fails. Ranking never depends on a model. The secondary mission workflow retains its optional original AI integration as before.
 
 ## What changed for the judging criteria
 
@@ -117,9 +117,9 @@ All evidence submission paths—mouse, Enter and three example buttons—call th
 
 The visual system uses graphite surfaces, warm-white text, ember actions and cool-blue source links. The homepage has a split headline/abstract-flame hero, explicitly labelled illustrative rather than experimental imagery. Ranked evidence and the research decision lead the workspace; comparison follows immediately. Detailed run notes and interpretation/limitations expand separately. Brief entrance, ranked-order movement and answer-arrival animations never hide results; reduced-motion settings suppress both CSS and JavaScript motion. Responsive rules stack the hero and decision panel and retain focusable horizontal comparison scrolling. Real-browser visual verification remains an explicit environment limitation.
 
-### AI activation status
+### AI status — deferred for judging
 
-AI is **not active**. The deployed project has no runtime AI credentials, and no supported research inference endpoint is connected. The available OpenAI Developers plugin was discovered but is not installed. The next owner action is to install OpenAI Developers and complete its approved API-key setup, then configure a server-side secret through Sites. The Sites identity/secrets guidance requires using that plugin's `openai-platform-api-key` skill and its approval for `OPENAI_API_KEY`; no credential was invented, copied from another service, exposed in the browser or configured without authorization. The existing screening AI remains scoped to the original assessment engine and cannot be represented as research AI. The deterministic cited lookup remains fully usable and is labelled accurately.
+**AI remains inactive pending the API key.** Research lookup runs entirely as deterministic cited retrieval; no provider is activated, no key is added and no model answer is simulated. Existing optional mission-screening AI integration code is retained. Research AI activation is out of scope for this release and would require a future supported server-side integration, not just a UI label change.
 
 ### Updated 30-second judging recording
 
@@ -128,3 +128,28 @@ AI is **not active**. The deployed project has no runtime AI credentials, and no
 3. 12–19 s: choose **Material / fuel → Silicone**. Show the row 2-1 qualitative result and the changed research takeaway, rather than 2.1 mm/s.
 4. 19–25 s: click **Copy research brief + citations**, then **View comparison** to show the material-matched outcome and NASA source together.
 5. 25–30 s: open **Original NASA table · PSI-99 · row 2-1** from the decision panel (or its original table link in the comparison).
+
+## Judging reliability release — 14 November 2026
+
+The pre-release public deployment reproduced two defects: after Airflow → 20 cm/s → Material → Silicone, the status said “1 of 3” but named only Saffire I as removed, omitting the already-excluded BASS-II. Also, submitting a blank question retained the previous answer. Rapid valid submissions already used the latest-only coordinator; this release extends regression coverage and makes blank submissions cancel pending work and remove the previous answer immediately.
+
+Filter feedback is now derived from the complete current result set, with included/excluded counts and names, top result and current comparison selection count. Every filter option and representative combinations are exercised. Reset experiment filters clears only filters; Restore lunar preset also restores the question, lunar scenario and default comparison pair. Scenario gravity remains separate from the hard experiment-gravity filter. Named material questions cannot retrieve another material's spread rate.
+
+Research state is saved in same-origin browser history so Back/Forward and refresh remain usable. Research inputs are not sent to the screening engine; mission inputs are not put in URLs. Clipboard rejection exposes a selected read-only brief with an explicit failure message. Remote report failure keeps a retry, results and lunar-demo recovery path. Dark-theme overrides fix inherited light panels and low-contrast chips; narrow layouts contain tables and long text. No visual redesign or ranking-rule change was introduced.
+
+The audit also found that the published relay returned HTTP 502 while direct Render requests succeeded. The relay now uses a portable AbortController timer and manual redirect rejection instead of runtime-dependent AbortSignal.timeout/redirect:error behavior. Route, method, body-size, credential stripping and unchanged assessment payloads are preserved. A safe route/error diagnostic records failures without inputs or credentials.
+
+Validation commands (Node 22+, Python 3):
+
+```sh
+python3 build.py
+npm test
+python3 test/source-audit.py
+NODE_USE_ENV_PROXY=1 node test/live-check.mjs
+NODE_USE_ENV_PROXY=1 node test/judge-live.mjs
+NODE_USE_ENV_PROXY=1 node test/mission-live.mjs
+```
+
+The proxy environment flag is needed only in this managed environment. `judge-live.mjs` fetches the exact public homepage anonymously, executes the full judge matrix in fresh JSDOM sessions configured at 1280 and 390 px, verifies links/downloads and original CSV hashes, and reports cold delivery and click-to-takeaway times. These are programmatic timing measurements, not a human or rendered-browser stopwatch. `mission-live.mjs` uses visible form controls and the real published relay, explicitly suppresses AI status, and inspects real report download payloads. `/verification` records boundaries and acceptance steps.
+
+No callable browser-control tool is available in this managed environment. The Sites skill explicitly prohibits a substitute browser-control path. Real signed-out desktop/mobile visual inspection, page overflow, native clipboard/print dialogs, touch behavior and OS reduced-motion appearance therefore remain blocked. Programmatic DOM/keyboard/history checks and a declared-color contrast audit do not replace that final manual review.

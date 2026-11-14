@@ -54,6 +54,13 @@ h=h.replace('class: "tablewrap"', 'class: "tablewrap", tabindex: "0", role: "reg
 h=h.replace('Interface copied from', 'Screening interface adapted from')
 h=h.replace('</style>',(p/'public/explorer.css').read_text()+'\n</style>',1)
 
+# Judge reliability: stage history, persistent report errors and explicit recovery.
+h=h.replace('    renderStepper(); renderContext(); renderStage();', '    renderStepper(); renderContext(); renderStage(); syncNavigation(stage);',1)
+h=h.replace('goTo(location.hash === "#lunar-demo" ? "research" : "home");','restoreNavigation();')
+h=h.replace('S.stage = "report"; S.reportMd = null;', 'S.stage = "report"; S.reportMd = null; S.reportErr = null;')
+h=h.replace('S.reportErr = null; } else busy(p, "Assembling the report"); card.appendChild(p);', '''} else busy(p, "Assembling the report"); card.appendChild(p);
+      if(S.reportErr){const retry=el("button",{type:"button",class:"btn primary",text:"Retry report"});retry.addEventListener("click",prepareReport);const back=el("button",{type:"button",class:"btn",text:"Back to results"});back.addEventListener("click",()=>goTo("results"));const research=el("button",{type:"button",class:"btn",text:"Open NASA lunar demo"});research.addEventListener("click",openLunarDemo);card.appendChild(el("div",{class:"row"},[retry,back,research]));}''')
+
 # Everything needed for the immediate demo and research is local, including bootstrap schema.
 bootstrap=json.loads((p/'sources/schema.json').read_text());demo=json.loads((p/'demo.json').read_text())
 dataset=json.loads((p/'public/dataset.json').read_text())

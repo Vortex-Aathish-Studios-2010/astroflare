@@ -3,6 +3,10 @@ const LUNAR_QUESTION='Which NASA experiments can inform a review of solid-materi
 const TOPICS={solid:{label:'solid materials',words:['solid','solids','material','materials','fabric','cotton','fiberglass','pmma','silicone','fuel','fuels']},flame:{label:'flame spread / flammability',words:['flame','flames','spread','spreading','burn','burning','flammability','combustion']},flow:{label:'ventilation / airflow',words:['flow','airflow','ventilation','ventilated','vent','velocity','opposed','concurrent']},oxygen:{label:'oxygen / atmosphere',words:['oxygen','o2','atmosphere','enriched','concentration']},microgravity:{label:'microgravity',words:['microgravity','weightless','freefall','orbital']},smoke:{label:'combustion gases',words:['smoke','co','monoxide','gas','gases','products']}};
 function tokensFor(q){return new Set((q.toLowerCase().match(/[a-z0-9]+/g)||[]));}
 function topicsFor(q){const t=tokensFor(q);return Object.keys(TOPICS).filter(k=>TOPICS[k].words.some(w=>t.has(w)));}
+function filterSummary(records){
+ const ids=new Set(records.map(r=>r.id)),excluded=PSI_DATA.records.filter(r=>!ids.has(r.id));
+ return `${records.length} of ${PSI_DATA.records.length} investigations match. Included (${records.length}): ${records.map(r=>r.name).join(', ')||'none'}. Excluded (${excluded.length}): ${excluded.map(r=>r.name).join(', ')||'none'}. ${records.length?'Top result: '+records[0].name+'.':'No matching evidence — a coverage gap, not a safety finding.'}`;
+}
 function rankResearch(question,filters={material:'any',gravity:'any',airflow:'any'},scenario={gravity:'lunar'}){
  const topics=topicsFor(question),tokens=tokensFor(question);const material=['pmma','fabric','silicone'].find(x=>tokens.has(x))||(tokens.has('cotton')||tokens.has('fiberglass')?'fabric':null);
  return PSI_DATA.records.filter(r=>
@@ -46,7 +50,9 @@ function evidenceIntent(question){
  return {ids:[...ids],unknownName,measures,run,lunar:/\b(lunar|moon)\b/.test(q)};
 }
 function evidenceAnswer(question,records){
- const intent=evidenceIntent(question),named=intent.ids.map(id=>PSI_DATA.records.find(r=>r.id===id));
+ const material=/\bsilicone\b/i.test(question)?'silicone':/\bpmma\b/i.test(question)?'pmma':/\bsibal\b|\bcotton\b|\bfiberglass\b/i.test(question)?'fabric':null;
+ const intent=evidenceIntent(question),named=intent.ids.map(id=>PSI_DATA.records.find(r=>r.id===id)).map(r=>material?scenarioRecord(r,material):r);
+ if(material)records=records.filter(r=>r.materials.includes(material)).map(r=>scenarioRecord(r,material));
  const gap=(text,rs=named)=>({gap:true,text,citations:rs.map(r=>r.id),sources:rs.map(r=>({id:r.id,row:null,file:r.sourceFile,url:r.downloadUrl})),mode:'deterministic'});
  if(intent.unknownName)return gap('The curated dataset does not include '+intent.unknownName+'. No measurement has been inferred.',[]);
  if(intent.ids.length>1)return gap('Please ask about one investigation at a time so its measurement and conditions stay attached to the correct source.');
@@ -59,7 +65,7 @@ function evidenceAnswer(question,records){
  // A generic spread-rate lookup retrieves only records that have that quantity.
  const candidates=named.length?named:records.filter(r=>r.runs.some(x=>x.outcome.spreadRate&&x.outcome.spreadRate!=='Not reported'));
  if(!candidates.length)return gap('The currently retrieved PSI records do not report a flame-spread rate. Change the filters or name Saffire II.',[]);
- const r=candidates[0],selected=intent.run?r.runs.find(x=>x.id.toUpperCase()===intent.run):r.runs.find(x=>measure==='spreadRate'?x.outcome.spreadRate&&x.outcome.spreadRate!=='Not reported':true);
+ const r=candidates[0],selected=intent.run?r.runs.find(x=>x.id.toUpperCase()===intent.run):r.runs.find(x=>measure==='spreadRate'?x.outcome.spreadRate&&x.outcome.spreadRate!=='Not reported':true)||(material?r.runs[0]:undefined);
  if(intent.run&&!selected)return gap(r.name+' run '+intent.run+' is not among the selected curated rows. No measurement has been inferred.',[r]);
  if(!selected)return gap(r.name+'’s selected PSI table does not report a flame-spread rate.',[r]);
  const run=selected,raw=run.raw;let value,first,conditions;

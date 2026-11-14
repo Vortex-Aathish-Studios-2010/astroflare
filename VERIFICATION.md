@@ -1,45 +1,61 @@
-# Verification — research-first upgrade
+# AstroFlare judging verification — 14 November 2026
 
-Project upgraded in place: appgprj_6af7a9a4f6748191bdc90847b966765a, branch main. Public access explicitly enabled at the user's request. Original Render service untouched.
+Exact public URL: https://astroflare-research-2026.ajuponnu2009.chatgpt.site/
+Project appgprj_6af7a9a4f6748191bdc90847b966765a; branch main; existing public audience retained. The original Render deployment and numerical assessment engine are unchanged.
 
-## Completed checks
+**AI remains inactive pending the API key.** No key was added, no provider activated and no AI answer simulated. The research lookup is deterministic and cited. Existing optional screening AI code is retained.
 
-- 14 automated tests pass: deterministic preset ordering/points; material/gravity/airflow filters; unknown calibrated velocities excluded; empty result cases; cited evidence answers and unsupported questions; exact source hashes and measurements; unchanged engine relay output; route/method/size/error handling; offline local assets; homepage/demo/filter/comparison DOM flow; secondary screening/save-load/rerun/report; responsive CSS/accessibility structure.
-- JavaScript syntax checks pass for the generated Worker and interface script.
-- Three original NASA PSI pages, three metadata endpoints and three original table downloads returned HTTP 200. All original CSV downloads matched the local pinned SHA-256 hashes.
-- Headline scientific claims were traced to PSI Approach, exact selected CSV rows and, for the Saffire II spread-rate cross-check, NASA NTRS 20170008805 slide 21. Source discrepancies remain disclosed, never silently resolved.
-- Unsupported and numeric prediction questions return an evidence gap. Local retrieval/filtering works with the remote AI/status API deliberately unavailable.
-- Default comparison includes BASS-II and Saffire II. Changing airflow to documented 20 cm/s removes BASS-II and promotes Saffire II; filtering lunar gravity produces an explicit empty result with reset.
-- Earlier live original-engine checks passed for all four example scenarios and guide flow/profile. The relay and numerical engine contract remain unchanged in this upgrade.
-- Source ZIP rebuild is checked before publication.
+## Reproduced and fixed
 
-## Public access and verification boundaries
+- Published Airflow 20 cm/s → Silicone: “1 of 3” but only Saffire I listed as removed. Feedback now accounts for all current included and excluded investigations, including BASS-II.
+- Blank submission left the old answer visible. It now invalidates pending work, clears the answer and asks for a question. Mouse, Enter and all three examples use the same latest-only workflow. Valid rapid switching was already correct and remains covered, including deliberately reversed delayed responses.
+- Report-service errors lacked a local retry control. Retry report, Back to results and Open NASA lunar demo are now explicit.
+- Some inherited secondary panels used light backgrounds with pale text. Theme-compatible surfaces and chip colors restore contrast. Narrow-width controls and long links are contained.
+- Live relay returned 502 while direct Render calls passed. Portable cancellation and explicit manual redirect rejection replace runtime-dependent fetch options; a bounded diagnostic contains no input bodies or credentials.
 
-The native Sites access policy confirms **public**. Anonymous HTTP requests without cookies or authorization receive the app rather than a ChatGPT sign-in redirect. Final post-publication checks record the exact live URL, assets, demo interactions in a fresh DOM session and NASA source links.
+## Automated release checks
 
-This environment has no callable `cua_repl.js` or browser-control tool. Per the Sites managed-preview instructions, no substitute browser-control path or preview server was started. DOM tests establish interaction behavior, focus updates and labels; HTTP checks establish anonymous delivery. They do not establish visual rendering or touch behavior in a real signed-out desktop/mobile browser. Those visual checks remain unverified.
+| Area | Status | Conditions / evidence |
+| --- | --- | --- |
+| Core tests | Pass | 22 Node tests; existing checks retained. |
+| Lunar preset | Pass | Fresh unauthenticated DOM; one click yields 3 ranked studies, default two-study comparison and cited takeaway; no remote engine dependency. |
+| Filters | Pass | All 5 material, 4 experiment-gravity and 7 airflow choices; 5 combinations; complete included/excluded feedback; separate scenario gravity; reset and preset recovery. |
+| Comparison | Pass | Zero, one, two, rejected third selection and filtering out a selected record; checkboxes/count/columns agree. |
+| Evidence answers | Pass | Exact Saffire II, Saffire 2, PSI-99; Saffire I gap; lunar gap; explicit silicone question; unrelated and blank inputs; all 3 examples; 12 rapid mixed-method batches per DOM width. |
+| Research brief | Pass | Captured clipboard payload for default, silicone and empty evidence; scenario, measured/gap, proposed next step and corresponding sources checked; denied clipboard shows selected manual-copy fallback. |
+| Scientific rows | Pass | Eight raw rows parsed and compared against byte-pinned original PSI CSVs; values, units, oxygen, airflow, direction and run IDs retained. |
+| Navigation | Pass | DOM Back/Forward and fresh-document restoration of saved research state; hash route; accessible in-page links do not create accidental route changes. |
+| Screening contract | Pass | All 4 original example assessments match the original remote engine exactly; guide flow/profile pass. |
+| Failure recovery | Pass | Injected screening/report/solar outages retain answers, expose retries and allow the local lunar demo; report Markdown/JSON blobs and print callback tested. |
+| Accessibility logic | Pass | Labelled controls, input focus, scroll restoration, keyboard submissions, focusable comparison scrolling, reduced-motion JS/CSS suppression. |
+| Declared theme contrast | Pass | Tested normal body, secondary text, source link, button, warning and decision pairs exceed 4.5:1 (lowest tested 7.50:1). This is not a full rendered-page contrast audit. |
+| Real-browser visual QA | Blocked | No callable browser-control tool. No rendered desktop or 390 × 844 mobile inspection; native clipboard/print, touch, actual overflow and OS reduced-motion appearance remain unverified. |
 
-The official challenge page returned HTTP 503. NASA PSI and the supporting NTRS report were accessible. The app does not claim it retrieved inaccessible challenge details.
+DOM widths of 1280 and 390 px test logic with those window settings; JSDOM does not render CSS layout. No browser screenshot, actual viewport measurement or human 30-second timing is claimed.
 
-## Manual acceptance before judging
+## Publication acceptance
 
-Use a real signed-out browser on desktop and a 390 × 844 mobile viewport:
-1. Open the live URL, confirm no gate, click Run the lunar habitat demo.
-2. Read BASS-II's rank explanation, source link and lunar transfer warning.
-3. Choose Airflow evidence → Documented 20 cm/s. Observe BASS-II removed and Saffire II first.
-4. Restore Any airflow; compare BASS-II and Saffire II; scroll the table and open NASA sources.
-5. Choose Experiment gravity → Lunar surface. Observe coverage gap; reset.
-6. Ask which material is safest. Observe unsupported/evidence-gap response; ask about oxygen/airflow and open its citations.
-7. Keyboard-tab through filters, comparison controls, scrollable table and source links. Confirm mobile readability, touch controls and source downloads.
+Run `NODE_USE_ENV_PROXY=1 node test/judge-live.mjs` against the exact URL after deploying. It repeats the judge matrix on the downloaded production bytes, checks anonymous homepage, documentation, verification, source ZIP, dataset, CSVs and health endpoint, opens every PSI record and original table, and compares original/pinned source hashes. It also records NASA NTRS and official challenge availability. No cookies, login, bypass token or API key are supplied.
 
-## Named-measurement answer correction
+Run `NODE_USE_ENV_PROXY=1 node test/mission-live.mjs` for the visible manual-entry mission path through the real public relay, fresh assessment, report generation, actual Markdown/JSON payloads and solar appendix. AI is suppressed during this check. A failed remote call must not be described as a successful mission flow; its recovery remains separately tested.
 
-The published v2 bug was reproduced anonymously: the Saffire II flame-spread question led with BASS-II CO values. Original PSI-99 CSV was re-downloaded; its hash matched the pinned source and row 2-5 reports 2.1 mm/s. Regression checks cover exact wording, Saffire 2 and PSI-99 aliases, Saffire I/PSI-98 missing rates, lunar gravity, non-conflation of duration/airflow/CO, unsupported runs, clickable examples and first-line ordering. Published anonymous HTTP + fresh-DOM checks exercise all four requested questions and their original NASA source links, with AI/status deliberately offline. AI is not active; deterministic lookup is the labelled mode. Real-browser visual verification remains unavailable.
+Original NASA files:
+- PSI-25_Experimental table_BASS-II.csv: T1, T2, T4 and B1.
+- PSI-99_Experimental table_SAFFIRE-2.csv: 2-5 and 2-1.
+- PSI-98_Experimental table_SAFFIRE-1.csv: S1 and S2.
 
-## Research decision, latest-only answers and motion
+Saffire II row 2-5 is SIBAL, 2.1 mm/s, microgravity, 20 cm/s concurrent flow and approximately 22.1% O₂ (derived per Note 1). Silicone row 2-1 reports burn time “Insignificant”, a qualitative observation, not zero and not a spread rate. No selected direct lunar-gravity measurement is presented. Source geometry/header inconsistencies remain disclosed; original files are not silently corrected. Full citations and caveats: /documentation and /dataset.json.
 
-19 automated tests pass. Added checks cover material-matched decision content, no SIBAL rate carried into silicone, proposed versus measured labels, citation-bearing brief copy, panel DOM placement, comparison adjacency, deferred responses completed in reverse order, cancellation, rapid example switching, immediate stale-answer removal, actual DOM button submission and Enter key handling, preserved input focus/scroll, and JavaScript animation suppression under reduced-motion preference. Syntax checks and an extracted source-archive rebuild are required before publication. Post-publication anonymous HTTP/fresh-DOM checks repeat decision, silicone, comparison, copy, question submission, latest-answer switching, citations and reduced-motion logic.
+The official challenge page previously returned HTTP 503. Record its actual status in each live run; it is external to the app. NASA evidence remains accessible through original links and pinned source downloads.
 
-**AI blocker:** runtime configuration contains no AI credentials. OpenAI Developers is available but not installed. Live research AI cannot be activated without that plugin and its approved API-key setup. No research model is presented as active.
+## Final manual review still required
 
-**Visual verification boundary:** desktop and mobile structure, responsive declarations and reduced-motion logic are checked programmatically. There is no callable `cua_repl.js`/browser-control tool in this managed environment; per the Sites skill, no substitute browser-control path was used. Actual desktop/mobile rendering, touch behavior and native OS reduced-motion rendering are not visually verified. Signed-out access is checked by anonymous HTTP and a fresh unauthenticated DOM session, not claimed as a real interactive browser session. The official challenge page still returns HTTP 503 from this environment.
+In a genuinely signed-out browser, open the exact URL on desktop and at 390 × 844. Check visual comparison readability, no page-wide horizontal overflow, keyboard focus and mobile touch, then enable OS reduced motion. Copy and paste the brief into an editor and open a native report download. This step is blocked in the current tooling, not silently marked passed.
+
+## 30-second judging sequence
+
+0–5 s: Home → Run the lunar habitat demo.
+5–12 s: Show What NASA measured, the lunar evidence gap and Next research step.
+12–18 s: Material / fuel → Silicone; show 1 included / 2 excluded and the changed qualitative takeaway.
+18–23 s: Copy research brief + citations, then View comparison.
+23–30 s: Ask about the evidence → Saffire II example → Original NASA table, row 2-5. Its explicit SIBAL conditions distinguish this named catalogue lookup from the silicone-filtered dashboard.

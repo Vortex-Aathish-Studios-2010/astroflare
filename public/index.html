@@ -103,6 +103,13 @@ body{background:radial-gradient(ellipse at 85% 0,#1b2631 0,transparent 44%),var(
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.research-hero{opacity:1;transform:none}}
 @media print{:root{color-scheme:light;--ink:#111;--muted:#444;--bg:#fff;--card:#fff}body,.card,.decision-panel,.top-evidence{background:#fff;color:#111}.flame-instrument{display:none}.decision-layout{display:block}}
 
+/* Reliability audit: keep inherited secondary surfaces readable in the dark theme. */
+.evidence-kind,.log-entry,details.finding[open]>summary{background:var(--soft);color:var(--ink)}
+.chip{color:var(--ink)}.stepper li button[aria-current=step]{color:#10151b}.skip:focus{background:var(--card);color:var(--accent)}
+.tablewrap{max-width:100%;min-width:0}.decision-panel,.filter-control,.rank-strip li{min-width:0}.rank-strip li{flex-wrap:wrap}.rank-strip strong{min-width:0}.btn{white-space:normal;max-width:100%}
+@media(max-width:420px){.filters{grid-template-columns:1fr}.wrap{padding-left:16px;padding-right:16px}.rank-strip .small{margin-left:auto}}
+.num input{min-width:0}.q .aux label{flex-wrap:wrap;min-width:0}.q .aux select{max-width:100%}footer .mono{overflow-wrap:anywhere}.flare-row{grid-template-columns:58px minmax(0,1fr) auto}
+
 </style>
 </head>
 <body>
@@ -142,6 +149,10 @@ const LUNAR_QUESTION='Which NASA experiments can inform a review of solid-materi
 const TOPICS={solid:{label:'solid materials',words:['solid','solids','material','materials','fabric','cotton','fiberglass','pmma','silicone','fuel','fuels']},flame:{label:'flame spread / flammability',words:['flame','flames','spread','spreading','burn','burning','flammability','combustion']},flow:{label:'ventilation / airflow',words:['flow','airflow','ventilation','ventilated','vent','velocity','opposed','concurrent']},oxygen:{label:'oxygen / atmosphere',words:['oxygen','o2','atmosphere','enriched','concentration']},microgravity:{label:'microgravity',words:['microgravity','weightless','freefall','orbital']},smoke:{label:'combustion gases',words:['smoke','co','monoxide','gas','gases','products']}};
 function tokensFor(q){return new Set((q.toLowerCase().match(/[a-z0-9]+/g)||[]));}
 function topicsFor(q){const t=tokensFor(q);return Object.keys(TOPICS).filter(k=>TOPICS[k].words.some(w=>t.has(w)));}
+function filterSummary(records){
+ const ids=new Set(records.map(r=>r.id)),excluded=PSI_DATA.records.filter(r=>!ids.has(r.id));
+ return `${records.length} of ${PSI_DATA.records.length} investigations match. Included (${records.length}): ${records.map(r=>r.name).join(', ')||'none'}. Excluded (${excluded.length}): ${excluded.map(r=>r.name).join(', ')||'none'}. ${records.length?'Top result: '+records[0].name+'.':'No matching evidence — a coverage gap, not a safety finding.'}`;
+}
 function rankResearch(question,filters={material:'any',gravity:'any',airflow:'any'},scenario={gravity:'lunar'}){
  const topics=topicsFor(question),tokens=tokensFor(question);const material=['pmma','fabric','silicone'].find(x=>tokens.has(x))||(tokens.has('cotton')||tokens.has('fiberglass')?'fabric':null);
  return PSI_DATA.records.filter(r=>
@@ -185,7 +196,9 @@ function evidenceIntent(question){
  return {ids:[...ids],unknownName,measures,run,lunar:/\b(lunar|moon)\b/.test(q)};
 }
 function evidenceAnswer(question,records){
- const intent=evidenceIntent(question),named=intent.ids.map(id=>PSI_DATA.records.find(r=>r.id===id));
+ const material=/\bsilicone\b/i.test(question)?'silicone':/\bpmma\b/i.test(question)?'pmma':/\bsibal\b|\bcotton\b|\bfiberglass\b/i.test(question)?'fabric':null;
+ const intent=evidenceIntent(question),named=intent.ids.map(id=>PSI_DATA.records.find(r=>r.id===id)).map(r=>material?scenarioRecord(r,material):r);
+ if(material)records=records.filter(r=>r.materials.includes(material)).map(r=>scenarioRecord(r,material));
  const gap=(text,rs=named)=>({gap:true,text,citations:rs.map(r=>r.id),sources:rs.map(r=>({id:r.id,row:null,file:r.sourceFile,url:r.downloadUrl})),mode:'deterministic'});
  if(intent.unknownName)return gap('The curated dataset does not include '+intent.unknownName+'. No measurement has been inferred.',[]);
  if(intent.ids.length>1)return gap('Please ask about one investigation at a time so its measurement and conditions stay attached to the correct source.');
@@ -198,7 +211,7 @@ function evidenceAnswer(question,records){
  // A generic spread-rate lookup retrieves only records that have that quantity.
  const candidates=named.length?named:records.filter(r=>r.runs.some(x=>x.outcome.spreadRate&&x.outcome.spreadRate!=='Not reported'));
  if(!candidates.length)return gap('The currently retrieved PSI records do not report a flame-spread rate. Change the filters or name Saffire II.',[]);
- const r=candidates[0],selected=intent.run?r.runs.find(x=>x.id.toUpperCase()===intent.run):r.runs.find(x=>measure==='spreadRate'?x.outcome.spreadRate&&x.outcome.spreadRate!=='Not reported':true);
+ const r=candidates[0],selected=intent.run?r.runs.find(x=>x.id.toUpperCase()===intent.run):r.runs.find(x=>measure==='spreadRate'?x.outcome.spreadRate&&x.outcome.spreadRate!=='Not reported':true)||(material?r.runs[0]:undefined);
  if(intent.run&&!selected)return gap(r.name+' run '+intent.run+' is not among the selected curated rows. No measurement has been inferred.',[r]);
  if(!selected)return gap(r.name+'’s selected PSI table does not report a flame-spread rate.',[r]);
  const run=selected,raw=run.raw;let value,first,conditions;
@@ -330,7 +343,7 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
   // ---------------------------------------------------------------- stage navigation
   function goTo(stage, opts) {
     S.stage = stage; document.body.classList.toggle("research-active", stage === "research" || stage === "home"); S.reached[stage] = true; if (opts && opts.step) S.viewStep = opts.step;
-    renderStepper(); renderContext(); renderStage();
+    renderStepper(); renderContext(); renderStage(); syncNavigation(stage);
     const st = $("stage"); const h = st.querySelector("h1,h2"); if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
     window.scrollTo({ top: 0 });
   }
@@ -897,13 +910,14 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
 
   // ---------------------------------------------------------------- stage 6: the report
   function prepareReport() {
-    S.stage = "report"; S.reportMd = null; renderStepper(); renderStage(); const n = narrativeFor(S.assessment);
+    S.stage = "report"; S.reportMd = null; S.reportErr = null; renderStepper(); renderStage(); const n = narrativeFor(S.assessment);
     post("/api/report", { inputs: engineInputs(), basis: basisMap(), mission: missionPayload(), explain: false, includeInfluence: true, narrative: n && n.status === "included" ? n : null }, 60000).then(function (r) { S.reportMd = r.markdown.replace(/Most consequential unresolved issue/gi, "One condition to review (not ranked)"); S.reportJson = JSON.parse(JSON.stringify(r.report).replace(/Most consequential unresolved issue/gi, "One condition to review (not ranked)")); renderStage(); })
       .catch(function (e) { S.reportMd = null; S.reportErr = e.message; renderStage(); });
   }
   function renderReportStage(st) {
     const card = el("div", { class: "card" }, [el("h2", { text: "Assessment report" }), el("p", { class: "lede", text: "A traceable record of what you entered, what was calculated, what the literature says, what is missing and what remains uncertain. It is not mission clearance, a safety certification or a go/no-go decision." })]);
-    if (!S.reportMd) { const p = el("p", { role: "status" }); if (S.reportErr) { p.textContent = "The report could not be prepared: " + S.reportErr; S.reportErr = null; } else busy(p, "Assembling the report"); card.appendChild(p); }
+    if (!S.reportMd) { const p = el("p", { role: "status" }); if (S.reportErr) { p.textContent = "The report could not be prepared: " + S.reportErr; } else busy(p, "Assembling the report"); card.appendChild(p);
+      if(S.reportErr){const retry=el("button",{type:"button",class:"btn primary",text:"Retry report"});retry.addEventListener("click",prepareReport);const back=el("button",{type:"button",class:"btn",text:"Back to results"});back.addEventListener("click",()=>goTo("results"));const research=el("button",{type:"button",class:"btn",text:"Open NASA lunar demo"});research.addEventListener("click",openLunarDemo);card.appendChild(el("div",{class:"row"},[retry,back,research]));} }
     else {
       const dl = el("button", { type: "button", class: "btn primary", text: "Download report (Markdown)" }), dj = el("button", { type: "button", class: "btn", text: "Download data (JSON)" }), pr = el("button", { type: "button", class: "btn", text: "Print" }), bk = el("button", { type: "button", class: "btn", text: "Back to results" });
       dl.addEventListener("click", function () { download("astroflare-report.md", "text/markdown", S.reportMd); }); dj.addEventListener("click", function () { download("astroflare-assessment.json", "application/json", JSON.stringify({ report: S.reportJson, note: "Preliminary screening; not validated; not a safety determination." }, null, 2)); });
@@ -985,8 +999,9 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
     const secondary=el('details',{class:'sec'},[el('summary',{text:'Secondary tool: existing mission screening'})]);const body=el('div',{class:'in'},[el('p',{text:'Keep using the guided mission-screening workflow and its original remote engine. Its heuristic index is separate from research relevance.'})]);const begin=el('button',{class:'btn',type:'button',text:'Start mission screening'});begin.addEventListener('click',()=>goTo('mission'));const example=el('button',{class:'btn',type:'button',id:'screeningDemoBtn',text:'Open hypothetical screening example'});example.addEventListener('click',openDemo);body.appendChild(el('div',{class:'row'},[begin,example]));secondary.appendChild(body);st.appendChild(secondary);
   }
   function renderSelect(label,id,value,options,onChange){const box=el('div',{class:'filter-control'});box.appendChild(el('label',{class:'lbl',for:id,text:label}));const select=el('select',{id},options.map(([v,t])=>el('option',{value:v,text:t})));select.value=value;select.addEventListener('change',()=>onChange(select.value));box.appendChild(select);return box;}
-  function filterChange(key,value){const before=rankResearch(EXPLORER.question,EXPLORER.filters,EXPLORER.scenario);EXPLORER.filters[key]=value;const after=rankResearch(EXPLORER.question,EXPLORER.filters,EXPLORER.scenario);const removed=before.filter(r=>!after.some(x=>x.id===r.id));EXPLORER.selected=EXPLORER.selected.filter(id=>after.some(r=>r.id===id));cancelEvidence();
-    EXPLORER.change=`${after.length} of ${PSI_DATA.records.length} investigations match. `+(removed.length?removed.map(r=>r.name).join(', ')+' removed by the '+key+' filter. ':'')+(after.length?'Top result: '+after[0].name+'. ':'No matching evidence. ')+(key==='airflow'&&value==='20'?'20 cm/s requires an explicitly reported numeric value; BASS-II facility range is not a calibrated run value.':'Ranks are recalculated on the remaining records with the same reproducible rules.');refreshResearch('filter-'+key);
+  function resetResearchFilters(){EXPLORER.filters={material:'any',gravity:'any',airflow:'any'};cancelEvidence();EXPLORER.change='Experiment filters reset. Comparison selections are retained only while included; use Restore lunar preset for the default pair.';refreshResearch('reset-research-filters');}
+  function filterChange(key,value){EXPLORER.filters[key]=value;const after=rankResearch(EXPLORER.question,EXPLORER.filters,EXPLORER.scenario);EXPLORER.selected=EXPLORER.selected.filter(id=>after.some(r=>r.id===id));cancelEvidence();
+    EXPLORER.change=(key==='airflow'&&value==='20'?'20 cm/s requires an explicitly reported numeric value; BASS-II facility range is not a calibrated run value. ':'')+'Relevance is recalculated with the same rules. Comparison now has '+EXPLORER.selected.length+' of 2 selected.';refreshResearch('filter-'+key);
   }
   function renderResearch(st){
     const ranked=rankResearch(EXPLORER.question,EXPLORER.filters,EXPLORER.scenario).map(r=>scenarioRecord(r,EXPLORER.filters.material));
@@ -999,11 +1014,11 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
     filters.appendChild(renderSelect('Airflow evidence','filter-airflow',EXPLORER.filters.airflow,[['any','Any airflow'],['forced','Forced ventilation'],['variable','Variable-flow investigation'],['20','Documented 20 cm/s'],['concurrent','Concurrent-flow investigation'],['opposed','Opposed-flow investigation'],['quiescent','Quiescent (coverage check)']],v=>filterChange('airflow',v)));
     top.appendChild(filters);
     filters.appendChild(renderSelect('Scenario gravity (for transfer limits)','scenario-gravity',EXPLORER.scenario.gravity,[['lunar','Lunar surface'],['microgravity','Microgravity'],['earth','Earth gravity'],['any','Unspecified']],v=>{EXPLORER.scenario.gravity=v;EXPLORER.change='Scenario gravity changed. An exact gravity match earns one relevance point; a mismatch remains visible as a transfer limit.';cancelEvidence();refreshResearch('scenario-gravity');}));
-    top.appendChild(el('p',{class:'filter-status',id:'filter-status',role:'status','aria-live':'polite',text:EXPLORER.change||`${ranked.length} investigations match. Select two to compare.`}));st.appendChild(top);
+    top.appendChild(el('p',{class:'filter-status',id:'filter-status',role:'status','aria-live':'polite',text:filterSummary(ranked)+' '+EXPLORER.change}));const reset=el('button',{class:'btn small-btn',id:'reset-research-filters',type:'button',text:'Reset experiment filters'});reset.addEventListener('click',resetResearchFilters);const preset=el('button',{class:'btn small-btn',id:'restore-lunar-preset',type:'button',text:'Restore lunar preset'});preset.addEventListener('click',openLunarDemo);top.appendChild(el('div',{class:'row mt'},[reset,preset]));st.appendChild(top);
     if(EXPLORER.scenario.gravity==='lunar')st.appendChild(el('aside',{class:'transfer-note',role:'note'},[el('strong',{text:'Lunar transfer limit: '}),'all three investigations are microgravity studies. They can inform material/ventilation questions, but lunar buoyancy, geometry and atmosphere need their own analysis and validation. ',psiLink(PSI_DATA.records[0],'Check PSI experiment context ↗')]));
     st.appendChild(el('h2',{id:'ranked-heading',tabindex:'-1',class:'section-title',text:'Ranked evidence · '+ranked.length+' investigations'}));
     if(!topicsFor(EXPLORER.question).length)st.appendChild(el('p',{class:'notice',text:'No research-question topic recognized. Any points below come only from selected conditions; no semantic match has been invented.'}));
-    if(!ranked.length){const empty=el('section',{class:'card empty-state'},[el('h3',{text:'No matching evidence in this curated dataset'}),el('p',{text:'This is a coverage gap. It does not mean the condition is safe or that no other NASA studies exist. In particular, no lunar-surface experiment is included here.'})]);const reset=el('button',{class:'btn',type:'button',text:'Reset experiment filters'});reset.addEventListener('click',()=>{EXPLORER.filters={material:'any',gravity:'any',airflow:'any'};EXPLORER.change='Filters reset. All three PSI investigations restored.';refreshResearch();});empty.appendChild(reset);st.appendChild(empty);}
+    if(!ranked.length){const empty=el('section',{class:'card empty-state'},[el('h3',{text:'No matching evidence in this curated dataset'}),el('p',{text:'This is a coverage gap. It does not mean the condition is safe or that no other NASA studies exist. In particular, no lunar-surface experiment is included here.'})]);empty.appendChild(el('a',{class:'btn',href:'#reset-research-filters',text:'Reset filters above to recover evidence'}));st.appendChild(empty);}
     const grid=el('div',{class:'evidence-results'});
     ranked.forEach((r,i)=>{const card=el('article',{class:'card evidence-card','aria-labelledby':'title-'+r.id});const head=el('div',{class:'row sp'},[el('span',{class:'rank-label',text:'#'+(i+1)+' · '+r.points+' relevance points'}),el('span',{class:'small mono',text:r.id+' · PSI v'+r.version})]);card.appendChild(head);card.appendChild(el('h2',{id:'title-'+r.id,text:r.name}));card.appendChild(el('p',{class:'small',text:r.title}));
       card.appendChild(el('p',{class:'why-rank'},[el('strong',{text:'Why it ranked here: '}),r.components.length?r.components.map(c=>c.label+' +'+c.points).join('; ')+'.':'No topic or condition match.']));
@@ -1022,12 +1037,12 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
     instrumentLayout(st,ranked,grid);renderEvidenceAsk(st,ranked);st.appendChild(psiChart());st.appendChild(renderResearchMethod());
   }
   function renderEvidenceAsk(st,ranked){
-    const box=el('section',{class:'card'},[el('h2',{text:'Ask about the evidence'}),el('p',{class:'small',text:'Active mode: deterministic source lookup · AI is not active. Named investigations and measurements are matched before relevance ranking. Named lookups search the curated catalogue; general questions use the filtered records.'})]);
+    const box=el('section',{class:'card'},[el('h2',{text:'Ask about the evidence'}),el('p',{class:'small',text:'Active mode: deterministic source lookup · AI remains inactive pending the API key. Named investigations and measurements are matched before relevance ranking. Named lookups search the curated catalogue; general questions use the filtered records.'})]);
     box.id='evidence-ask-panel';
     const form=el('form',{id:'evidence-form'});form.appendChild(el('label',{class:'lbl',for:'evidence-ask',text:'Your evidence question'}));const q=el('input',{id:'evidence-ask',type:'text',maxlength:'1000',placeholder:'What was the flame spread rate in Saffire II?'});q.value=EXPLORER.askDraft||'';q.addEventListener('input',()=>{EXPLORER.askDraft=q.value;});form.appendChild(q);form.appendChild(el('button',{class:'btn primary mt',type:'submit',id:'submit-evidence',text:'Find cited answer'}));form.addEventListener('submit',e=>{e.preventDefault();submitEvidenceQuestion(q.value);});q.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();submitEvidenceQuestion(q.value);}});box.appendChild(form);
     const examples=el('div',{class:'row mt','aria-label':'Example evidence questions'});
     ['What was the flame spread rate in Saffire II?','What flame spread rate was measured in lunar gravity?','What was the flame spread rate in Saffire I?'].forEach((text,i)=>{const b=el('button',{class:'btn small-btn evidence-example',type:'button',id:'evidence-example-'+i,text});b.addEventListener('click',()=>submitEvidenceQuestion(text));examples.appendChild(b);});box.appendChild(examples);
-    box.appendChild(el('p',{id:'evidence-status',class:'small',role:'status','aria-live':'polite',text:EXPLORER.askStatus==='loading'?'Looking up the latest question…':EXPLORER.askStatus==='ready'?'Answer ready · deterministic source lookup':'Ready · choose an example or ask a question'}));
+    box.appendChild(el('p',{id:'evidence-status',class:'small',role:'status','aria-live':'polite',text:EXPLORER.askStatus==='loading'?'Looking up the latest question…':EXPLORER.askStatus==='ready'?'Answer ready · deterministic source lookup':EXPLORER.askStatus==='empty'?'Enter an evidence question or choose an example. The previous answer has been cleared.':'Ready · choose an example or ask a question'}));
     if(EXPLORER.submittedQuestion)box.appendChild(el('p',{class:'submitted-question',id:'submitted-question',text:'Latest submitted question: '+EXPLORER.submittedQuestion}));
     if(EXPLORER.answer){const a=EXPLORER.answer,answer=el('div',{id:'evidence-answer',tabindex:'-1',class:'notice'+(a.gap?' warn':''),role:'region','aria-label':'Answer to latest submitted question','data-question':EXPLORER.submittedQuestion});
       // The answer itself, not a mode/status heading, is the first line.
@@ -1059,13 +1074,13 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
     window.scrollTo({left:x,top:y,behavior:'instant'});
     if(!reducedMotion())document.querySelectorAll('[data-rank-id]').forEach(e=>{const old=previous.get(e.dataset.rankId),now=e.getBoundingClientRect();if(old&&old.height&&now.height&&e.animate){const dy=old.top-now.top;if(Math.abs(dy)>1)e.animate([{transform:'translateY('+dy+'px)'},{transform:'none'}],{duration:200,easing:'ease-out'});}});
   }
-  function refreshResearch(focusId){preserveView(()=>renderStage(),focusId);}
+  function refreshResearch(focusId){preserveView(()=>renderStage(),focusId);syncNavigation('research',true);}
   function refreshAnswerPanel(){
     if(S.stage!=='research')return;
     preserveView(()=>{const old=document.getElementById('evidence-ask-panel');if(!old)return;const holder=el('div');renderEvidenceAsk(holder,rankResearch(EXPLORER.question,EXPLORER.filters,EXPLORER.scenario));old.replaceWith(holder.firstElementChild);});
   }
   function submitEvidenceQuestion(text){
-    const question=text.trim();if(!question)return;
+    const question=text.trim();if(!question){cancelEvidence();EXPLORER.askDraft=text;EXPLORER.askStatus='empty';refreshAnswerPanel();return;}
     const records=rankResearch(EXPLORER.question,EXPLORER.filters,EXPLORER.scenario).map(r=>scenarioRecord(r,EXPLORER.filters.material));
     return ANSWERS.submit(question,q=>evidenceAnswer(q,records),q=>{EXPLORER.ask=q;EXPLORER.askDraft=q;EXPLORER.submittedQuestion=q;EXPLORER.answer=null;EXPLORER.askStatus='loading';refreshAnswerPanel();},(answer,q)=>{EXPLORER.answer=answer;EXPLORER.askStatus='ready';EXPLORER.submittedQuestion=q;refreshAnswerPanel();animateArrival(document.getElementById('evidence-answer'));},(error,q)=>{EXPLORER.answer=evidenceAnswer(q,records);EXPLORER.askStatus='ready';EXPLORER.submittedQuestion=q;refreshAnswerPanel();});
   }
@@ -1079,7 +1094,7 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
     d.citations.forEach(c=>panel.appendChild(el('p',{class:'small'},[el('a',{href:c.url,target:'_blank',rel:'noopener noreferrer',text:'Original NASA table · '+c.id+' · row '+c.row+' ↗'})])));
     const copy=el('button',{type:'button',id:'copy-research-brief',class:'btn primary',text:'Copy research brief + citations'}),status=el('span',{class:'small',id:'brief-copy-status',role:'status'});
     const fallback=el('textarea',{id:'research-brief-text',readonly:'true','aria-label':'Research brief with citations',hidden:true});fallback.value=d.text;
-    copy.addEventListener('click',async()=>{try{if(!navigator.clipboard?.writeText)throw Error('clipboard unavailable');await navigator.clipboard.writeText(d.text);status.textContent='Research brief copied with citations.';}catch{fallback.hidden=false;fallback.focus({preventScroll:true});fallback.select();status.textContent='Select and copy the brief below (Ctrl/Cmd+C).';}});panel.appendChild(el('div',{class:'row mt'},[copy,status]));panel.appendChild(fallback);return panel;
+    copy.addEventListener('click',async()=>{try{if(!navigator.clipboard?.writeText)throw Error('clipboard unavailable');await navigator.clipboard.writeText(d.text);status.textContent='Research brief copied with citations.';}catch{fallback.hidden=false;fallback.focus({preventScroll:true});fallback.select();status.textContent='Clipboard access failed. Select and copy the brief below (Ctrl/Cmd+C).';}});panel.appendChild(el('div',{class:'row mt'},[copy,status]));panel.appendChild(fallback);return panel;
   }
   function instrumentLayout(st,ranked,grid){
     const top=grid.firstElementChild,comparison=document.getElementById('comparison');const row=el('div',{class:'decision-layout'}),left=el('div',{class:'lead-evidence'});
@@ -1092,12 +1107,31 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
     if(top){const outcome=top.querySelector('.evidence-kind');if(outcome)top.querySelector('.why-rank').after(outcome);}
   }
 
+  // Persist only the research view in same-origin history; no mission inputs are added to URLs.
+  let navigationReady=false,navigationRestoring=false;
+  function syncNavigation(stage,replace=false){
+    if(navigationRestoring)return;
+    const state={astroflare:true,stage,explorer:stage==='research'?{question:EXPLORER.question,filters:{...EXPLORER.filters},scenario:{...EXPLORER.scenario},selected:[...EXPLORER.selected]}:null};
+    const hash=stage==='home'?'':stage==='research'?'#lunar-demo':'#'+stage;
+    const method=!navigationReady||replace||history.state?.stage===stage?'replaceState':'pushState';
+    history[method](state,'',location.pathname+location.search+hash);navigationReady=true;
+  }
+  function restoreNavigation(){
+    const saved=history.state?.astroflare?history.state:null;
+    let stage=saved?.stage||(location.hash==='#lunar-demo'?'research':location.hash==='#mission'?'mission':'home');
+    if(!['home','research','mission'].includes(stage)&&!canVisit(stage))stage='mission';
+    if(stage==='research'&&saved?.explorer){const e=saved.explorer;EXPLORER.question=e.question;EXPLORER.filters={...e.filters};EXPLORER.scenario={...e.scenario};EXPLORER.selected=[...e.selected];EXPLORER.change='Research view restored. Original evidence and source links remain available.';}
+    cancelEvidence();navigationRestoring=true;goTo(stage);navigationRestoring=false;syncNavigation(stage,true);
+  }
+  window.addEventListener('popstate',restoreNavigation);
+  document.addEventListener('click',event=>{const a=event.target.closest?.('a[href^="#"]');if(!a)return;const target=document.getElementById(a.getAttribute('href').slice(1));if(!target)return;event.preventDefault();if(!target.hasAttribute('tabindex'))target.setAttribute('tabindex','-1');target.focus({preventScroll:true});target.scrollIntoView?.({block:'start',behavior:'auto'});});
+
   // ---------------------------------------------------------------- start
   let started=false;
   function start() {
     if(started)return; started=true;
     S.schema=BOOTSTRAP.schema; S.guide=BOOTSTRAP.guide; S.examples=BOOTSTRAP.examples; S.methodology=BOOTSTRAP.methodology;
-    bindControls(); renderMethod(); goTo(location.hash === "#lunar-demo" ? "research" : "home");
+    bindControls(); renderMethod(); restoreNavigation();
     api("/api/status").then(r=>{S.aiAvailable=!!(r.analysis && r.analysis.explanation && r.analysis.explanation.available);}).catch(()=>{});
   }
   document.addEventListener("DOMContentLoaded", start);
