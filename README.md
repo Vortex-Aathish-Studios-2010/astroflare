@@ -1,5 +1,28 @@
 # AstroFlare · Flame in Freefall (2026 upgrade)
 
+## Current release: midnight research edition
+
+The existing public site remains https://astroflare-research-2026.ajuponnu2009.chatgpt.site/ on branch **main**. This release keeps the documented schematic, original NASA evidence, reproducible relevance ranking and remote assessment engine, while applying charcoal/midnight surfaces, warm white Instrument typography, selective electric-blue actions/focus and copper measurement accents. No newer logo asset exists in the project; the existing AstroFlare wordmark is retained. The plate is original conceptual artwork, labelled **Test schematic · not to scale**, not NASA photography.
+
+Motion is progressive enhancement: short 180–220 ms arrivals, native scrolling, optional section entrances, run/filter/comparison/answer transitions and supported native disclosure expansion. No content waits behind an intro. Missing or failed animation APIs leave controls working. Reduced motion disables both JS and CSS animation. A static headline and documentation link remain before JavaScript starts.
+
+Reliability fixes include custom-question focus and blank validation, preserving unfinished questions across filter changes, explicit comparison removal, disclosure/focus/scroll preservation, saving unfinished mission drafts, validation of saved data, cancellation of obsolete screening responses, Back/profile/report error recovery and starting report generation from the report step. Real asynchronous actions show pending/completion/error feedback. NASA research needs neither an API key nor the remote screening engine.
+
+The full control inventory and verification boundaries are in [CONTROL_AUDIT.md](CONTROL_AUDIT.md), also served at `/control-audit`. Focused local regressions cover rapid answer changes, filter accounting, comparison states, clipboard failure, storage denial/corruption, validation, delayed service responses, screening action requests, report exports and reduced-motion/failure behavior. Test fixture responses are used only in tests, never to replace failed live calculations.
+
+**AI remains inactive pending the API key.** Existing integration code is preserved; no provider was activated. The inactive client makes no background AI availability request.
+
+### GitHub handoff
+
+Requested owner: `Vortex-Aathish-Studios-2010`; requested repository name: `astroflare`, private by default. Automatic creation was attempted but GitHub returned `Resource not accessible by integration (createRepository)`. This is an integration permission boundary, not a source/build error. Owner action: create an empty private repository at https://github.com/new (without README, licence or .gitignore), allow the connected GitHub integration access, and provide its URL. Keep the existing Sites `origin` remote; add GitHub as a second remote and push **main**. No GitHub repository creation is claimed until the push is verified. `.github/workflows/ci.yml` runs the build, Node regressions, source audit and Worker syntax check without credentials or external services.
+
+The source ZIP at `/source.zip` contains the project, test fixtures, pinned sources, fonts with their licences, Render configuration and CI workflow. It deliberately omits Sites identity, credentials, node_modules and Git history. For local use: `npm ci`, `npm run build`, `npm test`, then `npm start`. Node 22+ and Python 3 are required; open the port printed by `server.mjs`.
+
+**Verification boundary:** automated DOM sessions are not a rendering browser. The managed environment has no callable browser-control tool; the Sites skill prohibits substituting a browser automation installation here. Real desktop/tablet/390 px rendering, native keyboard/touch/clipboard/print and actual overflow must still be reviewed in a browser. Declared dark-theme text pairs were checked at 6.49:1 or higher. The separate original screening service last returned HTTP 429; fresh live screening and report generation remain subject to its availability. NASA source checks and the standalone research paths continue independently.
+
+Earlier release notes below retain the source and deployment history; the current design is the midnight edition described above.
+
+
 Live project: https://astroflare-research-2026.ajuponnu2009.chatgpt.site/
 
 This is an in-place upgrade of the existing Sites project `appgprj_6af7a9a4f6748191bdc90847b966765a`, branch `main`. Its audience was explicitly changed from owner-private to **public** at the user's request. The separate original Render service at https://astroflare.onrender.com/ was not changed.

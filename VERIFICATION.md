@@ -1,5 +1,20 @@
 # AstroFlare judging verification — 14 November 2026
 
+## Current midnight/control-audit release
+
+The complete before-change control inventory is `/control-audit`. This release adds regression coverage for custom-question opening/validation/draft retention, comparison removal and disclosure state, mission draft persistence, corrupt/denied storage, cancellation of obsolete interpretation/flow/assessment/report/investigation responses, unknown/unit/basis controls, profile failure retry, Back network failure, every investigation action, source-verification recovery, pinned baseline comparison, and opening Report from the stepper. Motion-API absence/failure and reduced-motion preferences must leave content visible and controls functional.
+
+Local source audit preserves all eight NASA PSI rows plus the separately cited Saffire I companion results. No measurement or relevance formula changes in this release. Both current report formats retain the corrected fault current integral (I²t) terminology and exact numeric values.
+
+The current design uses flat charcoal/midnight surfaces, Instrument Serif/Sans, warm white text, selective electric blue controls and copper measurement accents. Tested declared foreground/background color pairs: body 15.81:1, secondary 8.70:1, NASA source 8.44:1, copper measurement 6.49:1, primary button 7.90:1, warning 8.54:1, error 7.97:1. This does not certify actual rendered-page contrast or visual layout.
+
+Post-publish acceptance repeats core and scientific checks at DOM widths 1280/390 and new reliability checks at 1280/768/390, using anonymously downloaded production HTML. Original NASA links, pinned CSV hashes, source archive, documentation, dataset, fonts and control audit are checked separately over HTTP. A fresh screening/report attempt must be reported separately from fixture success.
+
+GitHub creation is currently **Blocked** by `Resource not accessible by integration (createRepository)`. The owner must create an empty private `astroflare` repository and permit the connection to access it. A CI workflow is included and the project remains saved in its existing Sites Git repository.
+
+**AI remains inactive pending the API key.** No generated requests or simulated AI responses. **Real browser visual/native checks remain Blocked** because no browser-control tool is callable. Earlier release results below are historical and are not substituted for current live-service acceptance.
+
+
 Exact public URL: https://astroflare-research-2026.ajuponnu2009.chatgpt.site/
 Project appgprj_6af7a9a4f6748191bdc90847b966765a; branch main; existing public audience retained. The original Render deployment and numerical assessment engine are unchanged.
 

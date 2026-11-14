@@ -7,9 +7,9 @@
     update();open.forEach(id=>{const d=document.getElementById(id);if(d)d.open=true;});
     const next=id&&document.getElementById(id);if(next){next.focus({preventScroll:true});if(next.setSelectionRange&&start!=null)try{next.setSelectionRange(start,end);}catch{}}
     window.scrollTo({left:x,top:y,behavior:'instant'});
-    if(!reducedMotion())document.querySelectorAll('[data-rank-id]').forEach(e=>{const old=previous.get(e.dataset.rankId),now=e.getBoundingClientRect();if(old&&old.height&&now.height&&e.animate){const dy=old.top-now.top;if(Math.abs(dy)>1)e.animate([{transform:'translateY('+dy+'px)'},{transform:'none'}],{duration:200,easing:'ease-out'});}});
+    if(!reducedMotion())document.querySelectorAll('[data-rank-id]').forEach(e=>{const old=previous.get(e.dataset.rankId),now=e.getBoundingClientRect();if(old&&old.height&&now.height&&e.animate){const dy=old.top-now.top;if(Math.abs(dy)>1)playMotion(e,[{transform:'translateY('+dy+'px)'},{transform:'none'}],{duration:200});}});
   }
-  function refreshResearch(focusId){preserveView(()=>renderStage(),focusId);syncNavigation('research',true);}
+  function refreshResearch(focusId){const before={decision:$('research-decision')?.textContent,comparison:$('comparison')?.textContent,measurement:document.querySelector('.top-evidence .evidence-kind')?.textContent};preserveView(()=>renderStage(),focusId);syncNavigation('research',true);if(before.decision!==$('research-decision')?.textContent)animateArrival($('research-decision'));if(before.comparison!==$('comparison')?.textContent)animateArrival($('comparison'));if(before.measurement!==document.querySelector('.top-evidence .evidence-kind')?.textContent)animateArrival(document.querySelector('.top-evidence .evidence-kind'));}
   function refreshAnswerPanel(){
     if(S.stage!=='research')return;
     preserveView(()=>{const old=document.getElementById('evidence-ask-panel');if(!old)return;const holder=el('div');renderEvidenceAsk(holder,rankResearch(EXPLORER.question,EXPLORER.filters,EXPLORER.scenario));old.replaceWith(holder.firstElementChild);});
@@ -30,7 +30,7 @@
     d.citations.forEach(c=>panel.appendChild(el('p',{class:'small'},[el('a',{href:c.url,target:'_blank',rel:'noopener noreferrer',text:'Original NASA table · '+c.id+' · row '+c.row+' ↗'})])));
     const copy=el('button',{type:'button',id:'copy-research-brief',class:'btn primary',text:'Copy research brief + citations'}),status=el('span',{class:'small',id:'brief-copy-status',role:'status'});
     const fallback=el('textarea',{id:'research-brief-text',readonly:'true','aria-label':'Research brief with citations',hidden:true});fallback.value=d.text;
-    copy.addEventListener('click',async()=>{try{if(!navigator.clipboard?.writeText)throw Error('clipboard unavailable');await navigator.clipboard.writeText(d.text);status.textContent='Research brief copied with citations.';}catch{fallback.hidden=false;fallback.focus({preventScroll:true});fallback.select();status.textContent='Clipboard access failed. Select and copy the brief below (Ctrl/Cmd+C).';}});panel.appendChild(el('div',{class:'row mt'},[copy,status]));panel.appendChild(fallback);return panel;
+    copy.addEventListener('click',async()=>{copy.disabled=true;status.textContent='Copying the current research brief…';try{if(!navigator.clipboard?.writeText)throw Error('clipboard unavailable');await navigator.clipboard.writeText(d.text);status.textContent='Research brief copied with citations.';}catch{fallback.hidden=false;fallback.focus({preventScroll:true});fallback.select();status.textContent='Clipboard access failed. Select and copy the brief below (Ctrl/Cmd+C).';}finally{copy.disabled=false;}});panel.appendChild(el('div',{class:'row mt'},[copy,status]));panel.appendChild(fallback);return panel;
   }
   function instrumentLayout(st,ranked,grid){
     const top=grid.firstElementChild,comparison=document.getElementById('comparison');const row=el('div',{class:'decision-layout'}),left=el('div',{class:'lead-evidence'});
@@ -56,7 +56,7 @@
     const saved=history.state?.astroflare?history.state:null;
     let stage=saved?.stage||(location.hash==='#lunar-demo'?'research':location.hash==='#mission'?'mission':'home');
     if(!['home','research','mission'].includes(stage)&&!canVisit(stage))stage='mission';
-    if(stage==='research'&&saved?.explorer){const e=saved.explorer;EXPLORER.question=e.question;EXPLORER.filters={...e.filters};EXPLORER.scenario={...e.scenario};EXPLORER.selected=[...e.selected];EXPLORER.change='Research view restored. Original evidence and source links remain available.';}
+    if(stage==='research'&&saved?.explorer){const e=saved.explorer;EXPLORER.question=e.question;EXPLORER.questionDraft=e.question;EXPLORER.filters={...e.filters};EXPLORER.scenario={...e.scenario};EXPLORER.selected=[...e.selected];EXPLORER.change='Research view restored. Original evidence and source links remain available.';}
     cancelEvidence();navigationRestoring=true;goTo(stage);navigationRestoring=false;syncNavigation(stage,true);
   }
   window.addEventListener('popstate',restoreNavigation);

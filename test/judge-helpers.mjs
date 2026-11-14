@@ -2,9 +2,9 @@ import assert from 'node:assert/strict';
 import {JSDOM,VirtualConsole} from 'jsdom';
 export const origin='https://astroflare-research-2026.ajuponnu2009.chatgpt.site';
 export const pause=()=>new Promise(r=>setTimeout(r,20));
-export function bootJudge(html,{width=1280,historyState,url=origin+'/',fetcher=async()=>{throw Error('Remote service deliberately offline');}}={}){
+export function bootJudge(html,{width=1280,historyState,beforeParse=()=>{},url=origin+'/',fetcher=async()=>{throw Error('Remote service deliberately offline');}}={}){
  const errors=[],calls=[],vc=new VirtualConsole();vc.on('jsdomError',e=>errors.push(e.message));
- const dom=new JSDOM(html,{url,runScripts:'dangerously',virtualConsole:vc,beforeParse(w){w.structuredClone=structuredClone;w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=()=>{};Object.defineProperty(w,'innerWidth',{value:width});w.matchMedia=query=>({matches:query.includes('reduced-motion'),media:query});w.fetch=async(path,opts)=>{calls.push(path);return fetcher(path,opts)};if(historyState)w.history.replaceState(historyState,'',url);}});
+ const dom=new JSDOM(html,{url,runScripts:'dangerously',virtualConsole:vc,beforeParse(w){w.structuredClone=structuredClone;w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=()=>{};Object.defineProperty(w,'innerWidth',{value:width});w.matchMedia=query=>({matches:query.includes('reduced-motion'),media:query});w.fetch=async(path,opts)=>{calls.push(path);return fetcher(path,opts)};if(historyState)w.history.replaceState(historyState,'',url);beforeParse(w);}});
  return {dom,w:dom.window,d:dom.window.document,errors,calls};
 }
 export function choose(d,w,id,value){const f=d.getElementById(id);assert.ok(f,id);f.value=value;assert.equal(f.value,value);f.dispatchEvent(new w.Event('change'));}
