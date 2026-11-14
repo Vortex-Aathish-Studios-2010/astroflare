@@ -83,3 +83,11 @@ The legacy measurements CSV also corrects Saffire I sample 1-2 oxygen to approxi
 11–19 s: Show the ranked-study/supporting-study explanation and the proposed next step.
 19–25 s: Select Silicone and Opposed-flow investigation; show study match versus curated-run gap.
 25–30 s: Copy research brief + citations, then open the original NASA table from the takeaway.
+
+## Post-publication result — journal release
+
+**Pass:** exact public homepage returned 200 anonymously; complete core and journal DOM suites passed at configured widths 1280/390 with zero uncaught DOM errors. Both plate controls, examples, brief copy payload, Silicone + Opposed case, comparison, Saffire I/II and lunar gap passed on deployed bytes. All NASA PSI records/metadata/tables returned 200; original and pinned CSV hashes matched. NTRS record and PDF returned 200 and the PDF matched the reviewed source hash. Documentation, source archive, dataset, legacy measurement CSV and four bundled font files returned 200. Initial anonymous homepage delivery in this run was 824 ms; DOM timing is not rendered-browser/human timing.
+
+**Blocked:** the subsequent real manual screening path and hypothetical-demo report request both received HTTP 429 from the original remote engine. Fresh live Markdown/JSON export verification therefore did not pass in this release. Local export tests using the preserved engine report fixture passed: corrected terminology, exact 112.5 A²·s, valid Markdown/JSON. Earlier production screening/report runs succeeded before this service limit. The release adds a clear rate-limit message, keeps answers, exposes retry/research recovery and forwards Retry-After when present; no automatic retry is added. The upstream service owner must resolve its rate limit before repeating `test/mission-live.mjs`.
+
+**Blocked:** real desktop and 390 px mobile rendering/native keyboard/touch/clipboard/OS reduced-motion inspection, because no browser-control tool is callable. **External issue:** the official challenge brief returned HTTP 503. Neither limitation is presented as a passing check.

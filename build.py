@@ -67,6 +67,7 @@ h=h.replace('  function askQuestion(text) {', '''  function askQuestion(text) {
     if(!AI_ENABLED){const action=/missing|unknown|gap/i.test(text)?"missing":/calculation|calculated|power|current|I²t/i.test(text)?"calc":/source|evidence|citation/i.test(text)?"evidence":/verify|verification/i.test(text)?"verify":/index/i.test(text)?"index":/influence|matters most/i.test(text)?"influence":null;if(action)return investigate(action);pushLog({kind:"note",text:"AI remains inactive pending the API key. Use the calculation, missing-input, verification or source tools above; no generated answer has been requested."});return;}
 ''')
 h=h.replace('Not available on this installation. The assessment stands without it.', 'AI remains inactive pending the API key. The assessment stands without it.')
+h=h.replace('.then(function (res) { return res.json()', '.then(function (res) { if(res.status===429)throw new Error("The screening service is receiving too many requests. Your answers are kept. Wait a moment, then retry; the NASA lunar demo remains available."); return res.json()')
 # Everything needed for the immediate demo and research is local, including bootstrap schema.
 bootstrap=json.loads((p/'sources/schema.json').read_text());demo=json.loads((p/'demo.json').read_text())
 dataset=json.loads((p/'public/dataset.json').read_text())
