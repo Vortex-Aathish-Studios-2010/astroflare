@@ -64,9 +64,8 @@ h=h.replace('S.reportErr = null; } else busy(p, "Assembling the report"); card.a
 
 h=h.replace('then(function (b) { clearTimeout(timer); return b; }', 'then(function (b) { clearTimeout(timer); return correctAssessmentTerminology(b); }')
 h=h.replace('  function askQuestion(text) {', '''  function askQuestion(text) {
-    if(!AI_ENABLED){const action=/missing|unknown|gap/i.test(text)?"missing":/calculation|calculated|power|current|I²t/i.test(text)?"calc":/source|evidence|citation/i.test(text)?"evidence":/verify|verification/i.test(text)?"verify":/index/i.test(text)?"index":/influence|matters most/i.test(text)?"influence":null;if(action)return investigate(action);pushLog({kind:"note",text:"AI remains inactive pending the API key. Use the calculation, missing-input, verification or source tools above; no generated answer has been requested."});return;}
+    if(!AI_ENABLED){const action=/missing|unknown|gap/i.test(text)?"missing":/calculation|calculated|power|current|I²t/i.test(text)?"calc":/source|evidence|citation/i.test(text)?"evidence":/verify|verification/i.test(text)?"verify":/index/i.test(text)?"index":/influence|matters most/i.test(text)?"influence":null;if(action)return investigate(action);pushLog({kind:"note",text:"AI is not enabled in this build. Use the calculation, missing-input, verification or source tools above; no generated answer has been requested."});return;}
 ''')
-h=h.replace('Not available on this installation. The assessment stands without it.', 'AI remains inactive pending the API key. The assessment stands without it.')
 h=h.replace('.then(function (res) { return res.json()', '.then(function (res) { if(res.status===429)throw new Error("The screening service is receiving too many requests. Your answers are kept. Wait a moment, then retry; the NASA lunar demo remains available."); return res.json()')
 # Guard original UI callbacks and collect drafts before local persistence.
 h=h.replace('function () { try { localStorage.setItem(KEY', 'function () { try { collectVisibleDrafts(); localStorage.setItem(KEY')
@@ -81,7 +80,7 @@ h=h.replace('u.value = S.answers.pressure_unit', 'u.disabled=!!(a&&a.unknown);u.
 # Everything needed for the immediate demo and research is local, including bootstrap schema.
 bootstrap=json.loads((p/'sources/schema.json').read_text());demo=json.loads((p/'demo.json').read_text())
 dataset=json.loads((p/'public/dataset.json').read_text())
-payload='const AI_ENABLED=false;\n'+(p/'public/terminology.js').read_text()+'\nconst PSI_DATA='+json.dumps(dataset)+';\n'+'const BOOTSTRAP=correctAssessmentTerminology('+json.dumps(bootstrap)+');\nconst DEMO=correctAssessmentTerminology('+json.dumps(demo)+');\n'+(p/'public/research.js').read_text()
+payload='const AI_ENABLED=true;\n'+(p/'public/terminology.js').read_text()+'\nconst PSI_DATA='+json.dumps(dataset)+';\n'+'const BOOTSTRAP=correctAssessmentTerminology('+json.dumps(bootstrap)+');\nconst DEMO=correctAssessmentTerminology('+json.dumps(demo)+');\n'+(p/'public/research.js').read_text()
 h=h.replace('<script>','<script>\n'+payload,1)
 h=h.replace('  // ---------------------------------------------------------------- start\n', (p/'public/enhancements.js').read_text()+'\n'+(p/'public/explorer.js').read_text()+'\n'+(p/'public/motion.js').read_text()+'\n'+(p/'public/plate.js').read_text()+'\n'+(p/'public/reliability.js').read_text()+'\n'+(p/'public/experience.js').read_text()+'\n  // ---------------------------------------------------------------- start\n')
 (p/'public/index.html').write_text(h)
@@ -94,7 +93,9 @@ for font in (p/'public').glob('*.ttf'):
 bundle=io.BytesIO()
 with zipfile.ZipFile(bundle,'w',zipfile.ZIP_DEFLATED) as z:
     files=['build.py','worker.js','server.mjs','package.json','package-lock.json','README.md','VERIFICATION.md','render.yaml','CONTROL_AUDIT.md','RELEASE_CHECKS.json','.github/workflows/ci.yml','demo.json','.gitignore']
+    files += ['Dockerfile','.dockerignore']
     files += [str(f.relative_to(p)) for d in ['sources','test','public'] for f in (p/d).glob('*') if f.is_file() and f.name not in ['source.zip','index.html']]
+    files += [str(f.relative_to(p)).replace('\\','/') for f in (p/'engine').rglob('*') if f.is_file() and '__pycache__' not in f.parts and f.suffix!='.pyc']
     for f in sorted(files):
         info=zipfile.ZipInfo(f,date_time=(2026,11,14,0,0,0)); info.compress_type=zipfile.ZIP_DEFLATED;z.writestr(info,(p/f).read_bytes())
 assets['/source.zip']={'body':base64.b64encode(bundle.getvalue()).decode(),'base64':True,'type':'application/zip'}

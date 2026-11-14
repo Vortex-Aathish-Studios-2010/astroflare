@@ -1,12 +1,29 @@
-# Deployment configuration for the NEW copy only; not the original Render service.
+# Render service for AstroFlare (https://render.com/docs/blueprint-spec).
+# One free Docker service runs the interface, the Python assessment engine and, privately inside the same container,
+# a FreeLLMAPI router that writes the optional AI text (see Dockerfile and engine/render_start.py).
+# Only the interface is reachable from the internet. Secrets are NOT stored here: variables marked `sync: false`
+# are entered once in the Render dashboard. Nothing in this file is a key.
 services:
   - type: web
-    name: astroflare-research-copy
-    runtime: node
-    branch: main
-    buildCommand: python3 build.py
-    startCommand: node server.mjs
-    healthCheckPath: /healthz
+    name: astroflare
+    runtime: docker
+    plan: free                       # free web services sleep after ~15 minutes without traffic (about a minute to wake)
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /healthz        # liveness of the interface only; reveals nothing
+    autoDeployTrigger: "off"         # deploy deliberately, not on every commit
     envVars:
-      - key: NODE_VERSION
-        value: '22'
+      - key: ASTROFLARE_ENV
+        value: production            # the engine ignores developer mode and applies per-visitor limits
+      - key: AI_PROVIDER
+        value: freellmapi
+      # Models tried in order. They must belong to a provider whose key is in FREEAPI_CONFIG_JSON (these are Google's).
+      - key: FREELLMAPI_MODEL
+        value: gemini-3.6-flash,gemini-3.5-flash-lite,gemini-3.5-flash
+      # FreeLLMAPI's provider keys, loaded on every start because the free plan keeps no files. Example shape:
+      #   {"keys":[{"platform":"google","key":"..."},{"platform":"groq","key":"..."}]}
+      # Optional: without it the site works fully; only the AI text is unavailable.
+      - key: FREEAPI_CONFIG_JSON
+        sync: false
+      # Optional: set to e.g. 8 to cap how many AI calls the whole site makes per minute (default 12).
+      # - key: ASTROFLARE_AI_RATE_PER_MIN
+      #   value: "12"

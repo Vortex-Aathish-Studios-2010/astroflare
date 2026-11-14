@@ -16,9 +16,14 @@ jobs:
           cache: npm
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.13'
       - run: npm ci
       - run: npm run build
       - run: npm test
       - run: python3 test/source-audit.py
       - run: node --check dist/server/index.js
+      - name: Python engine tests
+        run: python -m unittest discover -p "test_*.py"
+        working-directory: engine
+      - name: Docker image builds
+        run: docker build -t astroflare-ci .

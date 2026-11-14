@@ -1,0 +1,662 @@
+{
+ "libraryVersion": "2026-10-21",
+ "reviewedOn": "2026-10-21",
+ "description": "Curated sources used by Astroflare's assessment rules. Each claim paraphrases what the cited document (or its abstract) says; it is not evidence about any particular spacecraft design. 'review.depth' states how much of the document was actually read.",
+ "sources": [
+  {
+   "id": "S01",
+   "kind": "official technical brief",
+   "title": "NASA-STD-3001 Technical Brief: Fire Protection (OCHMO-TB-008, Rev A)",
+   "authors": [],
+   "issuer": "NASA Office of the Chief Health & Medical Officer (OCHMO)",
+   "date": "2023-11-29",
+   "dateKind": "document",
+   "identifier": "OCHMO-TB-008 Rev A",
+   "url": "https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-008-fire-protection.pdf",
+   "verify": {
+    "method": "http",
+    "expectedContentType": "application/pdf"
+   },
+   "review": {
+    "depth": "full text",
+    "note": "All 16 pages were read from the PDF text on 2026-10-21."
+   },
+   "caveats": [
+    "The brief states it is derived from NASA-STD-3001, is for reference only, and does not supersede or waive Agency, Program or Contract requirements.",
+    "Much of it describes International Space Station practice; statements about deep-space missions are described as challenges and open gaps, not solutions.",
+    "Requirement numbers (for example [V2 9059]) appear as quoted in the brief; NASA-STD-3001 itself was not reviewed."
+   ],
+   "claims": [
+    {
+     "id": "S01.c1",
+     "topic": "prevention",
+     "text": "The basic approach to minimising fire hazards in space is prevention, meaning elimination of one of fuel, oxygen or ignition energy. Prevention is never absolute, so the overall strategy must also include fire detection, response and suppression."
+    },
+    {
+     "id": "S01.c2",
+     "topic": "gravity_airflow",
+     "text": "Changes in gravity and airflow alter how fire behaves. Without buoyancy, flames burn equally in all directions, and ventilation fans can supply the air a fire needs so that fire can spread in any direction."
+    },
+    {
+     "id": "S01.c3",
+     "topic": "oxygen_pressure",
+     "text": "In environments with higher oxygen content and/or pressure, materials that normally do not burn have a lower ignition temperature, are more vigorously combustible and have a higher flame temperature if they do burn."
+    },
+    {
+     "id": "S01.c4",
+     "topic": "detection_airflow",
+     "text": "In space smoke does not rise, so smoke detectors are placed within the ventilation system; airflow must be provided in occupied areas to make smoke visible or detectable by odour."
+    },
+    {
+     "id": "S01.c5",
+     "topic": "gas_monitoring",
+     "text": "Buildup of atmospheric gases, particularly carbon monoxide, is an additional source of early warning of a fire; the ISS uses continuous atmospheric sampling that can detect carbon monoxide buildup as confirmation of a fire."
+    },
+    {
+     "id": "S01.c6",
+     "topic": "response_sequence",
+     "text": "The ISS fire response sequence includes detection and warning, terminating ventilation in the affected module to slow the spread of fire, donning protective masks, manually removing electrical power from hardware in the affected module to cease continuous ignition sources, and then using fire extinguishers."
+    },
+    {
+     "id": "S01.c7",
+     "topic": "electrical_ignition_history",
+     "text": "For the Apollo 1 fire (1967), an unidentified ignition event led to rapid fire spread in the closed cabin; electric wiring and plumbing carrying a combustible coolant were considered the most probable ignition sources."
+    },
+    {
+     "id": "S01.c8",
+     "topic": "partial_gravity_gap",
+     "text": "Material flammability in partial gravity remains a major gap for exploration missions: ground-based low-gravity flammability screening has been relatively effective, but no terrestrial facility can confirm that results are relevant for partial gravity."
+    },
+    {
+     "id": "S01.c9",
+     "topic": "deep_space_constraints",
+     "text": "For deep-space missions the brief lists no emergency resupply, more limited stowage of suppressant and atmospheric diluents, and consultation and emergency communications with the ground that may be of poor quality and delayed; it states the technical solutions currently implemented on the ISS are not designed for long-duration missions."
+    },
+    {
+     "id": "S01.c10",
+     "topic": "materials_testing",
+     "text": "Material flammability must be assessed in relevant cabin atmospheres and gravity levels for exploration transit vehicles and habitats, and design requirements need to specify the permitted combinations of pressure and oxygen percentage in the habitable volume."
+    },
+    {
+     "id": "S01.c11",
+     "topic": "detection_signatures",
+     "text": "Human-crew spacecraft require automated detectors that respond to fire signatures (temperature rise, combustion gases, light and other radiation, particulates, pressure rise, acoustic waves); rapid detection with limited false alarms is needed, and detection depends on knowing where detectors should be located and the associated time to detection."
+    },
+    {
+     "id": "S01.c12",
+     "topic": "suppression_ppe",
+     "text": "Extinguishing equipment must be usable in microgravity without assistance from gravity, clearly identified and accessible, and must not create additional hazards; protective equipment must be donned in smoke or near a fire because even small concentrations of some combustion products can be immediately harmful."
+    },
+    {
+     "id": "S01.c13",
+     "topic": "postfire",
+     "text": "Considerable clean-up is required after all fire events; the state of the environment to be scrubbed (pressure, temperature, composition) must be specified, the crew must be able to determine whether the atmosphere is safe enough to remove breathing apparatus, and the ventilation system may need to be shut down to protect the crew."
+    },
+    {
+     "id": "S01.c14",
+     "topic": "fire_protection_system",
+     "text": "As quoted in the brief, NASA-STD-3001 Volume 2 requirement [V2 9059] calls for a fire protection system of detecting, warning and extinguishing devices, without creating a hazardous environment, in all spacecraft volumes during all mission phases."
+    },
+    {
+     "id": "S01.c15",
+     "topic": "response_scenarios",
+     "text": "Fire response scenarios must be defined and evaluated for exploration spacecraft and habitats."
+    },
+    {
+     "id": "S01.c16",
+     "topic": "automated_response",
+     "text": "Automated systems are to be used where crews are not capable of extinguishing fires, including large fires, fires where the crew could be absent, and fires in volumes inaccessible to the crew."
+    }
+   ]
+  },
+  {
+   "id": "S02",
+   "kind": "conference paper (NASA technical memorandum)",
+   "title": "Contributions of Microgravity Test Results to the Design of Spacecraft Fire Safety Systems",
+   "authors": [
+    "Friedman, Robert",
+    "Urban, David L."
+   ],
+   "issuer": "NASA",
+   "date": "1993-03-01",
+   "dateKind": "publication",
+   "identifier": "AIAA PAPER 93-1152, NASA-TM-106093, NAS 1.15:106093",
+   "url": "https://ntrs.nasa.gov/citations/19930015566",
+   "verify": {
+    "method": "ntrs",
+    "ntrsId": "19930015566",
+    "expectedTitle": "Contributions of Microgravity Test Results to the Design of Spacecraft Fire Safety Systems"
+   },
+   "review": {
+    "depth": "abstract",
+    "note": "Abstract retrieved from NASA NTRS on 2026-10-21; full text not read."
+   },
+   "caveats": [
+    "Abstract only was reviewed; the full paper was not.",
+    "Results described are for thin-sheet materials in 1990s experiments; applicability to a specific design, material or atmosphere is not established.",
+    "Published more than 30 years ago."
+   ],
+   "claims": [
+    {
+     "id": "S02.c1",
+     "topic": "low_gravity_flammability",
+     "text": "Experiments in spacecraft and drop towers show that thin-sheet materials have reduced flammability ranges and flame-spread rates in quiescent low gravity compared with normal gravity."
+    },
+    {
+     "id": "S02.c2",
+     "topic": "dilution_pressure",
+     "text": "Low-gravity flames may be suppressed more easily by atmospheric dilution or by decreasing total atmospheric pressure than their normal-gravity counterparts."
+    },
+    {
+     "id": "S02.c3",
+     "topic": "ventilation_flow",
+     "text": "Adding a ventilating air flow to the low-gravity flame zone can greatly enhance the flammability range and flame spread."
+    },
+    {
+     "id": "S02.c4",
+     "topic": "detection_signatures",
+     "text": "The paper reports observations of flame and smoke characteristics that are useful as microgravity fire-detection signatures."
+    }
+   ]
+  },
+  {
+   "id": "S03",
+   "kind": "conference paper",
+   "title": "Effect Of Low External Flow On Flame Spreading Over ETFE Insulated Wire Under Microgravity",
+   "authors": [
+    "Nishizawa, Katsuhiro",
+    "Fujita, Osamu",
+    "Ito, Kenichi",
+    "Kikuchi, Masao",
+    "Olson, Sandra L.",
+    "Kashiwagi, Takashi"
+   ],
+   "issuer": "NASA Glenn Research Center",
+   "date": "2003-08-01",
+   "dateKind": "publication",
+   "identifier": "NTRS 20040053553",
+   "url": "https://ntrs.nasa.gov/citations/20040053553",
+   "verify": {
+    "method": "ntrs",
+    "ntrsId": "20040053553",
+    "expectedTitle": "Effect Of Low External Flow On Flame Spreading Over ETFE Insulated Wire Under Microgravity"
+   },
+   "review": {
+    "depth": "abstract",
+    "note": "Abstract retrieved from NASA NTRS on 2026-10-21; full text not read."
+   },
+   "caveats": [
+    "Abstract only was reviewed.",
+    "Describes drop-tower work on ETFE-insulated and polyethylene-insulated wire; it is not a statement about any specific cable or spacecraft.",
+    "Published in 2003."
+   ],
+   "claims": [
+    {
+     "id": "S03.c1",
+     "topic": "electrical_ignition_history",
+     "text": "The authors state that a likely cause of fires in spacecraft is wire insulation combustion in electrical systems."
+    },
+    {
+     "id": "S03.c2",
+     "topic": "ventilation_flow",
+     "text": "The authors state that research on how low external (ventilation) flow affects flame spreading over wire insulation in microgravity is very limited, so the effect of low flow velocity was not clear when the paper was written."
+    }
+   ]
+  },
+  {
+   "id": "S04",
+   "kind": "conference abstract",
+   "title": "A New Test Methodology for Evaluating Fire Risk Due to Electrical Faults in Oxygen-Enriched Environments",
+   "authors": [
+    "Stephen F Peralta",
+    "Timothy D Gallus",
+    "Gregory J Harrigan",
+    "Thomas K Evans",
+    "DeAngelo D Maestas"
+   ],
+   "issuer": "NASA Johnson Space Center",
+   "date": "2024-11-18",
+   "dateKind": "NTRS record",
+   "identifier": "NTRS 20240014551",
+   "url": "https://ntrs.nasa.gov/citations/20240014551",
+   "verify": {
+    "method": "ntrs",
+    "ntrsId": "20240014551",
+    "expectedTitle": "A New Test Methodology for Evaluating Fire Risk Due to Electrical Faults in Oxygen-Enriched Environments"
+   },
+   "review": {
+    "depth": "abstract",
+    "note": "Abstract retrieved from NASA NTRS on 2026-10-21; full text not read."
+   },
+   "caveats": [
+    "Abstract only was reviewed; the numerical thresholds are not given in the abstract and are specific to the materials and configurations tested.",
+    "Astroflare holds no ignition-threshold data and applies none."
+   ],
+   "claims": [
+    {
+     "id": "S04.c1",
+     "topic": "electrical_fault_method",
+     "text": "A 'wire-break' test method used at the NASA White Sands Test Facility assesses spacecraft materials exposed to electrical faults by identifying the conditions under which pyrolyzed material transitions from a brief flash to a propagating flame."
+    },
+    {
+     "id": "S04.c2",
+     "topic": "electrical_fault_threshold",
+     "text": "The approach seeks energy-density thresholds derived from I-squared-t values for current-induced heating of various test materials and wire characteristics."
+    },
+    {
+     "id": "S04.c3",
+     "topic": "electrical_fault_scaling",
+     "text": "The abstract names oxygen pressure, wire diameter, heat sinking and contained smoke volume among the scaling factors for relating threshold data to real designs."
+    }
+   ]
+  },
+  {
+   "id": "S05",
+   "kind": "conference paper (historical)",
+   "title": "Manned spacecraft electrical fire safety",
+   "authors": [
+    "Wardell, A. W."
+   ],
+   "issuer": "NASA",
+   "date": "1971-01-01",
+   "dateKind": "publication",
+   "identifier": "NTRS 19720008780",
+   "url": "https://ntrs.nasa.gov/citations/19720008780",
+   "verify": {
+    "method": "ntrs",
+    "ntrsId": "19720008780",
+    "expectedTitle": "Manned spacecraft electrical fire safety"
+   },
+   "review": {
+    "depth": "abstract",
+    "note": "Abstract retrieved from NASA NTRS on 2026-10-21; no full text is available through NTRS."
+   },
+   "caveats": [
+    "Abstract only was reviewed.",
+    "Apollo-era (1971) work; materials, atmospheres and designs may differ substantially from current practice."
+   ],
+   "claims": [
+    {
+     "id": "S05.c1",
+     "topic": "electrical_ignition_history",
+     "text": "The paper describes fire hazards created in spacecraft compartments by malfunction of electrical wiring and presents tests for electrical wire and cable current-overload flammability."
+    }
+   ]
+  },
+  {
+   "id": "S06",
+   "kind": "conference paper",
+   "title": "Spacecraft Fire Safety Technology Development Plan For Exploration Missions",
+   "authors": [
+    "Gary A Ruff",
+    "David L Urban",
+    "Daniel L Dietrich"
+   ],
+   "issuer": "NASA Glenn Research Center",
+   "date": "2020-07-12",
+   "dateKind": "NTRS record",
+   "identifier": "ICES-2020-173",
+   "url": "https://ntrs.nasa.gov/citations/20205000063",
+   "verify": {
+    "method": "ntrs",
+    "ntrsId": "20205000063",
+    "expectedTitle": "Spacecraft Fire Safety Technology Development Plan For Exploration Missions"
+   },
+   "review": {
+    "depth": "abstract",
+    "note": "Abstract retrieved from NASA NTRS on 2026-10-21; full text not read."
+   },
+   "caveats": [
+    "Abstract only was reviewed.",
+    "A technology-development roadmap paper; it identifies needs and does not assess any particular design."
+   ],
+   "claims": [
+    {
+     "id": "S06.c1",
+     "topic": "mission_parameter_space",
+     "text": "NASA states that past spaceflight operations covered a narrow range of conditions from a fire-safety perspective, and that missions beyond low Earth orbit expand the parameter space to include extended durations, dormancy intervals, increased oxygen concentrations, partial gravity and surface dust, each of which can significantly affect fire-safety system design and operations."
+    }
+   ]
+  },
+  {
+   "id": "S07",
+   "kind": "white paper",
+   "title": "Research Questions and Challenges for Improved Spacecraft Fire Detection",
+   "authors": [
+    "Claire Fortenberry",
+    "Xiaoliang Wang",
+    "Thomas Cleary",
+    "John Easton",
+    "Gordon Berger",
+    "Marit Meyer"
+   ],
+   "issuer": "NASA Glenn Research Center",
+   "date": "2021-10-31",
+   "dateKind": "publication",
+   "identifier": "NTRS 20210022143",
+   "url": "https://ntrs.nasa.gov/citations/20210022143",
+   "verify": {
+    "method": "ntrs",
+    "ntrsId": "20210022143",
+    "expectedTitle": "Research Questions and Challenges for Improved Spacecraft Fire Detection"
+   },
+   "review": {
+    "depth": "abstract",
+    "note": "Abstract retrieved from NASA NTRS on 2026-10-21; full text not read."
+   },
+   "caveats": [
+    "Abstract only was reviewed.",
+    "A research-needs white paper prepared for a decadal survey; it does not report measurements of a specific detector."
+   ],
+   "claims": [
+    {
+     "id": "S07.c1",
+     "topic": "fire_emissions",
+     "text": "Fire emissions are affected by fuel type, heating conditions, gravity and exploration atmosphere."
+    },
+    {
+     "id": "S07.c2",
+     "topic": "detection_variety",
+     "text": "Effective spacecraft fire detectors must detect a wide variety of fires, and the authors recommend research toward detectors that selectively detect a broad variety of fires."
+    }
+   ]
+  },
+  {
+   "id": "S08",
+   "kind": "presentation",
+   "title": "Particle and Smoke Detection on ISS for Next Generation Smoke Detectors",
+   "authors": [
+    "Urban, David L.",
+    "Ruff, Gary",
+    "Yuan, Zeng-guang",
+    "Sheredy, William",
+    "Funk, Greg"
+   ],
+   "issuer": "NASA Glenn Research Center",
+   "date": "2007-05-25",
+   "dateKind": "publication",
+   "identifier": "E-16252",
+   "url": "https://ntrs.nasa.gov/citations/20070031686",
+   "verify": {
+    "method": "ntrs",
+    "ntrsId": "20070031686",
+    "expectedTitle": "Particle and Smoke Detection on ISS for Next Generation Smoke Detectors"
+   },
+   "review": {
+    "depth": "abstract",
+    "note": "Abstract retrieved from NASA NTRS on 2026-10-21; full text not read."
+   },
+   "caveats": [
+    "Abstract only was reviewed.",
+    "Published in 2007; later work may have changed the state of knowledge."
+   ],
+   "claims": [
+    {
+     "id": "S08.c1",
+     "topic": "smoke_detector_basis",
+     "text": "Owing to the absence of microgravity smoke data, all spacecraft smoke detectors current at the time were designed on normal-gravity conditions."
+    },
+    {
+     "id": "S08.c2",
+     "topic": "smoke_particles",
+     "text": "Removing buoyancy reduces velocities in the high-temperature zones of flames, increasing the residence time of smoke particles and allowing longer particle growth; shuttle experiments confirmed larger particle sizes in some cases."
+    }
+   ]
+  },
+  {
+   "id": "S09",
+   "kind": "conference paper",
+   "title": "Preliminary Results from the Saffire VI Experiment",
+   "authors": [
+    "David L Urban",
+    "Gary A Ruff",
+    "Paul Ferkul",
+    "John Easton",
+    "Michael Johnston",
+    "Jay Owens",
+    "Sandra Olson",
+    "Claire Fortenberry",
+    "John Graf",
+    "Oageng George",
+    "Balazs Toth",
+    "Florian Meyer",
+    "Christian Eigenbrod",
+    "James S T'ien",
+    "Ya-Ting T. Liao",
+    "A Carlos Fernandez-Pello",
+    "Guillaume Legros",
+    "Augustin Guibaud",
+    "Nickolay Smirnov",
+    "Osamu Fujita",
+    "Ulises Rojas Alva",
+    "Grunde Jomaas"
+   ],
+   "issuer": "NASA Glenn Research Center",
+   "date": "2024-07-25",
+   "dateKind": "NTRS record",
+   "identifier": "ICES-2024-365",
+   "url": "https://ntrs.nasa.gov/citations/20240002981",
+   "verify": {
+    "method": "ntrs",
+    "ntrsId": "20240002981",
+    "expectedTitle": "Preliminary Results from the Saffire VI Experiment"
+   },
+   "review": {
+    "depth": "abstract",
+    "note": "Abstract retrieved from NASA NTRS on 2026-10-21; full text not read."
+   },
+   "caveats": [
+    "Abstract only was reviewed; the abstract reports preliminary results for one test.",
+    "Describes the research programme's rationale rather than a conclusion about any specific design."
+   ],
+   "claims": [
+    {
+     "id": "S09.c1",
+     "topic": "large_scale_data_gap",
+     "text": "The lack of experimental data at practical length scales and geometries has forced spacecraft designers to base designs and safety precautions on 1-g understanding of flame spread, flame self-extinguishment, fire detection and suppression; the Saffire experiments address this."
+    }
+   ]
+  },
+  {
+   "id": "S10",
+   "kind": "presentation",
+   "title": "Results of Large-Scale Spacecraft Flammability Tests",
+   "authors": [
+    "Ferkul, Paul",
+    "Olson, Sandra",
+    "Urban, David L.",
+    "Ruff, Gary A.",
+    "Easton, John",
+    "T'ien, James S.",
+    "Liao, Ta-Ting T.",
+    "Fernandez-Pello, A. Carlos",
+    "Torero, Jose L.",
+    "Eigenbrand, Christian",
+    "Legros, Guillaume",
+    "Smirnov, Nickolay",
+    "Fujita, Osamu",
+    "Rouvreau, Sebatien",
+    "Toth, Balazs",
+    "Jomaas, Grunde"
+   ],
+   "issuer": "NASA Glenn Research Center",
+   "date": "2017-07-16",
+   "dateKind": "publication",
+   "identifier": "GRC-E-DAA-TN44517",
+   "url": "https://ntrs.nasa.gov/citations/20170008805",
+   "verify": {
+    "method": "ntrs",
+    "ntrsId": "20170008805",
+    "expectedTitle": "Results of Large-Scale Spacecraft Flammability Tests"
+   },
+   "review": {
+    "depth": "abstract",
+    "note": "Abstract retrieved from NASA NTRS on 2026-10-21; full text not read."
+   },
+   "caveats": [
+    "Abstract only was reviewed."
+   ],
+   "claims": [
+    {
+     "id": "S10.c1",
+     "topic": "large_scale_data_gap",
+     "text": "A large-scale fire was intentionally set inside a spacecraft in orbit for the first time; earlier low-gravity tests aboard spacecraft were limited to small samples, and fire spread and growth and their interaction with the vehicle cannot be expected to scale linearly."
+    }
+   ]
+  },
+  {
+   "id": "S11",
+   "kind": "preprint",
+   "title": "The Combustion Product Monitor instrument for the spacecraft fire safety demonstration project",
+   "authors": [
+    "Briggs, Ryan M.",
+    "Bendig, Rudi M.",
+    "Fradet, Mathieu"
+   ],
+   "issuer": "NASA Jet Propulsion Laboratory",
+   "date": "2019-07-07",
+   "dateKind": "publication",
+   "identifier": "NTRS 20210012108",
+   "url": "https://ntrs.nasa.gov/citations/20210012108",
+   "verify": {
+    "method": "ntrs",
+    "ntrsId": "20210012108",
+    "expectedTitle": "The Combustion Product Monitor instrument for the spacecraft fire safety demonstration project"
+   },
+   "review": {
+    "depth": "abstract",
+    "note": "Abstract retrieved from NASA NTRS on 2026-10-21; no full text is available through NTRS."
+   },
+   "caveats": [
+    "Abstract only was reviewed.",
+    "Describes an instrument developed for the Saffire project, not a statement about any particular detector fitted to a vehicle."
+   ],
+   "claims": [
+    {
+     "id": "S11.c1",
+     "topic": "gas_monitoring",
+     "text": "The Combustion Product Monitor is a six-channel tunable laser absorption spectrometer that measures gas-phase CO, HCl, HCN, HF, CO2 and O2 in spacecraft environments; the authors state that monitoring these compounds can provide early warning of combustion events and facilitate safe post-fire clean-up."
+    }
+   ]
+  },
+  {
+   "id": "S12",
+   "kind": "technical standard (interim)",
+   "title": "Flammability, Offgassing, and Compatibility Requirements and Test Procedures",
+   "authors": [],
+   "issuer": "NASA Johnson Space Center",
+   "date": "2009-11-10",
+   "dateKind": "publication",
+   "identifier": "NASA-STD-(I)-6001B",
+   "url": "https://ntrs.nasa.gov/citations/20110012152",
+   "verify": {
+    "method": "ntrs",
+    "ntrsId": "20110012152",
+    "expectedTitle": "Flammability, Offgassing, and Compatibility Requirements and Test Procedures"
+   },
+   "review": {
+    "depth": "abstract",
+    "note": "Abstract retrieved from NASA NTRS on 2026-10-21; requirements not read."
+   },
+   "caveats": [
+    "Abstract only was reviewed.",
+    "The NTRS record is dated 2009; the standard may since have been revised or superseded, so the current revision of NASA-STD-6001 must be checked before relying on it.",
+    "The requirements themselves were not reviewed."
+   ],
+   "claims": [
+    {
+     "id": "S12.c1",
+     "topic": "materials_standard",
+     "text": "This interim standard establishes requirements, criteria and test methods for evaluating the flammability, offgassing and compatibility of materials intended for space vehicles, ground support equipment and facilities."
+    }
+   ]
+  },
+  {
+   "id": "S13",
+   "kind": "presentation",
+   "title": "Assessment of lnternational Space Station (ISS) Lithium-ion Battery Thermal Runaway (TR)",
+   "authors": [
+    "Graika, Jason"
+   ],
+   "issuer": "NASA Johnson Space Center",
+   "date": "2017-04-27",
+   "dateKind": "publication",
+   "identifier": "JSC-CN-39168",
+   "url": "https://ntrs.nasa.gov/citations/20170003873",
+   "verify": {
+    "method": "ntrs",
+    "ntrsId": "20170003873",
+    "expectedTitle": "Assessment of lnternational Space Station (ISS) Lithium-ion Battery Thermal Runaway (TR)"
+   },
+   "review": {
+    "depth": "abstract",
+    "note": "Abstract retrieved from NASA NTRS on 2026-10-21; full text not read."
+   },
+   "caveats": [
+    "Abstract only was reviewed.",
+    "A 2017 presentation about ISS lithium-ion batteries; it is not a statement about any other battery design."
+   ],
+   "claims": [
+    {
+     "id": "S13.c1",
+     "topic": "battery_thermal_runaway",
+     "text": "NASA has historically emphasised preventing thermal runaway in a single battery cell (for example cell screening) but has not considered measures to reduce the severity of a single-cell thermal-runaway event; the battery safety standard JSC 20793 was updated to include requirements for assessing thermal-runaway severity and identifying severity-reduction measures."
+    }
+   ]
+  },
+  {
+   "id": "S14",
+   "kind": "presentation",
+   "title": "International Space Station Lithium-Ion Main Battery Thermal Runaway Propagation Test",
+   "authors": [
+    "Dalton, Penni J.",
+    "North, Tim"
+   ],
+   "issuer": "NASA Glenn Research Center",
+   "date": "2017-11-14",
+   "dateKind": "publication",
+   "identifier": "GRC-E-DAA-TN48433",
+   "url": "https://ntrs.nasa.gov/citations/20180000927",
+   "verify": {
+    "method": "ntrs",
+    "ntrsId": "20180000927",
+    "expectedTitle": "International Space Station Lithium-Ion Main Battery Thermal Runaway Propagation Test"
+   },
+   "review": {
+    "depth": "abstract",
+    "note": "Abstract retrieved from NASA NTRS on 2026-10-21; full text not read."
+   },
+   "caveats": [
+    "Abstract only was reviewed; the test results are not stated in the abstract."
+   ],
+   "claims": [
+    {
+     "id": "S14.c1",
+     "topic": "battery_propagation_test",
+     "text": "A thermal-runaway propagation test of a non-flight ISS lithium-ion battery was performed at the NASA White Sands Test Facility in October 2016 following an investigation by the NASA Engineering and Safety Center."
+    }
+   ]
+  }
+ ],
+ "tensions": [
+  {
+   "id": "T1",
+   "topic": "atmosphere composition and pressure",
+   "claims": [
+    "S01.c3",
+    "S02.c2"
+   ],
+   "note": "These statements concern different parameters and conditions (higher oxygen content and/or pressure versus dilution or lower total pressure in low gravity). The net effect for a particular oxygen fraction and pressure cannot be concluded from them; it needs material-specific test data for that atmosphere."
+  },
+  {
+   "id": "T2",
+   "topic": "ventilation",
+   "claims": [
+    "S02.c3",
+    "S01.c6",
+    "S01.c4"
+   ],
+   "note": "Airflow can enhance flame spread by supplying a fire with air, which is why the ISS sequence terminates ventilation in the affected module; but smoke detection relies on airflow to bring smoke to detectors. Whether stopping ventilation is net beneficial depends on detector placement, flow rates and fuel, none of which these sources resolve for a specific design."
+  }
+ ]
+}

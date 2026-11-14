@@ -51,8 +51,27 @@
     st.appendChild(comparison);
     instrumentLayout(st,ranked,grid);renderEvidenceAsk(st,ranked);st.appendChild(psiChart());st.appendChild(renderResearchMethod());
   }
+  // Optional AI explanation under a deterministic answer. The engine sends only the curated records, checks the reply
+  // (numbers, claims, citations) and labels it; the deterministic answer above never depends on it.
+  const AI_EXPLAIN={question:null,status:'idle',data:null};
+  function aiExplainFor(question,ids){
+    if(AI_EXPLAIN.status==='loading'&&AI_EXPLAIN.question===question)return;
+    AI_EXPLAIN.question=question;AI_EXPLAIN.status='loading';AI_EXPLAIN.data=null;refreshAnswerPanel();
+    post('/api/research/ask',{question,ids},typeof ASK_MS==='number'?ASK_MS:90000).then(r=>{if(AI_EXPLAIN.question!==question)return;AI_EXPLAIN.status='done';AI_EXPLAIN.data=r;refreshAnswerPanel();}).catch(e=>{if(AI_EXPLAIN.question!==question)return;AI_EXPLAIN.status='error';AI_EXPLAIN.data={message:e&&e.message?e.message:'The explanation could not be requested.'};refreshAnswerPanel();});
+  }
+  function renderAiExplain(question,ranked){
+    const wrap=el('div',{class:'ai-explain',id:'ai-explain'});const mine=AI_EXPLAIN.question===question;
+    const btn=el('button',{type:'button',class:'btn small-btn',id:'ai-explain-btn',text:mine&&AI_EXPLAIN.status==='done'?'Explain again with AI':'Explain with AI (optional)'});
+    btn.disabled=mine&&AI_EXPLAIN.status==='loading';btn.addEventListener('click',()=>aiExplainFor(question,ranked.map(r=>r.id)));wrap.appendChild(btn);
+    wrap.appendChild(el('span',{class:'small',id:'ai-explain-status',role:'status','aria-live':'polite',text:mine&&AI_EXPLAIN.status==='loading'?' Writing an explanation from the curated NASA records…':' Adds an automatically generated, unreviewed explanation. The answer above stands without it.'}));
+    if(mine&&AI_EXPLAIN.status==='done'&&AI_EXPLAIN.data){const d=AI_EXPLAIN.data;
+      if(d.mode==='ai'){const note=el('div',{class:'notice',id:'ai-explain-answer',role:'region','aria-label':'Automatically generated explanation'},[el('p',{text:d.answer}),el('p',{class:'small',text:d.label})]);if(d.uses&&d.uses.length)note.appendChild(el('p',{class:'small',text:'Records used: '+d.uses.join(', ')}));wrap.appendChild(note);}
+      else wrap.appendChild(el('p',{class:'notice warn',id:'ai-explain-note',role:'status',text:d.message||'No explanation was produced.'}));}
+    else if(mine&&AI_EXPLAIN.status==='error')wrap.appendChild(el('p',{class:'notice warn',id:'ai-explain-note',role:'alert',text:AI_EXPLAIN.data.message}));
+    return wrap;
+  }
   function renderEvidenceAsk(st,ranked){
-    const box=el('section',{class:'card'},[el('h2',{text:'Ask about the evidence'}),el('p',{class:'small',text:'Active mode: deterministic source lookup · AI remains inactive pending the API key. Named investigations and measurements are matched before relevance ranking. Named lookups search the curated catalogue; general questions use the filtered records.'})]);
+    const box=el('section',{class:'card'},[el('h2',{text:'Ask about the evidence'}),el('p',{class:'small',text:'Active mode: deterministic source lookup first; an optional, unreviewed AI explanation can be requested under an answer. Named investigations and measurements are matched before relevance ranking. Named lookups search the curated catalogue; general questions use the filtered records.'})]);
     box.id='evidence-ask-panel';
     const form=el('form',{id:'evidence-form'});form.appendChild(el('label',{class:'lbl',for:'evidence-ask',text:'Your evidence question'}));const q=el('input',{id:'evidence-ask',type:'text',maxlength:'1000',placeholder:'What was the flame spread rate in Saffire II?'});q.value=EXPLORER.askDraft||'';q.addEventListener('input',()=>{EXPLORER.askDraft=q.value;});form.appendChild(q);form.appendChild(el('button',{class:'btn primary mt',type:'submit',id:'submit-evidence',text:'Find cited answer'}));form.addEventListener('submit',e=>{e.preventDefault();submitEvidenceQuestion(q.value);});q.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();submitEvidenceQuestion(q.value);}});box.appendChild(form);
     const examples=el('div',{class:'row mt','aria-label':'Example evidence questions'});
@@ -65,6 +84,7 @@
       if(a.sources?.length)a.sources.forEach(source=>{const r=PSI_DATA.records.find(x=>x.id===source.id);answer.appendChild(el('p',{class:'small'},[el('a',{href:source.url,target:'_blank',rel:'noopener noreferrer',text:'Original NASA table · '+source.id+(source.row?' · row '+source.row:'')+' ↗'}),' · ',r?psiLink(r,'PSI record ↗'):el('a',{href:source.recordUrl,target:'_blank',rel:'noopener noreferrer',text:'NASA NTRS record ↗'})]));answer.appendChild(el('p',{class:'small',text:'Source: '+source.file+(source.row?' · row '+source.row:'')+(a.sourceColumn?' · column “'+a.sourceColumn+'” (source header; value uses mm/s)':'' )}));});
       else (a.citations||[]).forEach(id=>{const r=PSI_DATA.records.find(x=>x.id===id);answer.appendChild(psiLink(r,'['+id+'] '+r.name+' ↗'));answer.appendChild(el('br'));});
       box.appendChild(answer);
+      if(AI_ENABLED)box.appendChild(renderAiExplain(EXPLORER.submittedQuestion,ranked));
     }st.appendChild(box);
   }
   function psiChart(){
