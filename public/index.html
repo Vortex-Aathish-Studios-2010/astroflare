@@ -116,12 +116,140 @@ body{background:var(--bg)}.top{border-bottom-color:var(--line);padding:18px 30px
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.btn:active,.plate-control:active{transform:none}}
 @media print{:root{color-scheme:light;--ink:#111;--muted:#444;--bg:white;--card:white;--soft:#eee;--line:#aaa;--accent:#234b69}body,.card,.decision-panel,.top-evidence,.notice{background:white;color:#111}.top,.comparison-actions{display:none}.tablewrap{overflow:visible}a{color:#234b69}.decision-layout{display:block}}
 
+/* AstroFlare: plain, typographic, light. Loaded last; it resets the earlier themes.
+   White page, near-black text, hairline rules, a serif for titles and a small tracked sans for labels.
+   No cards, tints, rounded corners, shadows, badges or decorative art. */
+:root{color-scheme:light;--ink:#111;--muted:#555;--faint:#767676;--bg:#fff;--card:#fff;--soft:#f6f5f2;--line:#dcdad5;--rule:#111;
+ --nav:#fff;--accent:#111;--accent-soft:transparent;--electric:#111;--ember:#b4472f;
+ --caution:#111;--caution-bg:transparent;--caution-line:#111;--ok:#111;--ok-bg:transparent;--bad:#111;--bad-bg:transparent;
+ --serif:'Instrument Serif',Georgia,'Times New Roman',serif;--sans:'Instrument Sans',Inter,system-ui,-apple-system,'Segoe UI',sans-serif}
+*,*::before,*::after{border-radius:0!important;box-shadow:none!important;text-shadow:none!important}
+html{scroll-behavior:auto}
+body{background:var(--bg);color:var(--ink);font:16px/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--ink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{color:var(--ember)}
+:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+
+/* Titles */
+h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:-.02em;color:var(--ink);line-height:1.08}
+h1{font-size:clamp(46px,8vw,104px);letter-spacing:-.035em;line-height:.98}
+h2{font-size:clamp(30px,4vw,46px);margin-bottom:.4em}
+h3{font-size:24px}
+h4{font:600 11px/1.4 var(--sans);text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-top:22px}
+p{max-width:68ch}
+.lede{color:var(--muted);font-size:19px;line-height:1.55;max-width:62ch}
+.small,.muted{color:var(--muted);font-size:14px}
+.mono{font-family:var(--sans)}
+
+/* Header: wordmark left, text links right */
+.top{background:var(--bg);border:0;padding:30px 40px 0;display:flex;justify-content:space-between;align-items:baseline;gap:20px 32px;flex-wrap:wrap}
+.brand{display:block}.brand-mark,.brand-sub{display:none}
+.brand-name{font:400 34px/1 var(--serif);letter-spacing:-.025em;color:var(--ink);text-transform:none}
+.top .row{display:flex;gap:6px 26px;flex-wrap:wrap;align-items:baseline}
+.top .btn,.top .btn.small-btn{background:none;border:0;border-bottom:1px solid transparent;padding:3px 0;min-height:0;color:var(--ink);font:500 12px/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase}
+.top .btn:hover,.top .btn.primary,.top .btn.primary:hover{background:none;color:var(--ink);border-bottom-color:var(--ink)}
+.top .btn.primary:not([aria-current=page]){border-bottom-color:transparent}
+.top .btn.primary:hover{border-bottom-color:var(--ink)}
+.top .btn[aria-current=page]{background:none;color:var(--ink);border-bottom-color:var(--ink)}
+.top #saveBtn,.top #loadBtn,.top #restartBtn{color:var(--muted)}
+
+#homeBtn,#demoBtn,#missionBtn,#researchBtn,#saveBtn,#loadBtn,#restartBtn{background:none!important;color:var(--ink)!important;border:0!important;border-bottom:1px solid transparent!important;padding:3px 0!important}
+#homeBtn:hover,#demoBtn:hover,#missionBtn:hover,#researchBtn:hover,#homeBtn[aria-current=page],#demoBtn[aria-current=page],#missionBtn[aria-current=page],#researchBtn[aria-current=page]{border-bottom-color:var(--ink)!important}
+#saveBtn,#loadBtn,#restartBtn{color:var(--muted)!important}
+select,.filter-control select,#stage select{background:transparent!important;color:var(--ink)!important;border:0!important;border-bottom:1px solid var(--ink)!important;padding:10px 24px 10px 0!important;background-image:none!important}
+select option{background:#fff;color:#111}
+input,textarea,#stage input,#stage textarea{background:transparent!important;color:var(--ink)!important}
+
+/* Page */
+.wrap{max-width:1080px;margin:0 auto;padding:56px 40px 110px}
+.card,#comparison,.decision-panel,.evidence-card,.top-evidence,.question-panel,.research-hero{background:transparent;border:0;padding:0;margin:0 0 72px}
+.card+.card{border-top:1px solid var(--line);padding-top:40px}
+.research-hero{display:block;border:0;padding:24px 0 8px;margin-bottom:72px}
+.research-hero .hero-copy{max-width:none}
+.hero-question{font:400 24px/1.4 var(--serif);color:var(--muted);max-width:30ch;margin:26px 0 38px}
+.research-hero>.hero-copy>.small{margin-top:30px}
+
+/* Buttons: rectangular, black, uppercase and small */
+.btn,button.btn,.large-btn{background:transparent;border:1px solid var(--ink);color:var(--ink);padding:13px 26px;min-height:0;font:500 12px/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:none}
+.btn:hover{background:var(--ink);color:#fff}
+.btn.primary{background:var(--ink);color:#fff}
+.btn.primary:hover{background:transparent;color:var(--ink)}
+.btn[disabled]{opacity:.35;cursor:default}
+.btn.small-btn{padding:9px 16px}
+.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.row>.btn,.large-btn{width:auto;flex:0 0 auto;display:inline-block}
+
+/* Spacing and small controls */
+.comparison-actions{margin:28px 0 44px}
+.scenario-summary{font:400 14px/1.5 var(--sans)!important;letter-spacing:0!important;text-transform:none!important;color:var(--muted)!important;margin:10px 0 18px}
+input[type=checkbox],input[type=radio]{accent-color:#111;width:16px;height:16px;padding:0;border:0!important;vertical-align:-2px}
+.compare-label{display:flex;gap:12px;align-items:center;margin:0;padding:14px 0}
+
+/* Plain lines instead of tinted banners */
+.notice,.notice.warn,.notice.bad,.notice.ok,.scope{background:none;border:0;border-left:1px solid var(--ink);padding:2px 0 2px 18px;color:var(--ink);font-size:15px;margin:22px 0}
+.notice,.notice.warn,.notice.bad,.notice.ok,#stage .notice{border-left:1px solid #111!important}
+.notice.warn{border-left-style:dashed!important}
+.scope{color:var(--muted);font-size:14px}
+
+/* Remove decorative labels, numbering, stat blocks and the schematic */
+.eyebrow,.decision-number,.home-facts,.experiment-plate,.plate-topline,.rank-strip li .mono,.evidence-kind{display:none!important}
+.rank-strip{list-style:none;display:flex;flex-wrap:wrap;gap:6px 28px;padding:0;margin:0 0 36px;font-size:14px;color:var(--muted)}
+.rank-strip li{display:flex;gap:10px;align-items:baseline;padding:0;border:0;background:none}
+.rank-strip strong{color:var(--ink);font-weight:500}
+.decision-section{display:block;border-top:1px solid var(--line);padding:18px 0 4px}
+.decision-section h3{font:600 11px/1.4 var(--sans);text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-bottom:6px}
+.decision-layout{display:block}
+.why-rank{color:var(--muted);font-size:15px}
+
+/* Stepper becomes a line of words */
+.stepper ol{display:flex;flex-wrap:wrap;gap:6px 26px;padding:0;margin:0 0 44px;list-style:none}
+.stepper li button{background:none;border:0;border-bottom:1px solid transparent;padding:3px 0;color:var(--faint);font:500 12px/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase}
+.stepper li button.done{color:var(--ink)}
+.stepper li button[aria-current=step]{background:none;color:var(--ink);border-bottom-color:var(--ink);font-weight:600}
+.workspace{display:block}
+#context{border-top:1px solid var(--line);margin-top:40px;padding-top:20px}
+
+/* Forms: underlined fields */
+input[type=text],input[type=number],input[type=search],input:not([type]),select,textarea{background:transparent;border:0;border-bottom:1px solid var(--ink);padding:10px 0;color:var(--ink);font:inherit;width:100%}
+textarea{border:1px solid var(--ink);padding:12px}
+select{appearance:none;-webkit-appearance:none;background:transparent}
+.lbl,label{display:block;font:500 11px/1.4 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 4px}
+.filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin:0 0 40px}
+@media(max-width:700px){.filters{grid-template-columns:1fr}}
+
+/* Tables and disclosures: hairlines only */
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{background:none;color:var(--muted);font:600 11px/1.4 var(--sans);letter-spacing:.12em;text-transform:uppercase;text-align:left;border-bottom:1px solid var(--ink);padding:10px 14px 10px 0}
+td{border-bottom:1px solid var(--line);padding:12px 14px 12px 0;vertical-align:top}
+#comparison th{background:none}
+.tablewrap{border:0;overflow-x:auto}
+details.sec,details{border:0;border-top:1px solid var(--line);background:none;margin:0}
+details.sec>summary,details>summary{cursor:pointer;padding:18px 0;font:500 13px/1.4 var(--sans);letter-spacing:.1em;text-transform:uppercase;list-style:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::after{content:'+';float:right}
+details[open]>summary::after{content:'\2212'}
+details .in{padding:0 0 24px}
+
+/* Evidence bars: plain black on a hairline */
+.bar-track{background:none;border-bottom:1px solid var(--line);height:14px}
+.measurement-bar{background:var(--ink)}
+
+/* Keep the AI text visibly separate and quiet */
+.ai-explain{margin:20px 0 0}
+#ai-explain-answer{border-left:1px solid var(--ink)}
+
+footer.wrap{max-width:1080px;margin:0 auto;padding:0 40px 80px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+footer.wrap p{max-width:78ch}
+
+@media(max-width:700px){.top{padding:22px 20px 0}.wrap{padding:36px 20px 80px}.brand-name{font-size:28px}.card,#comparison,.decision-panel,.research-hero{margin-bottom:52px}footer.wrap{padding:0 20px 60px}}
+@media print{.top,.stepper,#context,footer.wrap{display:none}body{font-size:12pt}}
+
 </style>
 </head>
 <body>
 <a class="skip" href="#stage">Skip to the current step</a>
 <header class="top">
-  <div class="brand"><div class="brand-mark" aria-hidden="true">A</div><div><div class="brand-name">ASTROFLARE</div><div class="brand-sub">Flame in Freefall · NASA PSI evidence</div></div></div>
+  <div class="brand"><div class="brand-mark" aria-hidden="true">A</div><div><div class="brand-name">AstroFlare</div><div class="brand-sub">Flame in Freefall · NASA PSI evidence</div></div></div>
   <div class="row noprint">
     <button class="btn small-btn" id="homeBtn" type="button">Home</button><button class="btn small-btn" id="demoBtn" type="button">Lunar habitat demo</button><button class="btn small-btn" id="missionBtn" type="button">Mission screening</button>
     <button class="btn small-btn" id="researchBtn" type="button">NASA research</button>
@@ -1029,7 +1157,7 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
     const hero=el('section',{class:'card research-hero'},[el('p',{class:'eyebrow',text:'NASA Space Apps 2026 · Flame in Freefall'}),el('h1',{text:'Find the experiments. Understand the evidence.'}),el('p',{class:'hero-question',text:'Which NASA combustion experiments are most relevant to my scenario, and what can I learn from them?'})]);
     const run=el('button',{id:'lunar-demo',type:'button',class:'btn primary large-btn',text:'Run the lunar habitat demo'});run.addEventListener('click',openLunarDemo);
     const custom=el('button',{type:'button',class:'btn large-btn',text:'Explore my own question'});custom.id='custom-research';custom.addEventListener('click',openCustomResearch);
-    hero.appendChild(el('div',{class:'row'},[run,custom]));hero.appendChild(el('p',{class:'small mt',text:'One click → ranked NASA PSI records → a ready-to-read comparison. No account or AI service required.'}));const content=el('div',{class:'hero-copy'});while(hero.firstChild)content.appendChild(hero.firstChild);hero.appendChild(content);hero.appendChild(experimentPlate());st.appendChild(hero);
+    hero.appendChild(el('div',{class:'row'},[run,custom]));hero.appendChild(el('p',{class:'small mt',text:'One click → ranked NASA PSI records → a ready-to-read comparison. No account needed.'}));const content=el('div',{class:'hero-copy'});while(hero.firstChild)content.appendChild(hero.firstChild);hero.appendChild(content);hero.appendChild(experimentPlate());st.appendChild(hero);
     const q=el('section',{class:'card'},[el('h2',{text:'A real research question, a transparent answer'}),el('p',{class:'lede',text:LUNAR_QUESTION})]);
     q.appendChild(el('div',{class:'home-facts'},[el('div',{},[el('strong',{text:'3 investigations'}),el('p',{class:'small',text:'BASS-II and Saffire I & II, traced to NASA PSI.'})]),el('div',{},[el('strong',{text:'8 selected test rows'}),el('p',{class:'small',text:'Original units, source files and missing fields kept visible.'})]),el('div',{},[el('strong',{text:'Research relevance'}),el('p',{class:'small',text:'Reproducible matching, separate from fire-risk screening.'})])]));
     q.appendChild(el('p',{class:'notice',text:'The demo is a hypothetical lunar-habitat review. The retrieved experiments were performed in microgravity; they are evidence to examine, not a lunar fire-safety certification.'}));st.appendChild(q);

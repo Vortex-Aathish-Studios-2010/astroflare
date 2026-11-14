@@ -53,7 +53,8 @@ h=h.replace('st.querySelector("h2")','st.querySelector("h1,h2")')
 h=h.replace('bindControls(); renderMethod(); goTo("mission");','bindControls(); renderMethod(); goTo(location.hash === "#lunar-demo" ? "research" : "home");')
 h=h.replace('class: "tablewrap"', 'class: "tablewrap", tabindex: "0", role: "region", "aria-label": "Scrollable comparison or data table"')
 h=h.replace('Interface copied from', 'Screening interface adapted from')
-h=h.replace('</style>',(p/'public/font-faces.css').read_text()+'\n'+(p/'public/explorer.css').read_text()+'\n</style>',1)
+h=h.replace('</style>',(p/'public/font-faces.css').read_text()+'\n'+(p/'public/explorer.css').read_text()+'\n'+(p/'public/theme.css').read_text()+'\n</style>',1)
+h=h.replace('<div class="brand-name">ASTROFLARE</div>','<div class="brand-name">AstroFlare</div>')
 
 # Judge reliability: stage history, persistent report errors and explicit recovery.
 h=h.replace('    renderStepper(); renderContext(); renderStage();', '    renderStepper(); renderContext(); renderStage(); syncNavigation(stage);',1)
