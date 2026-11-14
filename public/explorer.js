@@ -46,9 +46,19 @@
     else comparison.appendChild(el('p',{text:'Select up to two investigations above. On small screens, swipe the table horizontally to compare.'}));st.appendChild(comparison);
     renderEvidenceAsk(st,ranked);st.appendChild(psiChart());st.appendChild(renderResearchMethod());
   }
-  function renderEvidenceAsk(st,ranked){const box=el('section',{class:'card'},[el('h2',{text:'Ask about the evidence'}),el('p',{class:'small',text:'Local, citation-based retrieval. No generative AI is connected to this explorer. Answers use the visible records and still work when the remote AI/assessment service is unavailable.'})]);
-    const form=el('form');form.appendChild(el('label',{class:'lbl',for:'evidence-ask',text:'Your evidence question'}));const q=el('input',{id:'evidence-ask',type:'text',maxlength:'1000',placeholder:'What airflow and oxygen evidence can inform the lunar review?'});q.value=EXPLORER.ask;form.appendChild(q);form.appendChild(el('button',{class:'btn primary mt',type:'submit',text:'Find cited answer'}));form.addEventListener('submit',e=>{e.preventDefault();EXPLORER.ask=q.value.trim();EXPLORER.answer=evidenceAnswer(EXPLORER.ask,ranked);renderStage();document.getElementById('evidence-answer').focus({preventScroll:true});});box.appendChild(form);
-    if(EXPLORER.answer){const a=EXPLORER.answer,answer=el('div',{id:'evidence-answer',tabindex:'-1',class:'notice'+(a.gap?' warn':''),role:'status'},[el('strong',{text:a.gap?'Unsupported question / evidence gap':'Retrieved evidence — deterministic explanation'})]);a.text.split('\n\n').forEach(t=>answer.appendChild(el('p',{text:t})));a.citations.forEach(id=>{const r=PSI_DATA.records.find(x=>x.id===id);answer.appendChild(psiLink(r,'['+id+'] '+r.name+' ↗'));answer.appendChild(el('br'));});box.appendChild(answer);}st.appendChild(box);
+  function renderEvidenceAsk(st,ranked){
+    const box=el('section',{class:'card'},[el('h2',{text:'Ask about the evidence'}),el('p',{class:'small',text:'Active mode: deterministic source lookup · AI is not active. Named investigations and measurements are matched before relevance ranking. Named lookups search the curated catalogue; general questions use the filtered records.'})]);
+    function ask(text){EXPLORER.ask=text.trim();EXPLORER.answer=evidenceAnswer(EXPLORER.ask,ranked);renderStage();document.getElementById('evidence-answer').focus({preventScroll:true});}
+    const form=el('form');form.appendChild(el('label',{class:'lbl',for:'evidence-ask',text:'Your evidence question'}));const q=el('input',{id:'evidence-ask',type:'text',maxlength:'1000',placeholder:'What was the flame spread rate in Saffire II?'});q.value=EXPLORER.ask;form.appendChild(q);form.appendChild(el('button',{class:'btn primary mt',type:'submit',text:'Find cited answer'}));form.addEventListener('submit',e=>{e.preventDefault();ask(q.value);});box.appendChild(form);
+    const examples=el('div',{class:'row mt','aria-label':'Example evidence questions'});
+    ['What was the flame spread rate in Saffire II?','What flame spread rate was measured in lunar gravity?'].forEach((text,i)=>{const b=el('button',{class:'btn small-btn evidence-example',type:'button',id:'evidence-example-'+i,text});b.addEventListener('click',()=>ask(text));examples.appendChild(b);});box.appendChild(examples);
+    if(EXPLORER.answer){const a=EXPLORER.answer,answer=el('div',{id:'evidence-answer',tabindex:'-1',class:'notice'+(a.gap?' warn':''),role:'status'});
+      // The answer itself, not a mode/status heading, is the first line.
+      a.text.split('\n\n').forEach((text,i)=>answer.appendChild(el(i===0?'p':'p',{class:i===0?'direct-evidence-answer':null,text})));
+      if(a.sources?.length)a.sources.forEach(source=>{const r=PSI_DATA.records.find(x=>x.id===source.id);answer.appendChild(el('p',{class:'small'},[el('a',{href:source.url,target:'_blank',rel:'noopener noreferrer',text:'Original NASA table · '+source.id+(source.row?' · row '+source.row:'')+' ↗'}),' · ',psiLink(r,'PSI record ↗')]));answer.appendChild(el('p',{class:'small',text:'Source: '+source.file+(source.row?' · row '+source.row:'')+(a.sourceColumn?' · column “'+a.sourceColumn+'” (source header; value uses mm/s)':'' )}));});
+      else (a.citations||[]).forEach(id=>{const r=PSI_DATA.records.find(x=>x.id===id);answer.appendChild(psiLink(r,'['+id+'] '+r.name+' ↗'));answer.appendChild(el('br'));});
+      box.appendChild(answer);
+    }st.appendChild(box);
   }
   function psiChart(){
     const r=PSI_DATA.records[0],rows=r.runs.filter(x=>['T1','T2','T4'].includes(x.id));
