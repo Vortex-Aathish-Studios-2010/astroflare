@@ -78,6 +78,6 @@
     form.addEventListener('submit',e=>{e.preventDefault();saveProject(name.value);});box.appendChild(form);
     box.appendChild(el('p',{class:'project-status '+PROJECTS.statusKind,id:'project-status',role:'status','aria-live':'polite',tabindex:'-1',text:PROJECTS.status}));
     box.appendChild(renderProjectList());
-    box.appendChild(el('p',{class:'small',text:'A project stores your question, filters, selected investigations, the source and run identifiers, the dataset version and the research brief with its citations. Exports separate measured evidence, gaps and proposed research. Your mission-screening save is kept separately.'}));
+    box.appendChild(el('p',{class:'small',text:'A project stores your question, filters, selected investigations, the source and run identifiers, the dataset version and the research brief with its citations. Exports separate measured evidence, next conditions to test and proposed research. Your mission-screening save is kept separately.'}));
     st.appendChild(box);
   }
