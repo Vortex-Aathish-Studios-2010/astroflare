@@ -16,6 +16,9 @@ h=h.replace('S.goal = g ? g.value : "investigate";','S.goal = g ? g.value : "qui
 h=h.replace('S.interp = null; S.goal = "investigate";','S.interp = null; S.goal = "quick";',1)
 FAVICON='''<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 fill=%27%230b1f3a%27/%3E%3Cpath d=%27M16 5c2 5 7 8 7 14a7 7 0 0 1-14 0c0-3 1.500-5 3-7 .5 2 1.500 3 2.500 3C14.500 11 15 8 16 5z%27 fill=%27%231f6fe0%27/%3E%3C/svg%3E">'''
 h=h.replace('</head>',FAVICON+'\n</head>',1)
+for _a,_b in (('Optional. Adds an automatically generated, unreviewed explanation; the assessment stands without it.','Optional. Adds an AI-generated explanation; the assessment stands without it.'),('Automatically generated note on uncertainty (unreviewed explanation)','AI-generated note on uncertainty'),('Automatically generated note (unreviewed)','AI-generated note'),('whose answers are limited to this assessment and labelled unreviewed.','whose answers are limited to this assessment and labelled as AI-generated.')):
+    assert _a in h,_a
+    h=h.replace(_a,_b)
 h=h.replace('<div class="row noprint">','<div class="row noprint">\n    <button class="btn small-btn" id="demoBtn" type="button">Open hypothetical demo</button>\n    <button class="btn small-btn" id="researchBtn" type="button">NASA research</button>\n    <button class="btn small-btn" id="labsBtn" type="button">For research labs</button>',1)
 assert h.count('</header>')==1
 h=h.replace('</header>','</header>\n<p class="tool-key" id="tool-key"><strong>Research explorer</strong> (Lunar habitat demo, NASA research) searches NASA records in your browser. <strong>Mission screening</strong> sends your answers to the assessment engine on this site&rsquo;s server.</p>',1)

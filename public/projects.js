@@ -19,7 +19,7 @@
       question:EXPLORER.question,filters:{...EXPLORER.filters},scenario:{...EXPLORER.scenario},selected:[...EXPLORER.selected],guideMaterial:GUIDE.material,
       ranking:records.map((r,i)=>({rank:i+1,id:r.id,name:r.name,points:r.points})),sourceRuns:used,
       brief:{measured:d.measured,missing:d.missing,proposedNextStep:d.step,variable:d.variable,holdFixed:d.fixed,citations:d.citations.map(c=>({id:c.id,row:c.row,url:c.url})),text:d.text},
-      note:'Research relevance only: not a fire-risk score, a safety determination or a lunar prediction. Saved on this browser only.'};
+      note:'Research relevance ranking. Saved on this browser only.'};
   }
   function projectMarkdown(p){
     const rec=id=>PSI_DATA.records.find(r=>r.id===id),L=[];
@@ -28,12 +28,12 @@
     L.push('## Experiments considered (research relevance ranking)','');p.ranking.forEach(r=>L.push(r.rank+'. '+r.name+' ('+r.id+'), '+r.points+' relevance points'));
     L.push('','Selected for comparison: '+(p.selected.map(id=>{const r=rec(id);return r?r.name+' ('+id+')':id;}).join(', ')||'none'));
     if(p.sourceRuns.length)L.push('','Runs in the compared investigations: '+p.sourceRuns.join(', '));
-    L.push('','## Measured evidence (reported by NASA)','',p.brief.measured,'','This describes what the cited experiment reported under its own conditions. It is not a prediction for your scenario.','');
-    L.push('## Evidence gaps (not measured)','',p.brief.missing,'','A missing measurement is a gap, not evidence of safety.','');
+    L.push('','## Measured evidence (reported by NASA)','',p.brief.measured,'','This describes what the cited experiment reported under its own conditions.','');
+    L.push('## Next conditions to test','',p.brief.missing,'');
     L.push('## Proposed research (a suggestion, not a result)','',p.brief.proposedNextStep,'','- Variable to study: '+p.brief.variable,'- Hold fixed: '+p.brief.holdFixed,'');
     L.push('## Citations','');p.brief.citations.forEach(c=>L.push('- NASA PSI '+c.id+', row '+c.row+': '+c.url));
     const ids=[...new Set([...p.ranking.map(r=>r.id)])];ids.forEach(id=>{const r=rec(id);if(r)L.push('- '+r.name+' record: '+r.source+' (file v'+r.fileVersion+', verified '+r.verifiedOn+')');});
-    L.push('','---','Research relevance is separate from fire-risk scoring. Microgravity measurements are not lunar predictions. AstroFlare is an independent project built on public NASA PSI data.');
+    L.push('','---','Research relevance ranking, not a measure of safety effectiveness. Each measurement is reported for its own test conditions (microgravity unless stated). AstroFlare is an independent project built on public NASA PSI data.');
     return L.join('\n')+'\n';
   }
   function projectSlug(name){return (name||'project').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'project';}

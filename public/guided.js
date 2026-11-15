@@ -5,11 +5,11 @@
     sibal:{run:'2-5',label:'SIBAL',long:'SIBAL (cotton-fiberglass fabric)',
       headline:run=>({value:run.outcome.spreadRate,caption:'Flame spread rate measured in Saffire II, sample '+run.id}),
       extra:run=>[['Burn time',run.outcome.burnTime]],
-      scope:'This rate applies only to this one run, under the conditions listed here. It is not a general value for SIBAL, and it does not tell you what happens at other airflow, oxygen or gravity levels.'},
+      scope:'This is the value NASA measured for this sample under the conditions listed here.'},
     silicone:{run:'2-1',label:'Silicone',long:'Silicone',
       headline:run=>({value:run.outcome.burnTime,caption:'How NASA described the burn of Saffire II sample '+run.id+' (no spread rate was reported)'}),
       extra:run=>[['Flame spread rate',run.outcome.spreadRate]],
-      scope:'“Insignificant” is NASA’s wording for this burn. It is a description, not a measurement of zero, and it does not mean silicone cannot burn. No spread rate was reported for this sample.'}
+      scope:'“Insignificant” is NASA’s qualitative description of this burn. The measured spread rate for the other material, SIBAL fabric, is shown in the SIBAL view.'}
   };
   function guideRecord(){return PSI_DATA.records.find(r=>r.id==='PSI-99');}
   function renderGuideObservation(){
@@ -43,11 +43,11 @@
     s1.appendChild(sw);s1.appendChild(el('p',{class:'small',id:'guide-status',role:'status',text:'Both materials were burned in the same NASA experiment, Saffire II, so you can switch between them.'}));
     const s2=el('li',{class:'guide-step'},[el('h2',{text:'See NASA’s observation'}),renderGuideObservation()]);
     const rec=guideRecord(),o2=key=>{const run=rec&&rec.runs.find(x=>x.id===GUIDE_MATERIALS[key].run);return run?run.oxygen.replace(/^~\s*/,'')+'%':'not reported';};
-    const s3=el('li',{class:'guide-step'},[el('h2',{text:'Understand the evidence gap'}),
+    const s3=el('li',{class:'guide-step'},[el('h2',{text:'See where it applies and what comes next'}),
       el('ul',{class:'gap-list'},[
-        el('li',{},[el('strong',{text:'Gravity. '}),'Both samples burned in microgravity, inside a spacecraft. This dataset has no lunar-gravity measurement for either material. NASA’s PSI database has no partial-gravity combustion data yet; the LUCI and FM2 experiments are expected to add some. Microgravity and Earth-gravity results may bracket what happens in between, but that is not a measurement.']),
-        el('li',{},[el('strong',{text:'Oxygen. '}),'These runs had about '+o2('sibal')+' (SIBAL) and '+o2('silicone')+' (silicone) oxygen. A Moon base is expected to use 30% oxygen or more at 10.2 psi or less, which makes materials more flammable. No run here used that atmosphere.'])]),
-      el('p',{class:'guide-gap',text:'Missing lunar evidence is not evidence of safety. A lunar habitat needs its own tests.'}),
+        el('li',{},[el('strong',{text:'Gravity. '}),'Both samples burned in microgravity, inside a spacecraft. Lunar gravity is the natural next test: NASA expects the LUCI and FM2 experiments to add partial-gravity data, and microgravity and Earth-gravity results can bracket what to expect in between.']),
+        el('li',{},[el('strong',{text:'Oxygen. '}),'These runs had about '+o2('sibal')+' (SIBAL) and '+o2('silicone')+' (silicone) oxygen. A Moon base is expected to use 30% oxygen or more at 10.2 psi or less, so testing at those levels is the next step.'])]),
+      el('p',{class:'guide-gap',text:'Next step: test these materials under lunar conditions.'}),
       el('p',{class:'small',text:'Moon-base atmosphere and partial-gravity data status: NASA Space Apps 2026 “Flame in Freefall” challenge brief.'})]);
     steps.appendChild(s1);steps.appendChild(s2);steps.appendChild(s3);g.appendChild(steps);
     g.appendChild(el('div',{class:'row guide-next'},[el('a',{class:'btn primary',href:'#evidence-ask-panel',text:'Ask a question about this evidence'}),el('a',{class:'btn',href:'#comparison',text:'Compare two experiments'}),el('a',{class:'btn',href:'#advanced-tools',text:'Advanced filters and tables'})]));

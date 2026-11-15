@@ -9,7 +9,7 @@ test('landing page: demo is the recommended first step, with a preview and a lab
   assert.equal(d.getElementById('lunar-demo').textContent,'Run the lunar habitat demo');
   assert.ok(d.querySelector('.will-get'));
   assert.match(d.body.textContent,/Turn NASA combustion evidence into your next research question/);
-  const p=d.querySelector('.home-preview').textContent;assert.match(p,/Ranked experiment/);assert.match(p,/2\.1 mm\/s flame spread/);assert.match(p,/applies only to this run/);assert.match(p,/From microgravity to the Moon/);
+  const p=d.querySelector('.home-preview').textContent;assert.match(p,/Ranked experiment/);assert.match(p,/2\.1 mm\/s flame spread/);assert.match(p,/Measured for this run/);assert.match(p,/From microgravity to the Moon/);
   assert.match(d.getElementById('tool-key').textContent,/Research explorer.*Mission screening/);
   assert.ok(d.getElementById('labsBtn'));assert.equal(d.querySelectorAll('#registration,#checkout,form[action]').length,0);
   assert.deepEqual(errors,[]);}finally{dom.window.close();}
@@ -74,14 +74,14 @@ test('research projects: save, change, reopen restores filters + ranking + compa
   d.getElementById('md-'+p.id).click();d.getElementById('json-'+p.id).click();
   assert.equal(ex.names[0],'astroflare-silicone-opposed.md');assert.equal(ex.names[1],'astroflare-silicone-opposed.json');
   const md=await ex.read(ex.blobs[0]),json=JSON.parse(await ex.read(ex.blobs[1]));
-  for(const h of ['## Research question and scenario','## Measured evidence (reported by NASA)','## Evidence gaps (not measured)','## Proposed research (a suggestion, not a result)','## Citations'])assert.ok(md.includes(h),h);
+  for(const h of ['## Research question and scenario','## Measured evidence (reported by NASA)','## Next conditions to test','## Proposed research (a suggestion, not a result)','## Citations'])assert.ok(md.includes(h),h);
   assert.match(md,/Insignificant/);assert.match(md,/do not convert|not .{0,40}zero|Insignificant/i);assert.doesNotMatch(md,/2\.1 mm\/s/);
-  assert.match(md,/dataset version 2026-11-14\.2/);assert.match(md,/psi\.nasa\.gov/);assert.match(md,/Research relevance is separate from fire-risk scoring/);assert.match(md,/not lunar predictions/);assert.match(md,/independent project built on public NASA PSI data/);
-  assert.equal(json.kind,'astroflare-research-project');assert.deepEqual(json.filters,p.filters);assert.match(json.note,/not a fire-risk score/);
+  assert.match(md,/dataset version 2026-11-14\.2/);assert.match(md,/psi\.nasa\.gov/);assert.match(md,/Research relevance ranking/);assert.match(md,/its own test conditions/);assert.match(md,/independent project built on public NASA PSI data/);
+  assert.equal(json.kind,'astroflare-research-project');assert.deepEqual(json.filters,p.filters);assert.match(json.note,/Research relevance ranking/);
   // a SIBAL project keeps the 2.1 mm/s with its material and run
   d.getElementById('restore-lunar-preset').click();await pause();d.getElementById('project-name').value='SIBAL fabric';d.getElementById('project-form').dispatchEvent(new w.Event('submit',{cancelable:true}));
   const fab=JSON.parse(w.localStorage.getItem('astroflareResearchProjects')).find(x=>x.name==='SIBAL fabric');d.getElementById('md-'+fab.id).click();const md2=await ex.read(ex.blobs[2]);
-  assert.match(md2,/2\.1 mm\/s for run 2-5/);assert.match(md2,/SIBAL/);assert.match(md2,/not a prediction for your scenario/);assert.match(md2,/PSI-99:2-5/);
+  assert.match(md2,/2\.1 mm\/s for run 2-5/);assert.match(md2,/SIBAL/);assert.match(md2,/under its own conditions/);assert.match(md2,/PSI-99:2-5/);
   // overwrite by name, then delete
   d.getElementById('project-name').value='sibal FABRIC';d.getElementById('project-form').dispatchEvent(new w.Event('submit',{cancelable:true}));assert.equal(JSON.parse(w.localStorage.getItem('astroflareResearchProjects')).length,2);assert.match(text(d,'project-status'),/Updated/);
   d.getElementById('del-'+p.id).click();assert.equal(JSON.parse(w.localStorage.getItem('astroflareResearchProjects')).length,1);assert.match(text(d,'project-status'),/Deleted/);
@@ -123,5 +123,15 @@ test('every in-page link on every research page leads to an element that exists'
    open();await pause();const bad=[...d.querySelectorAll('#stage a[href^="#"], header a[href^="#"]')].map(a=>a.getAttribute('href')).filter(h=>h.length>1&&!routes.has(h)&&!d.getElementById(h.slice(1)));
    assert.deepEqual(bad,[],'dangling in-page links');
    const buttons=[...d.querySelectorAll('#stage button')].filter(b=>!b.textContent.trim()&&!b.getAttribute('aria-label'));assert.equal(buttons.length,0,'buttons without a name');}
+  assert.deepEqual(errors,[]);}finally{dom.window.close();}
+});
+
+test('scope is stated plainly but not highlighted: relevance is not safety effectiveness, values keep their conditions, AI is labelled',async()=>{
+ const {dom,d,w,errors}=bootJudge(html);try{await pause();d.getElementById('researchBtn').click();await pause();
+  const scope=d.getElementById('research-scope');assert.match(scope.textContent,/not a measure of safety effectiveness/);assert.match(scope.textContent,/all run in microgravity/);assert.match(scope.textContent,/“Insignificant” for silicone run 2-1/);assert.match(scope.textContent,/AI-generated interpretations are labelled/);
+  assert.equal(scope.closest('details').open,false,'sits in a collapsed disclosure, not a headline');
+  assert.equal(d.querySelectorAll('#stage .notice.warn').length,0,'no warning-styled boxes on the research pages');
+  d.getElementById('demoBtn').click();await pause();assert.equal(d.querySelectorAll('#stage .notice.warn').length,0);
+  assert.match(text(d,'research-decision'),/2\.1 mm\/s/);assert.match(text(d,'research-decision'),/Next conditions to test/);
   assert.deepEqual(errors,[]);}finally{dom.window.close();}
 });

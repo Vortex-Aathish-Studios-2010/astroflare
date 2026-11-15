@@ -24,7 +24,7 @@
     const d=researchDecision(records,EXPLORER.filters,EXPLORER.scenario);d.text=d.text.replace(LUNAR_QUESTION,EXPLORER.question);
     const panel=el('aside',{class:'card decision-panel',id:'research-decision','aria-labelledby':'decision-heading'},[el('p',{class:'eyebrow',text:'RESEARCH DECISION / PROPOSED FOLLOW-UP'}),el('h2',{id:'decision-heading',text:'What should we test next?'})]);
     panel.appendChild(el('p',{class:'evidence-choice',id:'evidence-choice',text:d.rationale}));
-    [['What NASA measured',d.measured],['What’s missing for this scenario',d.missing],['Next research step',d.step]].forEach(([heading,text],i)=>panel.appendChild(el('section',{class:'decision-section'},[el('span',{class:'decision-number','aria-hidden':'true',text:'0'+(i+1)}),el('div',{},[el('h3',{text:heading}),el('p',{text})])])));
+    [['What NASA measured',d.measured],['Next conditions to test',d.missing],['Next research step',d.step]].forEach(([heading,text],i)=>panel.appendChild(el('section',{class:'decision-section'},[el('span',{class:'decision-number','aria-hidden':'true',text:'0'+(i+1)}),el('div',{},[el('h3',{text:heading}),el('p',{text})])])));
     panel.appendChild(el('p',{class:'small',text:'Variable to study: '+d.variable+'. Hold material, atmosphere, geometry and ignition fixed; define missing test inputs first.'}));
     const fixed=el('details',{class:'sub',id:'research-fixed'},[el('summary',{text:'Variable & fixed conditions for the proposed study'}),el('p',{text:'Study: '+d.variable+'.'}),el('p',{text:'Hold fixed: '+d.fixed})]);panel.appendChild(fixed);
     d.citations.forEach(c=>panel.appendChild(el('p',{class:'small'},[el('a',{href:c.url,target:'_blank',rel:'noopener noreferrer',text:'Original NASA table · '+c.id+' · row '+c.row+' ↗'})])));
