@@ -1,5 +1,17 @@
 # AstroFlare · Flame in Freefall (2026 upgrade)
 
+## Current release: one repository, one Render service, AI on
+
+This repository is the original and only source for the whole project. It holds the research explorer (Node), the Python assessment engine (`engine/`) and the deployment files, and it deploys to a single free Render service at https://astroflare.onrender.com/.
+
+- **Layout.** `public/`, `build.py`, `worker.js`, `server.mjs` and `dist/` are the interface. `engine/` is the Python assessment engine and its 489 tests (standard library only). `Dockerfile`, `render.yaml` and `engine/render_start.py` run everything in one container.
+- **One container, three programs.** `engine/render_start.py` starts FreeLLMAPI (the AI router, `127.0.0.1:3001`), the Python engine (`127.0.0.1:8001`) and the interface (`server.mjs`, on Render's public `PORT`). The interface relays `/api/*` to the engine through `ASTROFLARE_UPSTREAM`, so the router and the engine are never reachable from the internet. Without `ASTROFLARE_UPSTREAM` the relay keeps calling the previous public engine, so older deployments keep working.
+- **AI is on, with two jobs.** (1) The mission workflow: reading a mission description, explaining results and answering typed questions, all through the engine's existing validators. (2) New: **Explain with AI (optional)** under an evidence answer, which asks the engine's `/api/research/ask`. It sends only the curated NASA PSI records, then rejects any reply whose numbers are not in those records, that claims safety or validation, contains links, or cites no real record or run. Accepted text is labelled as automatically generated and unreviewed. The deterministic cited answer always appears first and never depends on the model.
+- **Keys.** FreeLLMAPI's provider keys come from the `FREEAPI_CONFIG_JSON` secret in the Render dashboard on every start (the free plan keeps no files); its access key is generated at start and handed only to the engine. No key is stored in this repository.
+- **Verification.** CI runs the Node regressions, the source audit, a Worker syntax check and the Python engine tests (`cd engine && python -m unittest discover`).
+
+The sections below are the earlier release history. Where they say AI is inactive or that screening calls a separate original service, this section supersedes them.
+
 ## Current release: midnight research edition
 
 The existing public site remains https://astroflare-research-2026.ajuponnu2009.chatgpt.site/ on branch **main**. This release keeps the documented schematic, original NASA evidence, reproducible relevance ranking and remote assessment engine, while applying charcoal/midnight surfaces, warm white Instrument typography, selective electric-blue actions/focus and copper measurement accents. No newer logo asset exists in the project; the existing AstroFlare wordmark is retained. The plate is original conceptual artwork, labelled **Test schematic · not to scale**, not NASA photography.
@@ -10,7 +22,7 @@ Reliability fixes include custom-question focus and blank validation, preserving
 
 The full control inventory and verification boundaries are in [CONTROL_AUDIT.md](CONTROL_AUDIT.md), also served at `/control-audit`. All 34 local regression tests passed. Anonymous published-source checks passed for research and reliability; detailed conditions are at `/verification` and `/release-checks.json`. Focused local regressions cover rapid answer changes, filter accounting, comparison states, clipboard failure, storage denial/corruption, validation, delayed service responses, screening action requests, report exports and reduced-motion/failure behavior. Test fixture responses are used only in tests, never to replace failed live calculations.
 
-**AI remains inactive pending the API key.** Existing integration code is preserved; no provider was activated. The inactive client makes no background AI availability request.
+**AI status (superseded by the current release above):** earlier releases kept AI inactive. It is now enabled, served by the engine through FreeLLMAPI.
 
 ### GitHub repository
 
@@ -25,7 +37,7 @@ npm test
 npm start
 ```
 
-Open http://localhost:3000 after the start command. Node 22+ and Python 3 are required. The current public site continues using its existing Sites deployment; pushing to this GitHub repository does not automatically publish to Sites or Render. The optional Render setup is documented below. No API key is needed for the NASA evidence explorer; fresh mission assessments still depend on the separate original service.
+Open http://localhost:3000 after the start command. Node 22+ and Python 3 are required. The current public site continues using its existing Sites deployment; pushing to this GitHub repository does not automatically publish to Sites or Render. The optional Render setup is documented below. No API key is needed for the NASA evidence explorer; fresh mission assessments are served by the engine in `engine/` (on Render, inside the same container).
 
 The source ZIP at `/source.zip` contains the project, test fixtures, pinned sources, fonts with their licences, Render configuration and CI workflow. It deliberately omits Sites identity, credentials, node_modules and Git history. For local use: `npm ci`, `npm run build`, `npm test`, then `npm start`. Node 22+ and Python 3 are required; open the port printed by `server.mjs`.
 
@@ -104,7 +116,7 @@ The comparison supports two investigations, with source links and separate rows 
 
 ## Evidence questions and AI behavior
 
-**There is no generative research AI integration configured.** The existing remote `/api/ask` endpoint only accepts its own mission-assessment context; it cannot ingest the curated PSI evidence. Reusing it to explain these records would misrepresent its grounding.
+**Research AI is optional and separate.** The mission endpoint `/api/ask` only accepts its own mission-assessment context and is not used for these records. Evidence explanations use `/api/research/ask`, which grounds the model only in the curated PSI dataset and validates the reply (see the current release above). The deterministic lookup below always runs first.
 
 The working alternative resolves a named investigation and requested measurement before relevance ranking. Saffire II / Saffire 2 / PSI-99 map only to PSI-99; Saffire I / Saffire 1 / PSI-98 map only to PSI-98. Named lookups use the curated catalogue independently of dashboard filters; general questions use filtered records. Flame-spread rate, burn time, airflow, oxygen and CO are separate quantities. The direct answer is the first line, followed by conditions, original table link, filename and row ID. Missing selected-table measurements and direct lunar-gravity measurements are explicit gaps. Three clickable examples demonstrate a successful Saffire II lookup, a lunar evidence gap and a Saffire I missing measurement. No model is active. Unsupported questions, safety certification, predictions, battery/health questions and unmeasured numeric/lunar rates return an evidence-gap message. It remains functional when the AI/status API fails. Ranking never depends on a model. The secondary mission workflow retains its original AI integration code but an explicit false activation gate prevents it from running during judging. Deterministic investigation tools remain usable.
 
@@ -127,19 +139,19 @@ npm test
 npm start
 ```
 
-`PORT` is honored; default 3000. `GET /healthz` documents the original remote-engine dependency. Optional live screening regression: `NODE_USE_ENV_PROXY=1 node test/live-check.mjs` in the managed environment; omit that environment flag on hosts without a proxy. `/verification` records results and limitations.
+`PORT` is honored; default 3000. `GET /healthz` reports whether the relay uses the local engine (`ASTROFLARE_UPSTREAM`) or the original public one. Optional live screening regression: `NODE_USE_ENV_PROXY=1 node test/live-check.mjs` in the managed environment; omit that environment flag on hosts without a proxy. `/verification` records results and limitations.
 
 Build embeds the interface, dataset, documentation, pinned CSVs and `/source.zip` in `dist/server/index.js`, a Cloudflare Worker. `server.mjs` adapts the same handler for Render. The source ZIP excludes site identity and credentials and rebuilds using `python3 build.py` after extraction.
 
-### Exact Render steps for this copy, branch main
+### Render steps (current: one service, Docker)
 
-The existing Sites project is deployed in place. A Render deployment is optional and separate from it:
+The Sites deployment is separate and unchanged. The Render service builds from this repository:
 1. Download `/source.zip`, unzip it, create a repository you control on branch **main** (`git init -b main`, add/commit, add your remote, push main).
 2. Render → New → Web Service → connect that repository. Set **branch main**, root directory to the repository root and runtime **Node**.
-3. Build command **`python3 build.py`**; start command **`node server.mjs`**; `NODE_VERSION=22`; health-check path **`/healthz`**. Render supplies `PORT`. No NASA key, AI key or database is required. The checked-in `render.yaml` declares these settings for the copy.
+3. Runtime **Docker**, `Dockerfile` at the repository root, health-check path **`/healthz`**; Render supplies `PORT`. Add the secret **`FREEAPI_CONFIG_JSON`** (for example `{"keys":[{"platform":"google","key":"..."}]}`) or leave it empty to run without AI text. No NASA key or database is required. The checked-in `render.yaml` declares these settings.
 4. Deploy. Verify homepage → lunar demo → 20 cm/s filter → comparison → NASA source in a signed-out window. For later revisions, push main and use **Manual Deploy → Deploy latest commit**, or enable auto-deploy on main. Rollback: Events → prior successful deployment → Rollback.
 
-No changes were made to the separate original Render service. Its original repository/configured branch remain unavailable. Numerical screening still calls that original engine through a fixed-route relay. Cookies/authorization are not forwarded; requests have size/method/route checks and a timeout. Fresh screening data goes to the original service; browser saves remain local. Research does not send its question to that engine.
+The relay is a fixed-route allow list. Cookies and authorization are not forwarded; only the visitor address (`X-Forwarded-For`) is, so the engine can apply its per-visitor limits. Requests have size/method/route checks and a timeout. On Render the upstream is the engine inside the container; browser saves remain local, and the NASA research lookup itself never sends its question anywhere (only the optional AI explanation does, to the engine).
 
 ## Research-decision and instrument-layout upgrade
 
@@ -153,7 +165,7 @@ The current visual system is a combustion research journal: flat warm ivory, nea
 
 ### AI status — deferred for judging
 
-**AI remains inactive pending the API key.** Research lookup runs entirely as deterministic cited retrieval; no provider is activated, no key is added and no model answer is simulated. Existing optional mission-screening AI integration code is retained. Research AI activation is out of scope for this release and would require a future supported server-side integration, not just a UI label change.
+**Superseded.** Research lookup is deterministic cited retrieval; the optional AI explanation is a separate, labelled step under an answer and never replaces it.
 
 ### Updated 30-second judging recording
 
@@ -204,7 +216,7 @@ Direct table: https://ntrs.nasa.gov/api/citations/20170008805/downloads/20170008
 
 The plate cites **PSI-99**, not the NTRS companion, for its two rows. PSI row 2-1 gives O₂ approximately 21.5%; NTRS Table I gives approximately 22.1% for the same sample. These sources disagree. The plate retains the explicitly cited PSI value; neither source is silently reconciled. The existing thickness, geometry and spread-column-label discrepancies also remain documented.
 
-**AI remains inactive pending the API key.** `AI_ENABLED=false` prevents automatic mission interpretation refinement and generated explanations, even when the separate service advertises availability. Free-text mission questions route only to supported deterministic investigation actions or an explicit inactive-mode message. Existing integration functions remain in source for a future separately authorized activation. No API key was added and no AI request was made in verification.
+**Superseded.** This describes the earlier inactive mode. `AI_ENABLED` is now `true` in `build.py`; mission AI is available only when the engine reports that an explanation service is configured.
 
 ### Journal-release verification
 

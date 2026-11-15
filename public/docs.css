@@ -1,0 +1,32 @@
+/* Documentation pages (/documentation, /verification, /control-audit): same type and colours as the app. */
+.doc-page{margin:0}
+.doc-page .skip{position:absolute;left:-9999px}.doc-page .skip:focus{left:16px;top:12px;background:#fff;padding:8px 12px;z-index:5}
+.doc-page .brand-name{text-decoration:none}
+.doc-nav{display:flex;flex-wrap:wrap;gap:6px 24px;align-items:baseline}
+.doc-nav a{font:500 12px/1.2 var(--sans);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;border-bottom:3px solid transparent;padding:8px 0}
+.doc-nav a:hover{border-bottom-color:var(--green)}
+.doc-nav a[aria-current=page]{border-bottom-color:var(--blue)}
+.doc-wrap{width:var(--measure,min(1180px,100% - 40px));margin:0 auto;padding:clamp(28px,5vw,64px) 0 24px;display:grid;grid-template-columns:minmax(0,1fr);gap:0 56px}
+.doc-kicker{font:600 12px/1.4 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--blue-deep);margin:0 0 18px}
+.doc-toc{border-top:3px solid var(--blue);padding-top:14px;margin-bottom:40px}
+.doc-toc .lbl{font:600 12px/1.4 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.doc-toc ol{margin:0;padding-left:20px;columns:2 260px;column-gap:40px}
+.doc-toc li{margin:3px 0;break-inside:avoid}
+.doc-body{min-width:0;max-width:78ch}
+.doc-body h1{font-size:clamp(40px,6vw,78px);margin:0 0 28px}
+.doc-body h2{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);scroll-margin-top:20px}
+.doc-body h3{margin-top:32px}
+.doc-body h4{margin-top:24px}
+.doc-body p,.doc-body li{line-height:1.7}
+.doc-body ul,.doc-body ol{padding-left:22px}
+.doc-body code{font:0.92em/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;background:var(--blue-soft);padding:1px 5px;overflow-wrap:anywhere}
+.doc-body pre{background:#0b1f3a;color:#e6eef8;padding:16px 18px;overflow:auto;font:13px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;max-width:100%}
+.doc-body pre code{background:none;padding:0;color:inherit}
+.doc-body a{overflow-wrap:anywhere}
+.doc-body .tablewrap{overflow-x:auto;margin:16px 0 24px;max-width:100%}
+.doc-body table{border-collapse:collapse;width:100%;font-size:15px}
+.doc-body th,.doc-body td{border-bottom:1px solid var(--line);padding:9px 12px 9px 0;text-align:left;vertical-align:top}
+.doc-body th{font:600 12px/1.4 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.doc-page .site-footer{width:var(--measure,min(1180px,100% - 40px));margin:56px auto 0}
+@media (max-width:640px){.doc-nav{gap:2px 18px}.doc-toc ol{columns:1}}
+@media print{.doc-nav,.doc-toc,.skip{display:none}.doc-body pre{background:none;color:#000;border:1px solid #999}}

@@ -1,8 +1,8 @@
   function openDemo() {
     S.demo=true; S.mission={description:'HYPOTHETICAL DEMO: four crew, 180-day deep-space transit; electrical overheating.',destination:'Deep-space transit',aiInterpretation:false};
-    S.goal='investigate'; S.answers={};
+    S.goal='quick'; S.answers={};
     Object.entries(DEMO.inputs).forEach(([k,v])=>S.answers[k]={value:v,unknown:false,basis:'assumption',source:'example'});
-    S.assessment=structuredClone(DEMO.assessment);S.explain=null;S.log=[];S.pinned=null;S.flow=null;S.reportMd=null;S.dirty=false;
+    S.assessment=JSON.parse(JSON.stringify(DEMO.assessment));S.explain=null;S.log=[];S.pinned=null;S.flow=null;S.reportMd=null;S.dirty=false;
     goTo('results');
   }
   function renderEvidenceGaps(a) {

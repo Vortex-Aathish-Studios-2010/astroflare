@@ -5,7 +5,7 @@ function tokensFor(q){return new Set((q.toLowerCase().match(/[a-z0-9]+/g)||[]));
 function topicsFor(q){const t=tokensFor(q);return Object.keys(TOPICS).filter(k=>TOPICS[k].words.some(w=>t.has(w)));}
 function filterSummary(records){
  const ids=new Set(records.map(r=>r.id)),excluded=PSI_DATA.records.filter(r=>!ids.has(r.id));
- return `${records.length} of ${PSI_DATA.records.length} investigations match. Included (${records.length}): ${records.map(r=>r.name).join(', ')||'none'}. Excluded (${excluded.length}): ${excluded.map(r=>r.name).join(', ')||'none'}. ${records.length?'Top result: '+records[0].name+'.':'No matching evidence — a coverage gap, not a safety finding.'}`;
+ return `${records.length} of ${PSI_DATA.records.length} investigations match. Included (${records.length}): ${records.map(r=>r.name).join(', ')||'none'}. Excluded (${excluded.length}): ${excluded.map(r=>r.name).join(', ')||'none'}. ${records.length?'Top result: '+records[0].name+'.':'No experiment in the curated set matches these filters.'}`;
 }
 function rankResearch(question,filters={material:'any',gravity:'any',airflow:'any'},scenario={gravity:'lunar'}){
  const topics=topicsFor(question),tokens=tokensFor(question);const material=['pmma','fabric','silicone'].find(x=>tokens.has(x))||(tokens.has('cotton')||tokens.has('fiberglass')?'fabric':null);
@@ -23,13 +23,13 @@ function rankResearch(question,filters={material:'any',gravity:'any',airflow:'an
  }).sort((a,b)=>b.points-a.points||a.order-b.order);
 }
 function overviewEvidenceAnswer(question,records){
- if(!records.length)return {gap:true,text:'Evidence gap: no investigations match the current filters. Reset a filter to retrieve evidence.',citations:[]};
- if(/\b(safe|safest|probability|certify|certification|threshold|prediction|predict|battery|lithium|human|survive)\b/i.test(question))return {gap:true,text:'Evidence gap: these records cannot establish a safe operating limit, predict a fire, certify a lunar habitat, or answer battery/health questions. The ranking is research relevance only.',citations:records.slice(0,2).map(r=>r.id)};
- if(/\d/.test(question)&&/\b(at|for|when|predict|estimate|rate)\b/i.test(question)||/lunar|moon/i.test(question)&&/\b(rate|speed|velocity|threshold)\b/i.test(question))return {gap:true,text:'Evidence gap: no numeric prediction is supported for the requested conditions. No lunar-surface rate is measured in these records. Inspect each original test row; do not interpolate or transfer a microgravity rate to a lunar habitat.',citations:records.slice(0,2).map(r=>r.id)};
+ if(!records.length)return {gap:true,text:'No investigation matches the current filters. Reset a filter to see the closest NASA experiments.',citations:[]};
+ if(/\b(safe|safest|probability|certify|certification|threshold|prediction|predict|battery|lithium|human|survive)\b/i.test(question))return {gap:true,text:'These NASA records report measured flame behaviour under stated conditions. For safe operating limits, fire prediction, habitat certification, batteries or health, start from the original NASA sources. The ranking here shows research relevance.',citations:records.slice(0,2).map(r=>r.id)};
+ if(/\d/.test(question)&&/\b(at|for|when|predict|estimate|rate)\b/i.test(question)||/lunar|moon/i.test(question)&&/\b(rate|speed|velocity|threshold)\b/i.test(question))return {gap:true,text:'These records report measured values for the conditions NASA tested. No lunar-surface rate appears in them, so read each original test row for its exact conditions and use microgravity rates as reference points for new lunar tests.',citations:records.slice(0,2).map(r=>r.id)};
  const topics=topicsFor(question);
- if(!topics.length)return {gap:true,text:'Evidence gap: this question has no supported topic in the curated records. Try material, airflow, oxygen, microgravity or combustion gases. No answer has been inferred.',citations:[]};
+ if(!topics.length)return {gap:true,text:'This question is outside the topics in the curated NASA records. Try asking about a material, airflow, oxygen, microgravity or combustion gases.',citations:[]};
  const matched=records.filter(r=>topics.some(t=>r.tags.includes(t)));
- if(!matched.length)return {gap:true,text:'Evidence gap: no currently filtered record covers the recognized topic.',citations:[]};
+ if(!matched.length)return {gap:true,text:'No record in the current filters covers this topic. Reset a filter to widen the search.',citations:[]};
  let text=matched.slice(0,2).map(r=>`[${r.id}] ${topics.includes('flow')?r.airflow+' ':''}${topics.includes('oxygen')?r.oxygen+' ':''}${topics.includes('smoke')||topics.includes('flame')?r.outcome+' ':''}${r.interpretation}`).join('\n\n');
  if(/lunar|moon|gravity/i.test(question))text+='\n\nLunar applicability: these are microgravity investigations, not lunar surface tests. Buoyancy, material geometry and ventilation must be evaluated at lunar gravity before transferring a result.';
  return {gap:false,text,citations:matched.slice(0,2).map(r=>r.id)};
@@ -56,7 +56,7 @@ function evidenceAnswer(question,records){
  const gap=(text,rs=named)=>({gap:true,text,citations:rs.map(r=>r.id),sources:rs.map(r=>({id:r.id,row:null,file:r.sourceFile,url:r.downloadUrl})),mode:'deterministic'});
  if(intent.unknownName)return gap('The curated dataset does not include '+intent.unknownName+'. No measurement has been inferred.',[]);
  if(intent.ids.length>1)return gap('Please ask about one investigation at a time so its measurement and conditions stay attached to the correct source.');
- if(intent.lunar&&intent.measures.includes('spreadRate'))return gap('The curated studies were conducted in microgravity and provide no direct lunar-gravity flame-spread measurement.',named.length?named:PSI_DATA.records.slice(0,2));
+ if(intent.lunar&&intent.measures.includes('spreadRate'))return gap('The curated studies were conducted in microgravity. NASA’s PSI database does not yet include a lunar-gravity flame-spread measurement; the LUCI and FM2 experiments are expected to add one.',named.length?named:PSI_DATA.records.slice(0,2));
  if(named.length&&/\b(safe|safest|probability|certify|certification|threshold|prediction|predict)\b/i.test(question))return gap('The selected evidence cannot establish a safe operating limit, predict a fire or certify a habitat.');
  if(!named.length&&!intent.measures.includes('spreadRate'))return overviewEvidenceAnswer(question,records);
  if(intent.measures.length!==1)return named.length?gap('Which measurement do you need: flame-spread rate, burn duration, airflow, oxygen or carbon monoxide?'):overviewEvidenceAnswer(question,records);
@@ -106,7 +106,7 @@ function scenarioRecord(record,material='any'){
  r.material=runs.map(run=>run.id+': '+run.material).join('; ');
  r.oxygen=runs.map(run=>run.id+': '+(run.oxygenInitial?run.oxygenInitial+'% by volume':run.oxygen+'% (table Note 1)')).join('; ');
  r.airflow=runs.map(run=>run.id+': '+run.airflow+(run.direction?' '+run.direction.toLowerCase():'')).join('; ');
- if(material==='silicone')return {...r,qualitativeOnly:true,limits:'Row 2-1 provides a qualitative silicone outcome, not a numeric flame-spread rate. No direct lunar-gravity result or safe operating limit follows.',outcome:'Run 2-1: burn time reported as “Insignificant” (qualitative). Flame-spread rate: Not reported.',qualitative:'The source reports “Insignificant”, not a numeric zero or a flame-spread rate.',interpretation:'This selected silicone result cannot supply the SIBAL spread rate or establish a lunar flammability limit.'};
+ if(material==='silicone')return {...r,qualitativeOnly:true,limits:'Row 2-1 reports a qualitative silicone outcome in microgravity.',outcome:'Run 2-1: burn time reported as “Insignificant” (NASA’s qualitative description). Flame-spread rate: Not reported.',qualitative:'The source describes the burn as “Insignificant”.',interpretation:'This is the silicone result; the SIBAL spread rate belongs to run 2-5.'};
  r.outcome=runs.map(run=>run.outcome.spreadRate&&run.outcome.spreadRate!=='Not reported'?run.id+': flame spread '+run.outcome.spreadRate:run.outcome.finalCO!=null?run.id+': final CO '+run.outcome.finalCO+' ppm (initial '+run.outcome.initialCO+' ppm); spread rate Not reported':run.id+': burn time '+run.outcome.burnTime+'; spread rate Not reported').join('; ');
  return r;
 }
@@ -120,20 +120,20 @@ function runCoverage(record,filters){
 function researchDecision(records,filters,scenario){
  const empty=!records.length,material=filters.material,gravity=scenario.gravity==='lunar'?'lunar surface':scenario.gravity==='any'?'the proposed scenario':scenario.gravity;
  const saffire=records.find(r=>r.id==='PSI-99');let measured,missing,step,fixed,variable='gravity regime',source,run;
- if(empty){measured='No curated NASA investigation matches these filters.';missing='No matched measurement is available for this selection. A coverage gap is not evidence of safety.';variable='material / gravity / airflow coverage';fixed='Define the material, atmosphere, geometry and ignition protocol before any test.';step='Proposed research scoping: broaden one filter or locate a matching NASA record before choosing a numerical baseline.';}
+ if(empty){measured='No curated NASA investigation matches these filters.';missing='No curated experiment matches this selection. Reset a filter to see the closest NASA experiments.';variable='material / gravity / airflow coverage';fixed='Define the material, atmosphere, geometry and ignition protocol before any test.';step='Proposed research scoping: broaden one filter or locate a matching NASA record before choosing a numerical baseline.';}
  else if(saffire&&material==='silicone'){
   source=saffire;run='2-1';measured='Saffire II run 2-1: silicone burn time was reported as “Insignificant” (qualitative). No flame-spread rate is reported. Conditions: microgravity, 20 cm/s concurrent flow, approximately 21.5% O₂.';
-  missing='The curated studies provide no direct '+gravity+' validation for this silicone specimen. Pressure, temperature and a numeric spread-rate outcome are not supplied by this selected row.';
+  missing='Test this silicone specimen in '+gravity+' conditions, and record pressure, temperature and a numeric spread rate.';
   fixed='Silicone specimen geometry, approximately 21.5% O₂ and 20 cm/s concurrent airflow; choose and document common pressure, temperature and ignition conditions.';
   step='Proposed follow-up analysis: compare microgravity and '+gravity+' conditions with the same silicone configuration. Determine whether sustained spread occurs before comparing a rate; do not convert “Insignificant” into zero.';
  }else if(saffire&&(material==='any'||material==='solid'||material==='fabric')){
   source=saffire;run='2-5';measured='Saffire II reported a flame spread rate of 2.1 mm/s for run 2-5. Conditions: SIBAL cotton/fiberglass, microgravity, 20 cm/s concurrent flow, approximately 22.1% O₂ (derived per Note 1).';
-  missing='The curated studies are microgravity investigations, not direct '+gravity+' tests. The habitat’s pressure, temperature, exact geometry and ignition conditions have not been established here.';
+  missing='Test this material in '+gravity+' conditions, and define the habitat’s pressure, temperature, geometry and ignition conditions.';
   fixed='SIBAL material, 20 cm/s concurrent airflow and approximately 22.1% O₂; resolve the source’s thickness ambiguity and define common geometry, pressure, temperature and ignition conditions.';
   step='Proposed follow-up analysis: develop and validate a matched-condition flame-spread model, then vary gravity from microgravity to '+gravity+'. Compare spread rate in mm/s; do not treat the NASA rate as a lunar prediction.';
  }else{
   source=records[0];run=source.runs[0]?.id;measured=source.name+': '+source.outcome;
-  missing='A material-matched flame-spread baseline for '+gravity+' is not reported in the selected curated rows. Concentration or burn-duration data cannot substitute for that measurement.';
+  missing='Obtain a material-matched flame-spread measurement for '+gravity+' conditions; the selected rows report concentration and burn-duration data.';
   fixed='Selected material and specimen geometry, oxygen, pressure, temperature, airflow and ignition protocol; numerical settings must be sourced or explicitly chosen as proposed test inputs.';
   step='Proposed next step: retrieve the material-specific run files and measure or derive a traceable spread-rate baseline before a gravity-transfer analysis.';
  }
