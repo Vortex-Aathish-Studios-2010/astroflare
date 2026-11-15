@@ -329,3 +329,6 @@ a:hover{color:var(--ink);text-decoration-color:var(--green)}
 label.lbl,.lbl,dt,.evidence-facts dt,.guide-facts dt,.rank-label,.preview-label{font-size:13px}
 .small,.muted,.filter-status,.run-match-note,.rank-strip .small{font-size:14px}
 @media (max-width:640px){#saveBtn,#loadBtn,#restartBtn,.top .btn.small-btn{padding-top:11px!important;padding-bottom:11px!important;min-height:40px}}
+
+/* Final readability floor: these elements had their own smaller sizes; keep every label at 13px or more */
+#stage label.lbl,#stage .filter-control .lbl,#stage pre.run-data,#stage .rank-strip li,#stage .rank-strip li *,#stage .decision-panel .evidence-choice,#stage .decision-panel .small,#stage .decision-panel .small a,#stage .decision-section h3,#stage th,#stage .measurement-row strong,#stage .measurement-row .small,#stage button.linkbtn,#stage .eyebrow,.home-hero .eyebrow{font-size:13px!important}
