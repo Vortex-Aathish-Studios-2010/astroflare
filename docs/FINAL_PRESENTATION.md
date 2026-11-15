@@ -123,7 +123,7 @@ Use these in the **Ask about the evidence** panel.
 | Ask | What you should see |
 |---|---|
 | What was the flame spread rate in Saffire II? | 2.1 mm/s for run 2-5 with its conditions and NASA source links |
-| What was the flame spread rate in Saffire I? | The values from the cited NASA report (1.8 mm/s concurrent, 1.3 mm/s opposed) with links |
+| What was the flame spread rate in Saffire I? | The answer opens with a line saying the selected PSI table does not report a rate, then gives the rates from NASA's companion presentation: 1.8 mm/s concurrent (sample 1-1) and 1.3 mm/s opposed (sample 1-2), both SIBAL fabric in microgravity at 20 cm/s, with links. Say: "The PSI table has no rate, so we cite NASA's own companion presentation." |
 | What flame spread rate was measured in lunar gravity? | A statement that PSI does not yet include a lunar-gravity measurement and that LUCI and FM2 are expected to add one |
 | Is silicone safe on the Moon? | A calm pointer: the records report measured behaviour under stated conditions; start from the original NASA sources |
 | Who won the football match? | A pointer to the topics the records cover (material, airflow, oxygen, microgravity, combustion gases) |
@@ -163,7 +163,8 @@ Say it as a plan, not as results. Do not invent customers, revenue, partnerships
 7. **Keep this page open** on a second device or printed.
 
 **Backup plan**
-- **Screenshots or a screen recording:** record one run-through of the script before the event (Windows: Win+G or Win+Alt+R). Keep it on the desktop. Backup screenshots are not yet saved in the project; record your own recording or ask me to capture them once the final deploy is confirmed.
+- **Backup screenshots (ready):** `docs/demo-backup/` holds 11 full-resolution screenshots of the live site, numbered in the order of the script: `01` home, `02` preview and how it works, `03` demo with SIBAL, `04` demo with silicone, `05` ranking and "What should we test next?", `06` comparison, `07` an evidence answer, `08` research projects, `09` For research labs, `10` mission screening quick/full choice, `11` demo top. Open them in an image viewer on the presenting laptop; if the site is slow, walk the script using these.
+- **Screen recording (recommended):** also record one run-through of the script before the event (Windows: Win+Alt+R). Keep it on the desktop.
 - **Run it locally** if the internet fails: open a terminal in the project folder and run `npm start`, then open http://localhost:3000. The research explorer, labs page and project save all work offline because the NASA data is bundled. (Mission screening and the AI need the engine and internet.)
 - **If the AI is slow or unavailable:** say "The cited answer is the core; the AI interpretation is optional," and continue. The cited answer always works.
 - **If a page loads slowly:** talk through the hook while it loads, then continue.
@@ -205,12 +206,35 @@ State facts plainly. Do not over-claim and do not apologise.
 
 ---
 
-## 11. Verification status (honest)
+## 11. Verification status
 
-**Confirmed on the live site (build 7967508):** all pages and downloads load (home, documentation, verification, control audit, dataset, source zip, health check, measurements and the three source CSVs, photo, fonts); the live home page is byte-identical to the committed build; unknown pages return a clean 404; the quick mission path ran end to end on the live engine (review then results with 9 findings); quick is 3 questions and full is 29 in 7 groups; reloading on `#research` restores the right page; the AI explanation returned a checked answer citing run 2-5 (on an earlier build); no console errors seen.
+Final build on the live site: commit `eaa9930` at https://astroflare.onrender.com. The live home page is byte-identical to the committed `public/index.html` (checked by hash).
 
-**Confirmed in automated tests (not yet re-run on the live site):** 54 interface tests and 499 engine tests pass, covering navigation and back/forward, material switches, filters, empty results, comparison, evidence questions including irrelevant and unsupported ones, project save, reopen and export, the labs page, the quick/full choice, in-page link integrity, and the server's compression and caching. All 27 external NASA links return 200.
+**Confirmed on the live site**
 
-**In progress when this was written:** a performance fix (compressed, cached pages) was being deployed because the free hosting made the home page take anywhere from 2 to 25 seconds. After it is live, load time still depends on the free plan, which is why you should wake the site early.
+| Area | Result |
+|---|---|
+| Pages and files | Home, documentation, verification, control audit, dataset, source zip, health check, measurements, the three PSI source CSVs, NASA photo and fonts all return 200; an unknown address returns a clean 404 |
+| Speed | Page sent compressed (about 92 KB); loads in about 0.6 to 2 seconds; a repeat visit returns "not modified"; the page is ready in under 1 second in the browser (875 ms measured) |
+| Mission screening | Quick path ran end to end on the live engine (3 questions, then review and results with 9 findings); the full path is 29 questions in 7 groups; Quick is the default |
+| Research explorer | Filters, empty-result message, reset, lunar preset and two-experiment comparison all work |
+| Evidence questions | 6 tested live: Saffire II (2.1 mm/s), Saffire I, lunar gravity, "Is silicone safe on the Moon?", "Who won the football match?" and an empty question; each answered correctly or with a calm pointer to the topics covered |
+| AI explanation | Returned a checked, cited interpretation in about 14 seconds, with a loading message while it ran |
+| Projects | Save, reopen (filters, ranking, comparison and takeaway restored together) and export to Markdown and JSON all work; the mission-screening save is untouched |
+| Refresh | Reloading on `#research`, `#labs`, `#lunar-demo` and `#mission` restores the right page and menu highlight |
+| Errors | No console errors; no failed network requests; one status call per page load |
+| Layout | No sideways scrolling at 390 px (phone) and 768 px (tablet) on any page; no text under 13 px and no small tap targets at 390 px |
+| Colour contrast | Passes the 4.5:1 text standard on all five main pages |
+| Links | All 27 external NASA links return 200 |
+| Tests | 54 interface tests and 499 engine tests pass |
 
-**Not yet done:** the remaining live checks (filters, comparison and projects on the live site; layout at 390 and 768 px; text contrast), and backup screenshots saved into the project.
+**Improved during QA**
+- Page compression: first-screen load went from 2 to 25 seconds down to about 1 to 2 seconds.
+- Larger label text and larger tap targets for the small menu buttons on phones.
+- Added a site icon, and caching for the photo and fonts.
+- Fixed the Quick screening option so it appears on the page.
+
+**Good to know**
+- The free hosting sleeps when idle, so the first load after a quiet period can take up to a minute. Wake the site 5 to 10 minutes before you present.
+- The AI interpretation relies on a free provider. The cited answer is the core of every response and always works without it.
+- Planned features (shared projects, reviewer comments, version history) are not built and are labelled "Planned" on the site.
