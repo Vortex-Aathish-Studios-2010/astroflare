@@ -4,7 +4,7 @@ const ALLOWED = new Map([
  ...['guide/interpret','guide/flow','guide/profile','assess','compare','investigate','report','ask','evidence/verify','research/ask'].map(p=>['/api/'+p,'POST'])
 ]);
 function assetHeaders(asset,request,url){
- const h={'Content-Type':asset.type,'X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','Cache-Control':'no-cache'};
+ const h={'Content-Type':asset.type,'X-Content-Type-Options':'nosniff','Referrer-Policy':'strict-origin-when-cross-origin','Cache-Control':/^(image|font)\//.test(asset.type)||/font|ttf/.test(asset.type)?'public, max-age=86400':'no-cache'};
  if(asset.csp){h['Content-Security-Policy']=asset.csp;h['X-Frame-Options']='DENY';h['Permissions-Policy']='camera=(), microphone=(), geolocation=(), payment=()';h['Cross-Origin-Opener-Policy']='same-origin';}
  if(url.protocol==='https:'||request.headers.get('x-forwarded-proto')==='https')h['Strict-Transport-Security']='max-age=15552000';
  return h;

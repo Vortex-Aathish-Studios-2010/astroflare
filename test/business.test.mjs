@@ -104,3 +104,24 @@ test('keyboard: labs, project name and save are reachable form controls with lab
   const label=d.querySelector('label[for=project-name]');assert.ok(label);assert.equal(d.getElementById('save-project').type,'submit');assert.equal(d.getElementById('project-status').getAttribute('role'),'status');
   for(const id of ['labsBtn','homeBtn','demoBtn','researchBtn','missionBtn'])assert.equal(d.getElementById(id).tagName,'BUTTON');}finally{dom.window.close();}
 });
+
+test('mission screening offers a clear choice: quick (default, 3 questions) or full (20 to 29)',async()=>{
+ const {dom,d,w,errors}=bootJudge(html);try{await pause();
+  d.getElementById('missionBtn').click();d.getElementById('skipBtn').click();await pause();
+  const quick=d.getElementById('goal_quick'),full=d.getElementById('goal_investigate');
+  assert.ok(quick&&full,'both options are offered');assert.equal(quick.checked,true,'quick is the default');assert.equal(full.checked,false);
+  const page=d.getElementById('stage').textContent;assert.match(page,/How much detail do you want to give\?/);assert.match(page,/Quick, 3 questions/);assert.match(page,/Full, 20 to 29 questions/);
+  assert.ok(d.getElementById('goal_gaps')&&d.getElementById('goal_influence'),'the existing goals are kept');
+  full.click();full.dispatchEvent(new w.Event('change',{bubbles:true}));assert.equal(d.getElementById('goal_investigate').checked,true);assert.equal(d.getElementById('goal_quick').checked,false);
+  assert.deepEqual(errors,[]);}finally{dom.window.close();}
+});
+
+test('every in-page link on every research page leads to an element that exists',async()=>{
+ const routes=new Set(['#labs','#lunar-demo','#research','#mission']);
+ const {dom,d,errors}=bootJudge(html);try{await pause();
+  for(const open of [()=>{},()=>d.getElementById('labsBtn').click(),()=>d.getElementById('demoBtn').click(),()=>d.getElementById('researchBtn').click(),()=>d.getElementById('missionBtn').click()]){
+   open();await pause();const bad=[...d.querySelectorAll('#stage a[href^="#"], header a[href^="#"]')].map(a=>a.getAttribute('href')).filter(h=>h.length>1&&!routes.has(h)&&!d.getElementById(h.slice(1)));
+   assert.deepEqual(bad,[],'dangling in-page links');
+   const buttons=[...d.querySelectorAll('#stage button')].filter(b=>!b.textContent.trim()&&!b.getAttribute('aria-label'));assert.equal(buttons.length,0,'buttons without a name');}
+  assert.deepEqual(errors,[]);}finally{dom.window.close();}
+});

@@ -18,8 +18,11 @@ import assessment as A
 MAX_MISSION_CHARS = 2000
 
 GOALS = [
+    {"id": "quick", "label": "Quick screening",
+     "detail": "Quick, 3 questions: the hazard plus three cabin-environment answers (gravity, oxygen, pressure), then your findings. Anything not asked is listed as information to add later.",
+     "opens": "findings"},
     {"id": "investigate", "label": "Investigate a specific hazard",
-     "detail": "Full screening: Astroflare asks about the environment, the equipment and the safeguards, then reports conditions that warrant review.",
+     "detail": "Full, 20 to 29 questions in 5 to 7 short groups: Astroflare asks about the environment, the equipment and the safeguards, then reports conditions that warrant review in more detail.",
      "opens": "findings"},
     {"id": "gaps", "label": "Find out what information is missing",
      "detail": "A short path: only the hazard and the cabin environment are asked. Everything else is reported as missing, with why it matters.",
@@ -108,7 +111,7 @@ def build_steps(hazard, goal):
     the goal and the engine's own applicability lists."""
     env = ("environment", "Cabin environment", "Gravity, oxygen and pressure are the three inputs the screening cannot run without.", ["gravity", "o2_percent", "pressure"])
     problem = ("problem", "The problem", "Pick the hazard to investigate. This decides which questions come next.", ["hazard", "question"])
-    if hazard is None or goal == "gaps":
+    if hazard is None or goal in ("gaps", "quick"):
         return [problem, env]
     context = ("context", "Mission context", "Context for the report and for how much outside help the crew can count on.", ["habitat", "phase", "duration_days", "crew", "abort", "comm_delay_min"])
     airflow = ("airflow", "Airflow", "Ventilation can feed a flame and spread smoke, but detectors depend on it. These answers give the air-turnover time scale.",
@@ -271,10 +274,10 @@ def profile(answers, goal=None, mission=None):
                 not_asked.append({"field": fid, "label": q["label"], "reason": q["skipReason"]})
             elif fid != "question":
                 not_asked.append({"field": fid, "label": q["label"], "reason": "Not answered yet."})
-    if fl["goal"] == "gaps" and hazard:
+    if fl["goal"] in ("gaps", "quick") and hazard:
         for f in A.FIELDS:
             if f["id"] not in shown and f["id"] not in ("pressure_unit", "question") and A.applies(f, hazard):
-                not_asked.append({"field": f["id"], "label": f["label"], "reason": "Not asked: you chose the short path, so this is reported as missing information."})
+                not_asked.append({"field": f["id"], "label": f["label"], "reason": "Not asked: you chose the %s path, so this is reported as missing information." % ("quick" if fl["goal"] == "quick" else "short")})
     restricted = A.restrict_to_applicable(norm)
     derived = A.derive(restricted) if hazard else []
     core_missing = [A.FIELD_BY_ID[f]["label"] for f in ("gravity", "o2_percent", "pressure") if norm["values"][f] is None] if hazard else []

@@ -79,7 +79,7 @@ class GuideRoutes(R):
     def test_schema_describes_the_guided_workflow(self):
         _, s, _ = self.req("GET", "/api/schema")
         g = s["guide"]
-        self.assertEqual([x["id"] for x in g["goals"]], ["investigate", "gaps", "influence"])
+        self.assertEqual([x["id"] for x in g["goals"]], ["quick", "investigate", "gaps", "influence"])
         self.assertEqual({b["value"] for b in g["bases"]}, set(A.BASES))
         self.assertEqual(len(g["hazards"]), 4)
         self.assertTrue(all("message" in u for u in g["unsupported"]))

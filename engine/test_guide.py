@@ -68,6 +68,16 @@ class FlowStructure(unittest.TestCase):
         self.assertTrue(f["readyToReview"])
         self.assertFalse(G.flow(dict(CORE), "investigate")["readyToReview"])
 
+    def test_the_quick_path_asks_only_the_hazard_and_three_environment_answers(self):
+        f = G.flow(dict(CORE), "quick")
+        self.assertEqual(steps(f), ["problem", "environment"])
+        self.assertEqual([q["field"] for s in f["steps"] for q in s["questions"] if s["id"] == "environment"], ["gravity", "o2_percent", "pressure"])
+        self.assertTrue(f["readyToReview"])
+        self.assertEqual(G.GOAL_BY_ID["quick"]["opens"], "findings")
+        p = G.profile(dict(CORE), "quick")
+        self.assertTrue(p["readyToRun"])
+        self.assertTrue(any("quick path" in x["reason"] for x in p["notAsked"]))  # everything not asked is reported as missing, never assumed
+
     def test_unknown_goal_falls_back_to_the_full_path(self):
         self.assertEqual(G.flow(dict(CORE), "nonsense")["goal"], "investigate")
 
@@ -460,3 +470,11 @@ class AssessmentBasis(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class BundledInterface(unittest.TestCase):
+    def test_the_goal_options_bundled_into_the_page_match_the_engine(self):
+        import json
+        from pathlib import Path
+        bundled = json.loads((Path(__file__).resolve().parent.parent / "sources" / "schema.json").read_text(encoding="utf-8"))
+        self.assertEqual(bundled["guide"]["goals"], G.GOALS)  # rebuild the page data when the goals change

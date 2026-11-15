@@ -10,6 +10,12 @@ FOOTER='''<footer class="wrap small site-footer">
 h=(p/'sources/original-interface.html').read_text()
 h=re.sub(r'let[-\s\u2011\u2013]through energy(?: of the fault)?(?: \((?:I²t|I2t)\))?', 'fault current integral (I²t)', h, flags=re.I)
 h=h.replace('<title>Astroflare | Guided hazard assessment</title>','<title>Astroflare | Assessment & NASA combustion research</title>')
+h=h.replace('card.appendChild(el("h4", { text: "What do you need from this assessment?" }));','card.appendChild(el("h4", { text: "How much detail do you want to give?" }));card.appendChild(el("p", { class: "small", text: "You can start with the quick screening and run the full one later. Your hazard choice and question are kept." }));',1)
+h=h.replace('interp: null, goal: "investigate",','interp: null, goal: "quick",',1)
+h=h.replace('S.goal = g ? g.value : "investigate";','S.goal = g ? g.value : "quick";',1)
+h=h.replace('S.interp = null; S.goal = "investigate";','S.interp = null; S.goal = "quick";',1)
+FAVICON='''<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 fill=%27%230b1f3a%27/%3E%3Cpath d=%27M16 5c2 5 7 8 7 14a7 7 0 0 1-14 0c0-3 1.500-5 3-7 .5 2 1.500 3 2.500 3C14.500 11 15 8 16 5z%27 fill=%27%231f6fe0%27/%3E%3C/svg%3E">'''
+h=h.replace('</head>',FAVICON+'\n</head>',1)
 h=h.replace('<div class="row noprint">','<div class="row noprint">\n    <button class="btn small-btn" id="demoBtn" type="button">Open hypothetical demo</button>\n    <button class="btn small-btn" id="researchBtn" type="button">NASA research</button>\n    <button class="btn small-btn" id="labsBtn" type="button">For research labs</button>',1)
 assert h.count('</header>')==1
 h=h.replace('</header>','</header>\n<p class="tool-key" id="tool-key"><strong>Research explorer</strong> (Lunar habitat demo, NASA research) searches NASA records in your browser. <strong>Mission screening</strong> sends your answers to the assessment engine on this site&rsquo;s server.</p>',1)
@@ -90,7 +96,7 @@ bootstrap=json.loads((p/'sources/schema.json').read_text());demo=json.loads((p/'
 dataset=json.loads((p/'public/dataset.json').read_text())
 payload='const AI_ENABLED=true;\n'+(p/'public/terminology.js').read_text()+'\nconst PSI_DATA='+json.dumps(dataset)+';\n'+'const BOOTSTRAP=correctAssessmentTerminology('+json.dumps(bootstrap)+');\nconst DEMO=correctAssessmentTerminology('+json.dumps(demo)+');\n'+(p/'public/research.js').read_text()
 h=h.replace('<script>','<script>\n'+payload,1)
-h=h.replace('  // ---------------------------------------------------------------- start\n', (p/'public/enhancements.js').read_text()+'\n'+(p/'public/explorer.js').read_text()+'\n'+(p/'public/guided.js').read_text()+'\n'+(p/'public/labs.js').read_text()+'\n'+(p/'public/projects.js').read_text()+'\n'+(p/'public/motion.js').read_text()+'\n'+(p/'public/plate.js').read_text()+'\n'+(p/'public/reliability.js').read_text()+'\n'+(p/'public/experience.js').read_text()+'\n  // ---------------------------------------------------------------- start\n')
+h=h.replace('  // ---------------------------------------------------------------- start\n', (p/'public/enhancements.js').read_text()+'\n'+(p/'public/explorer.js').read_text()+'\n'+(p/'public/guided.js').read_text()+'\n'+(p/'public/labs.js').read_text()+'\n'+(p/'public/projects.js').read_text()+'\n'+(p/'public/motion.js').read_text()+'\n'+(p/'public/reliability.js').read_text()+'\n'+(p/'public/experience.js').read_text()+'\n  // ---------------------------------------------------------------- start\n')
 (p/'public/index.html').write_text(h)
 def md_inline(s):
     s=_html.escape(s,quote=False)
@@ -132,10 +138,11 @@ def doc_page(title,markdown,intro):
     body,toc=md_to_html(markdown)
     nav='<nav class="doc-toc" aria-label="On this page"><p class="lbl">On this page</p><ol>'+''.join('<li><a href="#%s">%s</a></li>'%(s,md_inline(t)) for s,t in toc[:24])+'</ol></nav>' if toc else ''
     css=(p/'public/font-faces.css').read_text()+'\n'+(p/'public/theme.css').read_text()+'\n'+(p/'public/docs.css').read_text()
-    return ('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>%s · AstroFlare</title><style>%s</style></head><body class="doc-page">'
+    page=('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">@@FAV@@<title>%s · AstroFlare</title><style>%s</style></head><body class="doc-page">'
             '<a class="skip" href="#doc-main">Skip to content</a><header class="top"><div class="brand"><a class="brand-name" href="/">AstroFlare</a></div>'
             '<nav class="doc-nav" aria-label="Main"><a href="/">Home</a><a href="/#lunar-demo">Lunar habitat demo</a><a href="/#mission">Mission screening</a><a href="/#research">NASA research</a><a href="/#labs">For research labs</a><a href="/documentation" %s>Documentation</a></nav></header>'
             '<main id="doc-main" class="wrap doc-wrap"><p class="doc-kicker">%s</p>%s<div class="doc-body">%s</div></main>%s</body></html>')%(_html.escape(title),css,'aria-current="page"' if title=='Documentation' else '',_html.escape(intro),nav,body,FOOTER)
+    return page.replace('@@FAV@@',FAVICON)
 assets={'/release-checks.json':{'body':(p/'RELEASE_CHECKS.json').read_text(),'type':'application/json; charset=utf-8'},'/control-audit':{'body':doc_page('Control audit',(p/'CONTROL_AUDIT.md').read_text(),'Earlier release record: every control and its verification'),'type':'text/html; charset=utf-8','csp':DOC_CSP},'/verification':{'body':doc_page('Verification',(p/'VERIFICATION.md').read_text(),'Earlier release record: verification results and limits'),'type':'text/html; charset=utf-8','csp':DOC_CSP},'/':{'body':h,'type':'text/html; charset=utf-8'},'/measurements.csv':{'body':(p/'public/measurements.csv').read_text(),'type':'text/csv; charset=utf-8'},'/documentation':{'body':doc_page('Documentation',(p/'README.md').read_text(),'How AstroFlare works, its sources, limits and deployment'),'type':'text/html; charset=utf-8','csp':DOC_CSP}}
 scripts=re.findall(r'<script>(.*?)</script>',h,re.S)
 assert len(scripts)==1,'the page must have exactly one inline script for its CSP'
