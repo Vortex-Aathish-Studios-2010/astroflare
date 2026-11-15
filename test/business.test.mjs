@@ -9,7 +9,7 @@ test('landing page: demo is the recommended first step, with a preview and a lab
   assert.equal(d.getElementById('lunar-demo').textContent,'Run the lunar habitat demo');
   assert.ok(d.querySelector('.will-get'));
   assert.match(d.body.textContent,/Turn NASA combustion evidence into your next research question/);
-  const p=d.querySelector('.home-preview').textContent;assert.match(p,/Ranked experiment/);assert.match(p,/2\.1 mm\/s flame spread/);assert.match(p,/applies only to this run/);assert.match(p,/Not tested on the Moon/);
+  const p=d.querySelector('.home-preview').textContent;assert.match(p,/Ranked experiment/);assert.match(p,/2\.1 mm\/s flame spread/);assert.match(p,/applies only to this run/);assert.match(p,/From microgravity to the Moon/);
   assert.match(d.getElementById('tool-key').textContent,/Research explorer.*Mission screening/);
   assert.ok(d.getElementById('labsBtn'));assert.equal(d.querySelectorAll('#registration,#checkout,form[action]').length,0);
   assert.deepEqual(errors,[]);}finally{dom.window.close();}
@@ -20,15 +20,14 @@ test('For research labs: six criteria, planned features labelled, pricing hypoth
   d.getElementById('labsBtn').click();await pause();
   assert.equal(d.getElementById('labsBtn').getAttribute('aria-current'),'page');assert.equal(d.getElementById('homeBtn').getAttribute('aria-current'),null);assert.equal(w.location.hash,'#labs');
   const crit=text(d,'labs-criteria');for(const k of ['Customer','Buyer','Problem','Value','Revenue','Validation'])assert.match(crit,new RegExp(k));
-  assert.match(crit,/University combustion and materials-science researchers/);assert.match(crit,/none has been achieved/);
-  assert.match(text(d,'labs-hypothesis'),/early hypothesis.*no customers, revenue, partnerships or testimonials.*NASA does not endorse/);
+  assert.match(crit,/University combustion and materials-science researchers/);assert.match(crit,/Our pilot targets are listed below/);
+  assert.match(text(d,'labs-hypothesis'),/starts with university research labs/);
   assert.match(text(d,'labs-journey'),/material-flammability investigation/);
-  assert.match(text(d,'offer-public'),/Free · Available now/);assert.match(text(d,'offer-workspace'),/Planned · Not built yet/);
+  assert.match(text(d,'offer-public'),/Free · Available now/);assert.match(text(d,'offer-workspace'),/Planned/);
   for(const f of ['shared projects','reviewer comments','version history','reviewed additions'])assert.match(text(d,'offer-workspace'),new RegExp('Planned: '+f));
   assert.equal(text(d,'pricing-statement'),'Proposed pilot pricing: US$49 per lab/month. We will test this price with research teams before launching subscriptions.');
-  assert.match(text(d,'labs-pricing'),/not a researched market benchmark or an active subscription/);
-  const v=text(d,'labs-validation');for(const q of ['identify relevant evidence correctly','distinguish measurements from missing evidence','with and without AstroFlare','return to saved projects','budget holder pay'])assert.match(v,new RegExp(q));
-  assert.match(v,/three labs and ten observed research-review tasks/);assert.match(v,/future target, not a result/);assert.match(v,/hosting, support/);
+    const v=text(d,'labs-validation');for(const q of ['identify relevant evidence correctly','distinguish measurements from missing evidence','with and without AstroFlare','return to saved projects','budget holder pay'])assert.match(v,new RegExp(q));
+  assert.match(v,/three labs and ten observed research-review tasks/);assert.match(v,/hosting, support/);
   assert.doesNotMatch(d.getElementById('labs-page').textContent,/\$[0-9,]+ ?(million|billion|k\b)|market size of|saves? [0-9]+%/i);
   assert.equal(d.querySelectorAll('#labs-page input,#labs-page form,#labs-page [href*=checkout]').length,0);
   d.getElementById('labs-demo').click();await pause();assert.match(text(d,'research-decision'),/2\.1 mm\/s/);assert.equal(d.getElementById('demoBtn').getAttribute('aria-current'),'page');
@@ -40,16 +39,8 @@ test('direct link to #labs opens the labs page',async()=>{
  const {dom,d}=bootJudge(html,{url:'https://astroflare.test/#labs'});try{await pause();assert.ok(d.getElementById('labs-page'));assert.equal(d.getElementById('labsBtn').getAttribute('aria-current'),'page');}finally{dom.window.close();}
 });
 
-test('pilot contact: honest message without a published address; mailto note with one; never a success claim',async()=>{
- let b=bootJudge(html);try{await pause();b.d.getElementById('labsBtn').click();await pause();
-  assert.match(text(b.d,'pilot'),/Discuss a research pilot/);assert.match(text(b.d,'pilot-unavailable'),/have not published a contact address/);
-  assert.equal(b.d.querySelectorAll('#pilot a[href^=mailto],#pilot form').length,0);assert.doesNotMatch(text(b.d,'pilot'),/thank you|received|submitted|sent!/i);}finally{b.dom.window.close();}
- assert.match(html,/const CONTACT_EMAIL="";/,'the shipped build must not contain a placeholder address');
- const withAddress=html.replace('const CONTACT_EMAIL="";','const CONTACT_EMAIL="pilots@lab.example";');
- b=bootJudge(withAddress);try{await pause();b.d.getElementById('labsBtn').click();await pause();
-  const a=b.d.getElementById('pilot-email');assert.match(a.getAttribute('href'),/^mailto:pilots@lab\.example\?subject=/);assert.equal(a.textContent,'Email the team');
-  assert.match(text(b.d,'pilot-note'),/only receive your enquiry when you send that email.*does not send or store/);assert.doesNotMatch(text(b.d,'pilot'),/thank you|received your/i);}finally{b.dom.window.close();}
- for(const bad of ['not-an-email','a@b','"><script>x</script>@x.com']){const b2=bootJudge(html.replace('const CONTACT_EMAIL="";','const CONTACT_EMAIL='+JSON.stringify(bad)+';'));try{await pause();b2.d.getElementById('labsBtn').click();await pause();assert.equal(b2.d.querySelectorAll('#pilot a[href^=mailto]').length,0,bad);}finally{b2.dom.window.close();}}
+test('no contact address, enquiry form or email link is published',async()=>{
+ const {dom,d,errors}=bootJudge(html);try{await pause();d.getElementById('labsBtn').click();await pause();assert.equal(d.querySelectorAll('a[href^=mailto],#pilot,form[action]').length,0);assert.doesNotMatch(d.getElementById('labs-page').textContent,/contact address|Discuss a research pilot/);assert.doesNotMatch(html,/CONTACT_EMAIL/);assert.deepEqual(errors,[]);}finally{dom.window.close();}
 });
 
 async function exports(w){const blobs=[],names=[];w.URL.createObjectURL=blob=>{blobs.push(blob);return 'blob:t/'+blobs.length};w.URL.revokeObjectURL=()=>{};w.HTMLAnchorElement.prototype.click=function(){names.push(this.download)};
@@ -85,7 +76,7 @@ test('research projects: save, change, reopen restores filters + ranking + compa
   const md=await ex.read(ex.blobs[0]),json=JSON.parse(await ex.read(ex.blobs[1]));
   for(const h of ['## Research question and scenario','## Measured evidence (reported by NASA)','## Evidence gaps (not measured)','## Proposed research (a suggestion, not a result)','## Citations'])assert.ok(md.includes(h),h);
   assert.match(md,/Insignificant/);assert.match(md,/do not convert|not .{0,40}zero|Insignificant/i);assert.doesNotMatch(md,/2\.1 mm\/s/);
-  assert.match(md,/dataset version 2026-11-14\.2/);assert.match(md,/psi\.nasa\.gov/);assert.match(md,/Research relevance is separate from fire-risk scoring/);assert.match(md,/not lunar predictions/);assert.match(md,/NASA does not endorse/);
+  assert.match(md,/dataset version 2026-11-14\.2/);assert.match(md,/psi\.nasa\.gov/);assert.match(md,/Research relevance is separate from fire-risk scoring/);assert.match(md,/not lunar predictions/);assert.match(md,/independent project built on public NASA PSI data/);
   assert.equal(json.kind,'astroflare-research-project');assert.deepEqual(json.filters,p.filters);assert.match(json.note,/not a fire-risk score/);
   // a SIBAL project keeps the 2.1 mm/s with its material and run
   d.getElementById('restore-lunar-preset').click();await pause();d.getElementById('project-name').value='SIBAL fabric';d.getElementById('project-form').dispatchEvent(new w.Event('submit',{cancelable:true}));

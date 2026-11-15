@@ -33,7 +33,7 @@
     L.push('## Proposed research (a suggestion, not a result)','',p.brief.proposedNextStep,'','- Variable to study: '+p.brief.variable,'- Hold fixed: '+p.brief.holdFixed,'');
     L.push('## Citations','');p.brief.citations.forEach(c=>L.push('- NASA PSI '+c.id+', row '+c.row+': '+c.url));
     const ids=[...new Set([...p.ranking.map(r=>r.id)])];ids.forEach(id=>{const r=rec(id);if(r)L.push('- '+r.name+' record: '+r.source+' (file v'+r.fileVersion+', verified '+r.verifiedOn+')');});
-    L.push('','---','Research relevance is separate from fire-risk scoring. Microgravity measurements are not lunar predictions. AstroFlare is an independent project; NASA does not endorse it.');
+    L.push('','---','Research relevance is separate from fire-risk scoring. Microgravity measurements are not lunar predictions. AstroFlare is an independent project built on public NASA PSI data.');
     return L.join('\n')+'\n';
   }
   function projectSlug(name){return (name||'project').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'project';}
