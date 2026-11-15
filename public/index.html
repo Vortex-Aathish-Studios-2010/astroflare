@@ -311,6 +311,138 @@ a:hover{color:var(--ink);text-decoration-color:var(--green)}
 .q-label{letter-spacing:.14em}
 .tag,.badge,.pill,.lvl,.kind{background:none!important;border:0!important;border-bottom:1px solid var(--ink)!important;padding:0 0 1px!important;font-size:11px;letter-spacing:.1em}
 
+/* Homepage hero: deep navy panel, white text, one bright blue action, a credited NASA photograph. */
+.home-hero{--navy:#0b1f3a;--navy-2:#132c4f;--bright:#1f6fe0;--bright-hover:#3b82f0;background:var(--navy);color:#fff;margin:0 0 64px;padding:clamp(28px,5vw,64px) clamp(20px,4.5vw,60px)}
+.home-hero-inner{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(28px,4vw,56px);align-items:center}
+.home-hero h1{color:#fff;font-size:clamp(40px,5.4vw,80px);line-height:1;margin:0 0 20px;max-width:13ch}
+.home-hero .eyebrow{display:block!important;color:#b9ddf3;font:600 12px/1.4 var(--sans);letter-spacing:.16em;text-transform:uppercase;margin:0 0 18px}
+.home-hero .hero-question{color:#dbe7f5;font-size:clamp(17px,1.4vw,20px);line-height:1.55;max-width:46ch;margin:0 0 28px}
+.home-hero .hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+.home-hero .btn{border:1px solid #fff;color:#fff;background:transparent;transition:background-color .18s ease,color .18s ease,border-color .18s ease,transform .18s ease}
+.home-hero .btn:hover,.home-hero .btn:focus-visible{background:#fff;color:var(--navy);box-shadow:none!important;transform:translateY(-1px)}
+.home-hero .btn.primary{background:var(--bright);border-color:var(--bright);color:#fff}
+.home-hero .btn.primary:hover,.home-hero .btn.primary:focus-visible{background:var(--bright-hover);border-color:var(--bright-hover);color:#fff;box-shadow:none!important}
+.home-hero :focus-visible{outline:2px solid #fff;outline-offset:3px}
+.home-hero .hero-note{color:#b8c7da;font-size:14px;margin:18px 0 0}
+.hero-figure{margin:0}
+.hero-figure img{display:block;width:100%;height:auto;aspect-ratio:1200/933;background:#000;transition:transform .5s ease}
+.hero-figure:hover img{transform:scale(1.015)}
+.hero-figure figcaption{display:grid;gap:4px;color:#c5d3e4;font-size:13px;line-height:1.5;margin-top:12px}
+.hero-figure .credit{color:#93a8c2}
+@keyframes hero-rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.home-hero-copy>*{animation:hero-rise .55s cubic-bezier(.2,.7,.2,1) both}
+.home-hero-copy>:nth-child(2){animation-delay:.06s}.home-hero-copy>:nth-child(3){animation-delay:.12s}.home-hero-copy>:nth-child(4){animation-delay:.18s}.home-hero-copy>:nth-child(5){animation-delay:.24s}
+.hero-figure{animation:hero-rise .7s .15s cubic-bezier(.2,.7,.2,1) both}
+.home-how .home-steps{list-style:none;padding:0;margin:24px 0 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}
+.home-steps li{border-top:3px solid var(--blue);padding-top:16px}
+.home-steps li:nth-child(2){border-top-color:var(--green)}
+.home-steps .step-num{font:400 34px/1 var(--serif);color:var(--blue-deep)}
+.home-steps h3{margin:10px 0 6px;font-size:24px}
+.home-steps p{color:var(--muted);margin:0}
+@media (max-width:860px){.home-hero-inner{grid-template-columns:1fr}.home-hero h1{max-width:none}.home-how .home-steps{grid-template-columns:1fr}}
+@media (max-width:520px){.home-hero{margin-inline:calc(-1 * var(--gutter,16px));padding:28px 16px}.home-hero .hero-actions .btn{width:100%;text-align:center}}
+
+/* Lunar demo walkthrough: three numbered steps above the advanced tools. */
+.guided .lede{margin-bottom:8px}
+.guided h1{font-size:clamp(34px,4.6vw,64px);max-width:20ch}
+.guide-steps{list-style:none;counter-reset:gstep;padding:0;margin:28px 0 0;display:grid;gap:34px}
+.guide-step{counter-increment:gstep;position:relative;padding-left:58px}
+.guide-step::before{content:counter(gstep);position:absolute;left:0;top:0;width:40px;height:40px;display:grid;place-items:center;font:400 24px/1 var(--serif);background:var(--blue-soft);border:1px solid var(--blue)}
+.guide-step:nth-child(2)::before{background:var(--green-soft);border-color:var(--green)}
+.guide-step h2{font-size:clamp(24px,2.6vw,34px);margin:4px 0 12px}
+.guide-switch{display:flex;flex-wrap:wrap;gap:10px}
+.guide-switch .btn[aria-pressed=true]{background:var(--ink);color:#fff;box-shadow:inset 0 -4px 0 var(--blue)!important}
+.guide-switch .btn{transition:background-color .15s ease,color .15s ease}
+.guide-value{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;margin:0 0 14px;max-width:none}
+.guide-number{font:400 clamp(44px,6vw,76px)/1 var(--serif);letter-spacing:-.02em}
+.guide-caption{color:var(--muted);font-size:15px;max-width:34ch}
+.guide-facts{display:grid;grid-template-columns:max-content 1fr;gap:6px 22px;margin:0 0 14px}
+.guide-facts dt{font:600 12px/1.6 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.guide-facts dd{margin:0}
+.guide-scope,.guide-gap{border-left:4px solid var(--green);padding-left:16px}
+.guide-gap{font-weight:600}
+.guide-observation{animation:hero-rise .3s ease both}
+.guide-next{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px}
+.guide-next .btn{text-decoration:none}
+.advanced-title{margin-top:8px;padding-top:28px;border-top:1px solid var(--line)}
+.how-steps{padding-left:22px;margin:12px 0}
+.how-steps li{margin:4px 0}
+@media (max-width:520px){.guide-step{padding-left:0;padding-top:52px}.guide-facts{grid-template-columns:1fr;gap:0}.guide-facts dd{margin-bottom:8px}.guide-next .btn,.guide-switch .btn{width:100%;text-align:center}}
+
+/* Optional AI explanation status */
+.ai-state{font:600 12px/1.4 var(--sans);letter-spacing:.1em;text-transform:uppercase;margin:16px 0 8px;display:flex;align-items:center;gap:8px}
+.ai-state::before{content:"";width:9px;height:9px;border-radius:50%!important;background:#9aa5b1}
+.ai-state.on::before{background:#2f7a47}.ai-state.off::before{background:#b4472d}
+.ai-explain .btn+.btn{margin-left:8px}
+
+/* Footer */
+.site-footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px;padding-bottom:40px;color:var(--muted)}
+.site-footer p{max-width:90ch;margin:0 0 12px}
+
+@media (prefers-reduced-motion:reduce){.home-hero-copy>*,.hero-figure,.guide-observation{animation:none!important}.hero-figure:hover img,.home-hero .btn:hover{transform:none!important}}
+.gap-list{padding-left:20px;margin:0 0 14px}.gap-list li{margin:0 0 10px;max-width:72ch}
+
+/* Readability: larger labels with tighter tracking, especially on small screens */
+.top .btn,.top .btn.small-btn,#homeBtn,#demoBtn,#missionBtn,#researchBtn,#saveBtn,#loadBtn,#restartBtn{font-size:14px!important;letter-spacing:.04em!important;line-height:1.3!important}
+.btn,button.btn,.large-btn{font-size:14px;letter-spacing:.05em}
+.btn.small-btn{font-size:13.5px}
+.eyebrow,.doc-kicker,.preview-label,.recommended,.guide-facts dt,.ai-state,.home-hero .eyebrow{letter-spacing:.08em}
+.doc-nav a{font-size:14px;letter-spacing:.04em}
+@media (max-width:640px){.top .btn,.top .btn.small-btn,#homeBtn,#demoBtn,#missionBtn,#researchBtn,#saveBtn,#loadBtn,#restartBtn{font-size:15px!important}.btn,button.btn,.large-btn{font-size:15px}}
+
+/* Landing page: one clearly recommended first step */
+.hero-start{max-width:46ch}
+.recommended{display:inline-block;font:600 13px/1.4 var(--sans);text-transform:uppercase;color:#0b1f3a;background:#b9ddf3;padding:3px 10px;margin:0 0 12px}
+.home-hero .will-get{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:8px}
+.home-hero .will-get li{position:relative;padding-left:24px;color:#e6eef8;font-size:15.5px;line-height:1.5}
+.home-hero .will-get li::before{content:"";position:absolute;left:2px;top:.55em;width:10px;height:6px;border-left:2px solid #b9e6c5;border-bottom:2px solid #b9e6c5;transform:rotate(-45deg)}
+.home-hero .hero-or{color:#c5d3e4;font-size:15px;margin:22px 0 0}
+.home-hero .btn.quiet{background:none;border:0;border-bottom:1px solid #b9ddf3;color:#fff;padding:2px 0;min-height:0;text-transform:none;letter-spacing:0;font-size:15px;transform:none}
+.home-hero .btn.quiet:hover,.home-hero .btn.quiet:focus-visible{background:none;color:#b9ddf3;transform:none}
+.home-hero .hero-actions{display:none}
+
+/* Preview and tool explainer */
+.home-preview .preview-items{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:20px}
+.preview-item{border-top:3px solid var(--blue);padding-top:12px}
+.preview-item:nth-child(2){border-top-color:var(--green)}
+.preview-item:nth-child(3){border-top-color:var(--ink)}
+.preview-label{font:600 12px/1.4 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.preview-item h3{margin:0 0 6px;font-size:26px}
+.tool-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;margin-top:16px}
+.tool{border-top:1px solid var(--line);padding-top:14px}
+.tool h3{margin:0 0 6px}
+.tool-key{width:var(--measure,min(1180px,100% - 40px));margin:10px auto 0;font-size:14px;color:var(--muted);max-width:none}
+.tool-key strong{color:var(--ink);font-weight:600}
+.filter-box>summary{font-weight:600}
+@media (max-width:860px){.home-preview .preview-items,.tool-pair{grid-template-columns:1fr}}
+
+/* For research labs + research projects */
+.labs{max-width:78ch}
+.labs h1{font-size:clamp(36px,5vw,64px);max-width:20ch;margin-bottom:16px}
+.labs-actions{margin:20px 0 8px}
+.labs-block{margin-top:48px;padding-top:24px;border-top:1px solid var(--line)}
+.criteria{display:grid;grid-template-columns:max-content 1fr;gap:12px 28px;margin:16px 0 0}
+.criteria dt{font:600 14px/1.6 var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--blue-deep)}
+.criteria dd{margin:0}
+.offer-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;margin-top:16px}
+.offer{border-top:3px solid var(--green);padding-top:12px}
+#offer-workspace{border-top-color:var(--ink)}
+.offer h3{margin:6px 0 10px}.offer ul{padding-left:20px;margin:0 0 10px}.offer li{margin:4px 0}
+.status-tag{display:inline-block;font:600 13px/1.4 var(--sans);letter-spacing:.04em;text-transform:uppercase;padding:2px 10px;margin:0;background:var(--green-soft);border:1px solid var(--green)}
+.status-tag.planned{background:#fff;border:1px dashed var(--ink)}
+.pricing{font:400 clamp(22px,2.6vw,30px)/1.3 var(--serif);max-width:34ch}
+.target{border-left:4px solid var(--blue);padding-left:16px;font-weight:600}
+.pilot{scroll-margin-top:16px}
+.project-form .row{align-items:flex-end}
+.storage-note{display:inline-block;font:600 13px/1.4 var(--sans);letter-spacing:.04em;text-transform:uppercase;background:var(--blue-soft);border:1px solid var(--blue);padding:3px 10px;margin:0 0 12px}
+.project-status{min-height:1.5em;margin:10px 0}.project-status.ok{border-left:4px solid var(--green);padding-left:12px}.project-status.bad{border-left:4px solid #b4472d;padding-left:12px;color:#7a2a18}
+.project-items{list-style:none;margin:12px 0;padding:0;display:grid;gap:14px}
+.project-item{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 20px;border-top:1px solid var(--line);padding-top:12px}
+.project-item p{margin:2px 0 0}
+.hero-labs-link{color:#fff}
+@media (max-width:860px){.offer-pair{grid-template-columns:1fr}.criteria{grid-template-columns:1fr;gap:2px}.criteria dd{margin-bottom:12px}}
+@media (max-width:640px){.home-hero .btn.quiet{padding:12px 2px;min-height:44px;display:inline-flex;align-items:center}.hero-labs-link{display:inline-block;padding:10px 0}}
+
 </style>
 </head>
 <body>
@@ -320,11 +452,13 @@ a:hover{color:var(--ink);text-decoration-color:var(--green)}
   <div class="row noprint">
     <button class="btn small-btn" id="homeBtn" type="button">Home</button><button class="btn small-btn" id="demoBtn" type="button">Lunar habitat demo</button><button class="btn small-btn" id="missionBtn" type="button">Mission screening</button>
     <button class="btn small-btn" id="researchBtn" type="button">NASA research</button>
+    <button class="btn small-btn" id="labsBtn" type="button">For research labs</button>
     <button class="btn small-btn" id="saveBtn" type="button">Save in this browser</button>
     <button class="btn small-btn" id="loadBtn" type="button">Load saved</button>
     <button class="btn small-btn" id="restartBtn" type="button">Start over</button>
   </div>
 </header>
+<p class="tool-key" id="tool-key"><strong>Research explorer</strong> (Lunar habitat demo, NASA research) searches NASA records in your browser. <strong>Mission screening</strong> sends your answers to the assessment engine on this site&rsquo;s server.</p>
 <div class="wrap">
   <nav class="stepper" aria-label="Progress"><ol id="stepper"></ol></nav>
   <div class="scope"><strong>What this is and is not.</strong> Astroflare screens a hypothetical scenario you describe. It is not connected to any spacecraft or sensor and cannot detect or report a real event. The output is a preliminary screening: it has not been validated against experiments or reviewed by a qualified safety authority, and it is not a safety determination.</div>
@@ -334,15 +468,15 @@ a:hover{color:var(--ink);text-decoration-color:var(--green)}
   </div>
   <details class="sec method noprint" id="methodSec"><summary>How an assessment is produced</summary><div class="in" id="methodBody"></div></details>
 </div>
-<footer class="wrap small"><p>Screening interface adapted from <a href="https://astroflare.onrender.com/">Astroflare</a>. Fresh assessments use its original remote engine. No assessment engine is hosted in this copy. <a href="/documentation">Sources, limitations & deployment</a> · <a href="/source.zip" download="astroflare-source.zip">Download source code</a>.</p>  <details class="sec noprint" id="envSec"><summary>Optional appendix: solar activity (unrelated to cabin fire screening)</summary><div class="in">
-    <div class="row sp"><span class="small">Not used in any assessment.</span><span class="tag-live" id="flareTag">Not loaded</span></div>
-    <p class="lede">Context for mission planning only. Solar flare records are not used in the assessment above and say nothing about cabin fires.</p>
-    <div class="small" id="flareMeta"></div><div id="flareSummary" role="status" style="margin:8px 0"></div><div id="flareList"></div>
-    <div class="row"><button class="btn small-btn" id="flareRetry" type="button" hidden>Try again</button></div><p class="small" id="flareProv" style="margin-top:8px"></p>
-  </div></details>
+<footer class="wrap small site-footer">
+<p><strong>How this site runs.</strong> AstroFlare is one service on Render: this web interface, a Python assessment engine and an optional AI explanation service (FreeLLMAPI using Google Gemini models), all in the same container. Results come from fixed rules and cited NASA sources. AI text is optional, checked and labelled. Nothing you type is stored on the server.</p>
+<p><strong>Sources and credits.</strong> Experiment records: NASA Physical Sciences Informatics (BASS-II, PSI-25; Saffire I, PSI-98; Saffire II, PSI-99). Literature: NASA Technical Reports Server. Homepage photograph: NASA Glenn Research Center, image GRC-1998-C-00485, a candle flame in normal gravity (left) and in microgravity (right). Typefaces: Instrument Serif and Instrument Sans (SIL Open Font License). Research explorer by Vortex Aathish Studios; guided screening engine from the original AstroFlare project.</p>
+<p><strong>Learn more from NASA.</strong> <a href="https://psi.nasa.gov/physci/repo/search?q=combustion" target="_blank" rel="noopener noreferrer">PSI combustion data repository</a> &middot; <a href="https://www.nasa.gov/glenn/glenn-expertise-space-exploration/physical-sciences-program/combustion-science/" target="_blank" rel="noopener noreferrer">NASA combustion science</a> &middot; <a href="https://www.nasa.gov/missions/station/a-researchers-guide-to-combustion-science/" target="_blank" rel="noopener noreferrer">A Researcher&rsquo;s Guide to ISS Combustion Science</a> &middot; <a href="https://www.nasa.gov/history/25-years-ago-fire-aboard-space-station-mir/" target="_blank" rel="noopener noreferrer">Fire aboard Mir</a></p>
+<p><a href="/documentation">Documentation, sources and limitations</a> &middot; <a href="/source.zip" download="astroflare-source.zip">Download the source code</a></p>
 </footer>
 <script>
 const AI_ENABLED=true;
+const CONTACT_EMAIL="";
 // Presentation-only terminology correction. Original engine numbers, units and source archives stay intact.
 function correctAssessmentTerminology(value){
  if(typeof value==='string')return value.replace(/let[-\s\u2011\u2013]through energy(?: of the fault)?(?: \((?:I²t|I2t)\))?/gi,'fault current integral (I²t)');
@@ -593,7 +727,7 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
   }
   function renderStage() {
     const st = clear($("stage"));
-    ({ mission: renderMission, problem: renderProblem, info: renderInfo, review: renderReview, running: renderRunning, results: renderResults, report: renderReportStage, research: renderResearch, home: renderHome }[S.stage] || renderMission)(st); enhanceInterface();
+    ({ mission: renderMission, problem: renderProblem, info: renderInfo, review: renderReview, running: renderRunning, results: renderResults, report: renderReportStage, research: renderResearch, home: renderHome, labs: renderLabs }[S.stage] || renderMission)(st); enhanceInterface();
   }
 
   // ---------------------------------------------------------------- context panel (always visible)
@@ -630,10 +764,10 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
 
   // ---------------------------------------------------------------- stage 1: the mission
   function renderMission(st) {
-    const intro=el("div",{class:"card demo-intro"},[el("h2",{text:"Explore a complete assessment in one click"}),el("p",{class:"lede",text:"Try an illustrative electrical-overheating scenario, or find NASA combustion experiments for your own research question."})]);
+    const intro=el("div",{class:"card demo-intro"},[el("h2",{text:"New here? See a finished example first"}),el("p",{class:"lede",text:"Open a ready-made example to see what a finished screening looks like, or describe your own mission below and AstroFlare will guide you through six short steps."})]);
     const demo=el("button",{type:"button",class:"btn primary",text:"Open hypothetical demo results"});demo.addEventListener("click",openDemo);
-    const research=el("button",{type:"button",class:"btn",text:"Explore NASA combustion research"});research.addEventListener("click",()=>goTo("research"));
-    intro.appendChild(el("div",{class:"row"},[demo,research]));intro.appendChild(el("p",{class:"small mt",text:"Demo inputs are hypothetical assumptions. Research relevance is separate from fire-risk screening."}));st.appendChild(intro);
+    const research=el("button",{type:"button",class:"btn",text:"Explore NASA combustion research"});research.addEventListener("click",()=>openResearch());
+    intro.appendChild(el("div",{class:"row"},[demo,research]));intro.appendChild(el("ol",{class:"how-steps"},[el("li",{text:"Describe your mission in your own words, or skip and answer questions."}),el("li",{text:"Pick the fire hazard you want to look at."}),el("li",{text:"Answer short question groups. “I don’t know” is always allowed."}),el("li",{text:"Get the conditions worth reviewing, what is missing, and the NASA sources."})]));intro.appendChild(el("p",{class:"small mt",text:"The example uses made-up inputs. Your answers are sent to the AstroFlare assessment engine on this site’s server, which applies fixed rules and cited sources. Nothing you type is stored on the server."}));st.appendChild(intro);
     const card = el("div", { class: "card" }, [el("h2", { text: "What mission are you assessing?" }),
       el("p", { class: "lede", text: "Describe it in your own words: the mission, the phase, and what you want to find out. You do not need technical terms. Astroflare reads the description for details it can use and shows you exactly what it understood. Nothing is used until you confirm it." })]);
     const ta = el("textarea", { id: "missionText", maxlength: String(S.guide.maxMissionChars), "aria-label": "Mission description", placeholder: "For example: a crewed transit to Mars, and I'm worried about a battery fire during cruise." });
@@ -996,7 +1130,7 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
     card.appendChild(el("div", { id: "logBox", role: "log", "aria-live": "polite" })); setTimeout(renderLog, 0); return card;
   }
   function askQuestion(text) {
-    if(!AI_ENABLED){const action=/missing|unknown|gap/i.test(text)?"missing":/calculation|calculated|power|current|I²t/i.test(text)?"calc":/source|evidence|citation/i.test(text)?"evidence":/verify|verification/i.test(text)?"verify":/index/i.test(text)?"index":/influence|matters most/i.test(text)?"influence":null;if(action)return investigate(action);pushLog({kind:"note",text:"AI is not enabled in this build. Use the calculation, missing-input, verification or source tools above; no generated answer has been requested."});return;}
+    if(!AI_ENABLED||!S.aiAvailable){const action=/missing|unknown|gap/i.test(text)?"missing":/calculation|calculated|power|current|I²t/i.test(text)?"calc":/source|evidence|citation/i.test(text)?"evidence":/verify|verification/i.test(text)?"verify":/index/i.test(text)?"index":/influence|matters most/i.test(text)?"influence":null;if(action)return investigate(action);pushLog({kind:"note",text:"The optional AI service is not available right now. Use the calculation, missing-input, verification or source tools above; no generated answer has been requested."});return;}
 
     const pend = pushLog({ kind: "pending", label: "Question: " + text });
     post("/api/ask", { inputs: engineInputs(), basis: basisMap(), mission: missionPayload(), question: text }, ASK_MS).then(function (r) { replaceLog(pend.id, { kind: "ask", question: text, payload: r }); }).catch(function (e) { replaceLog(pend.id, { kind: "error", message: e.message }); });
@@ -1158,24 +1292,6 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
     st.appendChild(card);
   }
 
-  // ---------------------------------------------------------------- NASA solar activity (context only)
-  function loadFlares() {
-    const tag = $("flareTag"), meta = $("flareMeta"), sum = $("flareSummary"), list = clear($("flareList")), retry = $("flareRetry");
-    retry.hidden = true; clear(meta); tag.className = "tag-live"; tag.textContent = "Loading"; busy(sum, "Retrieving scientific data");
-    api("/api/nasa/flares", null, 30000).then(function (d) {
-      if (!Array.isArray(d.flares)) throw new Error("The server sent an unexpected response.");
-      const counts = { X: 0, M: 0, C: 0, other: 0 }; d.flares.forEach(function (f) { const k = f.classType.charAt(0).toUpperCase(); counts[k in counts ? k : "other"]++; });
-      clear(sum); sum.textContent = d.flares.length ? d.flares.length + " records: " + counts.X + " class X, " + counts.M + " class M, " + counts.C + " class C, " + counts.other + " other (class as reported by the source)." : "No flare records were published for the last " + d.windowDays + " days.";
-      if (d.stale) { tag.className = "tag-live warn"; tag.textContent = "Last retrieved data"; retry.hidden = false; meta.textContent = "NASA's service is not responding now. Showing the last records retrieved, at " + clock(d.fetchedAt) + "."; }
-      else { tag.className = "tag-live"; tag.textContent = "Live · NASA DONKI"; meta.textContent = "Retrieved " + clock(d.fetchedAt) + " from " + d.host + (d.keyUsed === "none" ? " (no key needed)." : "."); }
-      const src = safeUrl(d.sourceUrl); clear($("flareProv")); $("flareProv").appendChild(document.createTextNode(d.provenance + " Request: ")); if (src) $("flareProv").appendChild(el("a", { href: src, target: "_blank", rel: "noreferrer noopener", class: "mono", text: src }));
-      d.flares.slice(0, 8).forEach(function (f) {
-        const link = safeUrl(f.link); const detail = [f.beginTime ? "begin " + f.beginTime : null, "peak " + f.peakTime, f.endTime ? "end " + f.endTime : null].filter(Boolean).join(" · ") + " UTC";
-        const sub = [f.sourceLocation ? "location " + f.sourceLocation : null, f.activeRegion ? "active region " + f.activeRegion : null, f.instruments.length ? "instrument " + f.instruments.join(", ") : null, f.id ? "id " + f.id : null].filter(Boolean).join(" · ");
-        list.appendChild(el("div", { class: "flare-row" }, [el("span", { class: "cls", text: f.classType }), el("span", {}, [detail, el("span", { class: "sub", text: sub })]), link ? el("a", { href: link, target: "_blank", rel: "noreferrer noopener", text: "Record ↗" }) : null]));
-      });
-    }).catch(function (e) { clear(sum); sum.textContent = e.message; tag.className = "tag-live bad"; tag.textContent = "Unavailable"; retry.hidden = false; });
-  }
   function renderMethod() {
     const m = S.methodology; const body = clear($("methodBody")); body.className = "in";
     body.appendChild(el("p", { class: "lede", text: m.title + ". Each step says whether it is ordinary code, a curated list, or automatically generated text." }));
@@ -1187,13 +1303,11 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
   // ---------------------------------------------------------------- saving, restarting
   const KEY = "astroflareSession";
   function bindControls() {
-    $("demoBtn").addEventListener("click", openLunarDemo);$("homeBtn").addEventListener("click",()=>goTo("home"));$("missionBtn").addEventListener("click",()=>goTo("mission"));
-    $("researchBtn").addEventListener("click", function () { goTo("research"); });
-    $("envSec").addEventListener("toggle", function () { if(this.open && !this.dataset.loaded) {this.dataset.loaded="true";loadFlares();} });
+    $("demoBtn").addEventListener("click", openLunarDemo);$("homeBtn").addEventListener("click",()=>goTo("home"));$("labsBtn").addEventListener("click",()=>openLabs());$("missionBtn").addEventListener("click",()=>goTo("mission"));
+    $("researchBtn").addEventListener("click", function () { openResearch(); });
     $("saveBtn").addEventListener("click", function () { try { collectVisibleDrafts(); localStorage.setItem(KEY, JSON.stringify({ mission: S.mission, goal: S.goal, answers: S.answers })); note("Saved in this browser only."); } catch (e) { note("Browser storage is unavailable."); } });
     $("loadBtn").addEventListener("click", function () { try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (!s || typeof s !== "object") { note("Nothing saved in this browser yet."); return; } if(!validStoredSession(s)){note("The saved session is invalid. Your current answers are unchanged.");return;}cancelScreenTasks();S.mission = Object.assign(S.mission, s.mission || {}); S.goal = s.goal || "investigate"; S.answers = s.answers || {}; S.demo=false; S.assessment = null; S.interp = null; S.explain = null; S.flow = null; S.log = []; note("Saved session loaded."); hasValue(S.answers.hazard) ? showInfo() : goTo("mission"); } catch (e) { note("The saved session could not be read."); } });
     $("restartBtn").addEventListener("click", function () { if (Object.keys(S.answers).length && !confirm("Start over? Your current answers will be cleared (a saved copy in this browser is not touched).")) return; reset(); });
-    $("flareRetry").addEventListener("click", loadFlares);
   }
   function note(t) { const s = $("stage"); const old = s.querySelector(".top-note"); if (old) old.remove(); s.prepend(el("div", { class: "notice top-note", role: "status", text: t })); }
   function reset() { S.demo=false; S.stage = "mission"; S.reached = { mission: true }; S.mission = { description: "", destination: null, aiInterpretation: false }; S.interp = null; S.goal = "investigate"; S.answers = {}; S.flow = null; S.viewStep = null; S.profile = null; S.assessment = null; S.explain = null; S.log = []; S.pinned = null; S.reportMd = null; goTo("mission"); }
@@ -1202,7 +1316,7 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
     S.demo=true; S.mission={description:'HYPOTHETICAL DEMO: four crew, 180-day deep-space transit; electrical overheating.',destination:'Deep-space transit',aiInterpretation:false};
     S.goal='investigate'; S.answers={};
     Object.entries(DEMO.inputs).forEach(([k,v])=>S.answers[k]={value:v,unknown:false,basis:'assumption',source:'example'});
-    S.assessment=structuredClone(DEMO.assessment);S.explain=null;S.log=[];S.pinned=null;S.flow=null;S.reportMd=null;S.dirty=false;
+    S.assessment=JSON.parse(JSON.stringify(DEMO.assessment));S.explain=null;S.log=[];S.pinned=null;S.flow=null;S.reportMd=null;S.dirty=false;
     goTo('results');
   }
   function renderEvidenceGaps(a) {
@@ -1217,34 +1331,64 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
     box.appendChild(el('p',{class:'small',text:'This is a description of the evidence available to Astroflare, not a claim that these questions remain unresolved across all science. Findings are not ranked by consequence.'}));return box;
   }
 
-  const EXPLORER={question:LUNAR_QUESTION,questionDraft:LUNAR_QUESTION,filters:{material:'any',gravity:'any',airflow:'any'},scenario:{gravity:'lunar'},selected:['PSI-25','PSI-99'],change:'',ask:'',askDraft:'',submittedQuestion:'',askStatus:'idle',answer:null};
-  function openLunarDemo(){EXPLORER.question=LUNAR_QUESTION;EXPLORER.questionDraft=LUNAR_QUESTION;EXPLORER.filters={material:'any',gravity:'any',airflow:'any'};EXPLORER.scenario={gravity:'lunar'};EXPLORER.selected=['PSI-25','PSI-99'];EXPLORER.change='Lunar habitat preset loaded. Three PSI investigations ranked; BASS-II and Saffire II ready to compare.';EXPLORER.ask='';EXPLORER.askDraft='';cancelEvidence();goTo('research');animateArrival(document.querySelector('.decision-layout'));}
+  const EXPLORER={question:LUNAR_QUESTION,questionDraft:LUNAR_QUESTION,filters:{material:'any',gravity:'any',airflow:'any'},scenario:{gravity:'lunar'},selected:['PSI-25','PSI-99'],mode:'demo',change:'',ask:'',askDraft:'',submittedQuestion:'',askStatus:'idle',answer:null};
+  function loadLunarPreset(){EXPLORER.question=LUNAR_QUESTION;EXPLORER.questionDraft=LUNAR_QUESTION;EXPLORER.filters={material:'any',gravity:'any',airflow:'any'};EXPLORER.scenario={gravity:'lunar'};EXPLORER.selected=['PSI-25','PSI-99'];EXPLORER.change='Lunar habitat preset loaded. Three PSI investigations ranked; BASS-II and Saffire II ready to compare.';EXPLORER.ask='';EXPLORER.askDraft='';if(typeof GUIDE!=='undefined')GUIDE.material='sibal';}
+  function openLunarDemo(){loadLunarPreset();EXPLORER.mode='demo';cancelEvidence();goTo('research');animateArrival(document.querySelector('.decision-layout'));}
+  // NASA research (top navigation) keeps the same tools, without the lunar walkthrough on top.
+  function resetForOwnQuestion(){if(EXPLORER.mode==='research')return;EXPLORER.change='Type your own question, or use the filters to narrow the NASA records.';EXPLORER.ask='';EXPLORER.askDraft='';}
+  function openResearch(){resetForOwnQuestion();EXPLORER.mode='research';cancelEvidence();goTo('research');}
   function psiLink(r,label){return el('a',{href:r.source,target:'_blank',rel:'noopener noreferrer',text:label||'Open NASA PSI record ↗'});}
   function renderHome(st){
-    const hero=el('section',{class:'card research-hero'},[el('p',{class:'eyebrow',text:'NASA Space Apps 2026 · Flame in Freefall'}),el('h1',{text:'Find the experiments. Understand the evidence.'}),el('p',{class:'hero-question',text:'Which NASA combustion experiments are most relevant to my scenario, and what can I learn from them?'})]);
+    // Navy hero with a credited NASA photograph; the rest of the site stays white and typographic.
+    const copy=el('div',{class:'home-hero-copy'},[el('p',{class:'eyebrow',text:'NASA Space Apps 2026 · Flame in Freefall'}),el('h1',{text:'Find the experiments. Understand the evidence.'}),el('p',{class:'hero-question',text:'Turn NASA combustion evidence into your next research question. Compare experiments, understand their conditions, and build a research brief with sources you can trace.'})]);
     const run=el('button',{id:'lunar-demo',type:'button',class:'btn primary large-btn',text:'Run the lunar habitat demo'});run.addEventListener('click',openLunarDemo);
     const custom=el('button',{type:'button',class:'btn large-btn',text:'Explore my own question'});custom.id='custom-research';custom.addEventListener('click',openCustomResearch);
-    hero.appendChild(el('div',{class:'row'},[run,custom]));hero.appendChild(el('p',{class:'small mt',text:'One click → ranked NASA PSI records → a ready-to-read comparison. No account needed.'}));const content=el('div',{class:'hero-copy'});while(hero.firstChild)content.appendChild(hero.firstChild);hero.appendChild(content);hero.appendChild(experimentPlate());st.appendChild(hero);
-    const q=el('section',{class:'card'},[el('h2',{text:'A real research question, a transparent answer'}),el('p',{class:'lede',text:LUNAR_QUESTION})]);
+    custom.classList.add('quiet');
+    const start=el('div',{class:'hero-start'},[el('p',{class:'recommended',text:'Recommended first step'}),run,el('ul',{class:'will-get','aria-label':'What you will get from the demo'},[el('li',{text:'Three NASA fire experiments, ranked for a lunar habitat question'}),el('li',{text:'The measured value, such as a flame spread rate, with its test conditions and source'}),el('li',{text:'A plain statement of what the evidence cannot tell you'})]),el('p',{class:'hero-or'},['Already have a question? ',custom])]);
+    copy.appendChild(start);const labsLink=el('a',{href:'#labs',class:'hero-labs-link',text:'For research labs'});labsLink.addEventListener('click',e=>{e.preventDefault();openLabs();});copy.appendChild(el('p',{class:'hero-note'},['Free, no account, about two minutes. Every number links back to its NASA source. ',labsLink,'.']));
+    const fig=el('figure',{class:'hero-figure'},[el('img',{src:'/nasa-candle-flames-1g-vs-microgravity.jpg',width:'1200',height:'933',alt:'Two candle flames photographed by NASA. Left, in normal gravity: a tall, bright, teardrop-shaped yellow flame. Right, in microgravity: a small, round, dim blue flame.',decoding:'async'}),
+      el('figcaption',{},[el('span',{text:'A candle flame on Earth (left) and in microgravity (right). Without gravity, hot air does not rise, so the flame turns round and dim.'}),el('span',{class:'credit',text:'Photo: NASA Glenn Research Center, image GRC-1998-C-00485.'})])]);
+    st.appendChild(el('section',{class:'home-hero','aria-labelledby':'home-title'},[el('div',{class:'home-hero-inner'},[copy,fig])]));st.querySelector('.home-hero h1').id='home-title';
+    st.appendChild(renderHomePreview());
+    const tools=el('section',{class:'card home-tools','aria-labelledby':'tools-title'},[el('h2',{id:'tools-title',text:'Two tools, one site'})]);
+    tools.appendChild(el('div',{class:'tool-pair'},[
+      el('div',{class:'tool'},[el('h3',{text:'Research explorer'}),el('p',{text:'Finds and compares NASA combustion experiments. Menu: “Lunar habitat demo” and “NASA research”.'}),el('p',{class:'small',text:'Runs in your browser on the NASA records bundled with this page. No assessment is made.'})]),
+      el('div',{class:'tool'},[el('h3',{text:'Mission screening'}),el('p',{text:'A short questionnaire about your own mission or habitat. It lists conditions worth a closer look and what is missing.'}),el('p',{class:'small',text:'Your answers are sent to the AstroFlare assessment engine on this site’s server. It is a screening aid, not a safety approval.'})])]));
+    const how=el('section',{class:'card home-how','aria-labelledby':'how-title'},[el('h2',{id:'how-title',text:'How it works'})]);
+    const steps=[['1','Pick a starting point','Run the ready-made lunar habitat demo, or type your own research question.'],['2','See what NASA measured','AstroFlare ranks three NASA fire experiments by how well they match, and shows the measurements with their test conditions.'],['3','Know what is missing','Each answer says where the evidence stops, for example that no test was done in lunar gravity.']];
+    how.appendChild(el('ol',{class:'home-steps'},steps.map(([n,h,p])=>el('li',{},[el('span',{class:'step-num','aria-hidden':'true',text:n}),el('h3',{text:h}),el('p',{text:p})]))));st.appendChild(how);
+    const q=el('section',{class:'card'},[el('h2',{text:'The demo question'}),el('p',{class:'lede',text:LUNAR_QUESTION})]);
     q.appendChild(el('div',{class:'home-facts'},[el('div',{},[el('strong',{text:'3 investigations'}),el('p',{class:'small',text:'BASS-II and Saffire I & II, traced to NASA PSI.'})]),el('div',{},[el('strong',{text:'8 selected test rows'}),el('p',{class:'small',text:'Original units, source files and missing fields kept visible.'})]),el('div',{},[el('strong',{text:'Research relevance'}),el('p',{class:'small',text:'Reproducible matching, separate from fire-risk screening.'})])]));
     q.appendChild(el('p',{class:'notice',text:'The demo is a hypothetical lunar-habitat review. The retrieved experiments were performed in microgravity; they are evidence to examine, not a lunar fire-safety certification.'}));st.appendChild(q);
-    const secondary=el('details',{class:'sec'},[el('summary',{text:'Secondary tool: existing mission screening'})]);const body=el('div',{class:'in'},[el('p',{text:'Keep using the guided mission-screening workflow and its original remote engine. Its heuristic index is separate from research relevance.'})]);const begin=el('button',{class:'btn',type:'button',text:'Start mission screening'});begin.addEventListener('click',()=>goTo('mission'));const example=el('button',{class:'btn',type:'button',id:'screeningDemoBtn',text:'Open hypothetical screening example'});example.addEventListener('click',openDemo);body.appendChild(el('div',{class:'row'},[begin,example]));secondary.appendChild(body);st.appendChild(secondary);
+    const secondary=el('details',{class:'sec'},[el('summary',{text:'Also available: screen your own mission for fire hazards'})]);const body=el('div',{class:'in'},[el('p',{text:'A step-by-step questionnaire for a mission or habitat design. It lists the conditions worth a closer look and what information is missing. It is a screening aid, separate from the research ranking above, not a safety approval.'})]);const begin=el('button',{class:'btn',type:'button',text:'Start mission screening'});begin.addEventListener('click',()=>goTo('mission'));const example=el('button',{class:'btn',type:'button',id:'screeningDemoBtn',text:'Open hypothetical screening example'});example.addEventListener('click',openDemo);body.appendChild(el('div',{class:'row'},[begin,example]));secondary.appendChild(body);st.appendChild(secondary);
+  }
+  // A small, live sample of what the demo produces, built from the same data and ranking the demo uses.
+  function renderHomePreview(){
+    const ranked=rankResearch(LUNAR_QUESTION,{material:'any',gravity:'any',airflow:'any'},{gravity:'lunar'}),top=ranked[0],saf=PSI_DATA.records.find(r=>r.id==='PSI-99'),run=saf&&saf.runs.find(x=>x.id==='2-5');
+    const box=el('section',{class:'card home-preview','aria-labelledby':'preview-title'},[el('h2',{id:'preview-title',text:'A preview of the demo result'}),el('p',{class:'small',text:'This is a small sample. The demo shows all three experiments, the comparison and the sources.'})]);
+    const items=el('div',{class:'preview-items'});
+    if(top)items.appendChild(el('article',{class:'preview-item'},[el('p',{class:'preview-label',text:'Ranked experiment'}),el('h3',{text:'#1 '+top.name}),el('p',{class:'small',text:top.points+' relevance points. '+top.title+'.'}),el('p',{class:'small',text:'Why it ranked first: '+top.components.map(c=>c.label).join('; ')+'.'})]));
+    if(run)items.appendChild(el('article',{class:'preview-item'},[el('p',{class:'preview-label',text:'Cited measurement'}),el('h3',{text:run.outcome.spreadRate+' flame spread'}),el('p',{class:'small',text:saf.name+', run '+run.id+', '+run.material+', '+run.airflow+' '+run.direction.toLowerCase()+' flow. This applies only to this run.'}),el('p',{class:'small'},[psiLink(saf,'Source: NASA PSI-99 ↗')])]));
+    items.appendChild(el('article',{class:'preview-item'},[el('p',{class:'preview-label',text:'Transfer limit'}),el('h3',{text:'Not tested on the Moon'}),el('p',{class:'small',text:'All three investigations are microgravity studies. Lunar gravity, geometry and atmosphere need their own analysis. Missing lunar evidence is not evidence of safety.'})]));
+    box.appendChild(items);return box;
   }
   function renderSelect(label,id,value,options,onChange){const box=el('div',{class:'filter-control'});box.appendChild(el('label',{class:'lbl',for:id,text:label}));const select=el('select',{id},options.map(([v,t])=>el('option',{value:v,text:t})));select.value=value;select.addEventListener('change',()=>onChange(select.value));box.appendChild(select);return box;}
   function resetResearchFilters(){EXPLORER.filters={material:'any',gravity:'any',airflow:'any'};cancelEvidence();EXPLORER.change='Experiment filters reset. Comparison selections are retained only while included; use Restore lunar preset for the default pair.';refreshResearch('reset-research-filters');}
-  function filterChange(key,value){EXPLORER.filters[key]=value;const after=rankResearch(EXPLORER.question,EXPLORER.filters,EXPLORER.scenario);EXPLORER.selected=EXPLORER.selected.filter(id=>after.some(r=>r.id===id));cancelEvidence();
+  function filterChange(key,value){EXPLORER.filters[key]=value;if(key==='material'&&(value==='fabric'||value==='silicone'))GUIDE.material=value==='fabric'?'sibal':'silicone';const after=rankResearch(EXPLORER.question,EXPLORER.filters,EXPLORER.scenario);EXPLORER.selected=EXPLORER.selected.filter(id=>after.some(r=>r.id===id));cancelEvidence();
     EXPLORER.change=(key==='airflow'&&value==='20'?'20 cm/s requires an explicitly reported numeric value; BASS-II facility range is not a calibrated run value. ':'')+'Relevance is recalculated with the same rules. Comparison now has '+EXPLORER.selected.length+' of 2 selected.';refreshResearch('filter-'+key);
   }
   function renderResearch(st){
     const ranked=rankResearch(EXPLORER.question,EXPLORER.filters,EXPLORER.scenario).map(r=>scenarioRecord(r,EXPLORER.filters.material));
-    const top=el('section',{class:'card question-panel'},[el('p',{class:'eyebrow',text:'NASA PSI evidence explorer'}),el('h1',{text:(EXPLORER.scenario.gravity==='lunar'?'Lunar habitat':'Combustion research')+' / evidence workstation'}),el('p',{class:'scenario-summary',text:'SCENARIO: '+EXPLORER.scenario.gravity+' · '+(EXPLORER.filters.material==='any'?'solid materials':EXPLORER.filters.material)+' · forced-ventilation research review'}),el('p',{class:'small',text:'Research relevance only. Filter, compare and open the original evidence.'})]);
+    if(EXPLORER.mode==='research')renderResearchHelp(st);else renderGuidedIntro(st);
+    st.appendChild(el('h2',{id:'advanced-tools',tabindex:'-1',class:'section-title advanced-title',text:EXPLORER.mode==='research'?'Your question, filters and ranked NASA evidence':'Advanced: filters, ranking and detailed tables'}));
+    const top=el('section',{class:'card question-panel'},[el('p',{class:'eyebrow',text:'NASA PSI evidence explorer'}),el('h2',{text:(EXPLORER.scenario.gravity==='lunar'?'Lunar habitat':'Combustion research')+' / evidence workstation'}),el('p',{class:'scenario-summary',text:'SCENARIO: '+EXPLORER.scenario.gravity+' · '+(EXPLORER.filters.material==='any'?'solid materials':EXPLORER.filters.material)+' · forced-ventilation research review'}),el('p',{class:'small',text:'Research relevance only. Filter, compare and open the original evidence.'})]);
     const form=el('form',{id:'research-form'});form.appendChild(el('label',{class:'lbl',for:'research-question',text:'Research question'}));const input=el('textarea',{id:'research-question',maxlength:'1000',rows:'2'});input.value=EXPLORER.questionDraft??EXPLORER.question;input.addEventListener('input',()=>{EXPLORER.questionDraft=input.value;input.removeAttribute('aria-invalid');});form.appendChild(input);
     form.appendChild(el('div',{class:'row mt'},[el('button',{type:'submit',class:'btn primary',text:'Update ranked evidence'}),el('a',{class:'btn',href:'#comparison',text:'View comparison ('+EXPLORER.selected.length+')'})]));form.addEventListener('submit',e=>{e.preventDefault();if(!input.value.trim()){let error=document.getElementById('research-question-error');if(!error){error=el('p',{id:'research-question-error',class:'notice warn',role:'alert'});form.appendChild(error);}error.textContent='Enter a research question. Your current evidence and comparison are unchanged.';input.setAttribute('aria-invalid','true');input.setAttribute('aria-describedby','research-question-error');input.focus();return;}EXPLORER.question=input.value.trim();EXPLORER.questionDraft=EXPLORER.question;cancelEvidence();EXPLORER.change='Research question updated. Recognized topics: '+(topicsFor(EXPLORER.question).map(k=>TOPICS[k].label).join(', ')||'none')+'. Relevance points are explained on each card.';refreshResearch('ranked-heading');});const editor=el('details',{class:'question-editor',id:'question-editor'},[el('summary',{text:'Edit research question'}),form]);top.appendChild(el('p',{class:'selected-question',text:EXPLORER.question}));top.appendChild(editor);const comparisonShortcut=form.querySelector('a[href="#comparison"]');top.appendChild(el('div',{class:'row workspace-actions'},[comparisonShortcut,el('a',{class:'btn',href:'#evidence-ask-panel',text:'Ask about the evidence'})]));
     const filters=el('div',{class:'filters'});
     filters.appendChild(renderSelect('Material / fuel','filter-material',EXPLORER.filters.material,[['any','Any solid material'],['fabric','SIBAL / cotton-fiberglass'],['pmma','PMMA'],['silicone','Silicone'],['gas','Gaseous fuel (coverage check)']],v=>filterChange('material',v)));
     filters.appendChild(renderSelect('Experiment gravity','filter-gravity',EXPLORER.filters.gravity,[['any','Any gravity'],['microgravity','Microgravity'],['lunar','Lunar surface'],['earth','Earth gravity']],v=>filterChange('gravity',v)));
     filters.appendChild(renderSelect('Airflow evidence','filter-airflow',EXPLORER.filters.airflow,[['any','Any airflow'],['forced','Forced ventilation'],['variable','Variable-flow investigation'],['20','Documented 20 cm/s'],['concurrent','Concurrent-flow investigation'],['opposed','Opposed-flow investigation'],['quiescent','Quiescent (coverage check)']],v=>filterChange('airflow',v)));
-    top.appendChild(filters);
+    const filterBox=el('details',{class:'sub filter-box',id:'filter-settings'},[el('summary',{text:'Filters and scenario settings'}),filters]);if(EXPLORER.mode==='research')filterBox.open=true;top.appendChild(filterBox);
     filters.appendChild(renderSelect('Scenario gravity (for transfer limits)','scenario-gravity',EXPLORER.scenario.gravity,[['lunar','Lunar surface'],['microgravity','Microgravity'],['earth','Earth gravity'],['any','Unspecified']],v=>{EXPLORER.scenario.gravity=v;EXPLORER.change='Scenario gravity changed. An exact gravity match earns one relevance point; a mismatch remains visible as a transfer limit.';cancelEvidence();refreshResearch('scenario-gravity');}));
     top.appendChild(el('p',{class:'filter-status',id:'filter-status',role:'status','aria-live':'polite',text:filterSummary(ranked)+' '+EXPLORER.change}));const reset=el('button',{class:'btn small-btn',id:'reset-research-filters',type:'button',text:'Reset experiment filters'});reset.addEventListener('click',resetResearchFilters);const preset=el('button',{class:'btn small-btn',id:'restore-lunar-preset',type:'button',text:'Restore lunar preset'});preset.addEventListener('click',openLunarDemo);top.appendChild(el('div',{class:'row mt'},[reset,preset]));st.appendChild(top);
     if(EXPLORER.scenario.gravity==='lunar')st.appendChild(el('aside',{class:'transfer-note',role:'note'},[el('strong',{text:'Lunar transfer limit: '}),'all three investigations are microgravity studies. They can inform material/ventilation questions, but lunar buoyancy, geometry and atmosphere need their own analysis and validation. ',psiLink(PSI_DATA.records[0],'Check PSI experiment context ↗')]));
@@ -1268,11 +1412,12 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
     else comparison.appendChild(el('p',{text:'Select up to two investigations above. On small screens, swipe the table horizontally to compare.'}));
     if(selected.length)comparison.appendChild(el('details',{class:'sub',id:'comparison-notes'},[el('summary',{text:'Qualitative findings, interpretations, source notes & limitations'}),table(['Metadata',...selected.map(r=>r.name)],[['qualitative','Published qualitative description'],['interpretation','AstroFlare interpretation'],['limits','Differences / missing evidence'],['sourceFile','Source file'],['evidence','Source location']].map(([key,label])=>el('tr',{},[el('th',{scope:'row',text:label}),...selected.map(r=>el('td',{text:r[key]||'Not reported'}))])))]));
     st.appendChild(comparison);
-    instrumentLayout(st,ranked,grid);renderEvidenceAsk(st,ranked);st.appendChild(psiChart());st.appendChild(renderResearchMethod());
+    instrumentLayout(st,ranked,grid);renderEvidenceAsk(st,ranked);renderProjects(st);st.appendChild(psiChart());st.appendChild(renderResearchMethod());
   }
   // Optional AI explanation under a deterministic answer. The engine sends only the curated records, checks the reply
   // (numbers, claims, citations) and labels it; the deterministic answer above never depends on it.
   const AI_EXPLAIN={question:null,status:'idle',data:null};
+  function checkAiStatus(){if(!AI_ENABLED)return Promise.resolve();return api('/api/status').then(r=>{S.aiAvailable=!!(r&&r.analysis&&r.analysis.explanation&&r.analysis.explanation.available);}).catch(()=>{S.aiAvailable=false;});}
   function aiExplainFor(question,ids){
     if(AI_EXPLAIN.status==='loading'&&AI_EXPLAIN.question===question)return;
     AI_EXPLAIN.question=question;AI_EXPLAIN.status='loading';AI_EXPLAIN.data=null;refreshAnswerPanel();
@@ -1280,12 +1425,15 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
   }
   function renderAiExplain(question,ranked){
     const wrap=el('div',{class:'ai-explain',id:'ai-explain'});const mine=AI_EXPLAIN.question===question;
+    const off=S.aiAvailable===false&&!(mine&&AI_EXPLAIN.status!=='idle');
+    wrap.appendChild(el('p',{class:'ai-state '+(S.aiAvailable?'on':S.aiAvailable===false?'off':'checking'),id:'ai-state',text:S.aiAvailable?'AI explanations: available':S.aiAvailable===false?'AI explanations: switched off right now':'AI explanations: checking…'}));
     const btn=el('button',{type:'button',class:'btn small-btn',id:'ai-explain-btn',text:mine&&AI_EXPLAIN.status==='done'?'Explain again with AI':'Explain with AI (optional)'});
-    btn.disabled=mine&&AI_EXPLAIN.status==='loading';btn.addEventListener('click',()=>aiExplainFor(question,ranked.map(r=>r.id)));wrap.appendChild(btn);
-    wrap.appendChild(el('span',{class:'small',id:'ai-explain-status',role:'status','aria-live':'polite',text:mine&&AI_EXPLAIN.status==='loading'?' Writing an explanation from the curated NASA records…':' Adds an automatically generated, unreviewed explanation. The answer above stands without it.'}));
+    btn.disabled=off||(mine&&AI_EXPLAIN.status==='loading');btn.addEventListener('click',()=>aiExplainFor(question,ranked.map(r=>r.id)));wrap.appendChild(btn);
+    if(off){const again=el('button',{type:'button',class:'btn small-btn',id:'ai-recheck-btn',text:'Check again'});again.addEventListener('click',()=>{again.disabled=true;again.textContent='Checking…';checkAiStatus().finally(()=>refreshAnswerPanel());});wrap.appendChild(again);}
+    wrap.appendChild(el('span',{class:'small',id:'ai-explain-status',role:'status','aria-live':'polite',text:mine&&AI_EXPLAIN.status==='loading'?' Writing an explanation from the curated NASA records… this can take up to a minute.':off?' The AI service is starting up or not reachable. Your cited answer above is complete and does not need it.':' Adds an automatically written, unreviewed explanation. The cited answer above stands without it.'}));
     if(mine&&AI_EXPLAIN.status==='done'&&AI_EXPLAIN.data){const d=AI_EXPLAIN.data;
       if(d.mode==='ai'){const note=el('div',{class:'notice',id:'ai-explain-answer',role:'region','aria-label':'Automatically generated explanation'},[el('p',{text:d.answer}),el('p',{class:'small',text:d.label})]);if(d.uses&&d.uses.length)note.appendChild(el('p',{class:'small',text:'Records used: '+d.uses.join(', ')}));wrap.appendChild(note);}
-      else wrap.appendChild(el('p',{class:'notice warn',id:'ai-explain-note',role:'status',text:d.message||'No explanation was produced.'}));}
+      else wrap.appendChild(el('p',{class:'notice warn',id:'ai-explain-note',role:'status',text:(d.message||'No explanation was produced.')+(d.mode==='withheld'?' You can try again; a new explanation is checked the same way.':' Your cited answer above is still complete.')}));}
     else if(mine&&AI_EXPLAIN.status==='error')wrap.appendChild(el('p',{class:'notice warn',id:'ai-explain-note',role:'alert',text:AI_EXPLAIN.data.message}));
     return wrap;
   }
@@ -1315,6 +1463,188 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
   }
   function renderResearchMethod(){const d=el('details',{class:'sec',id:'research-methodology'},[el('summary',{text:'Methodology, sources and limitations'})]);const b=el('div',{class:'in'},[el('p',{text:'Dataset: three public NASA PSI investigations, eight curated test rows. PSI metadata and original CSV files were retrieved on 14 November 2026; version numbers, row identifiers and SHA-256 file hashes are included in the downloadable dataset. NASA-hosted NTRS 20170008805 corroborates the Saffire II spread rate and exposes source inconsistencies.'}),el('p',{text:'Relevance = 2 points per recognized question-topic match, +1 for variable-flow investigation coverage when airflow is asked about, +2 for a specific material named in the question or material filter, +1 for an exact scenario-gravity match. Ties retain dataset order: BASS-II, Saffire II, Saffire I. Filters are hard inclusion rules; documented 20 cm/s excludes unknown calibrated velocities. No points encode risk, likelihood or scientific quality.'}),el('p',{text:'A recorded condition, a measured outcome, a published qualitative description and AstroFlare interpretation are labelled separately. Missing run-level values remain “Not reported”. Hypotheses and investigation objectives are not treated as experimentally proven findings.'}),el('p',{text:'Transfer limit: microgravity measurements do not reproduce lunar buoyancy or validate a habitat design. Oxygen, pressure, flow, material geometry and ignition conditions must be matched. The selected records are not an exhaustive literature search. Source discrepancies are disclosed on each card; numeric display settings are never silently converted to physical units.'}),el('p',{text:'Evidence questions use local topic retrieval and fixed explanations with source citations. The original screening AI is restricted to its own assessment context and cannot ingest this PSI dataset; no research AI endpoint or key is configured. Unsupported questions receive an evidence-gap response.'})]);
     b.appendChild(el('div',{class:'row'},[el('a',{href:'/dataset.json',download:'astroflare-psi-dataset.json',text:'Download curated dataset (JSON)'}),el('a',{href:'/documentation',text:'Full source audit & deployment notes'}),el('a',{href:'https://ntrs.nasa.gov/citations/20170008805',target:'_blank',rel:'noopener noreferrer',text:'NASA corroborating report ↗'}),el('a',{href:'https://www.spaceappschallenge.org/2026/challenges/flame-in-freefall/',target:'_blank',rel:'noopener noreferrer',text:'Challenge brief ↗'})]));d.appendChild(b);return d;
+  }
+
+  // Guided walkthrough at the top of the lunar habitat demo: choose a material → see NASA's observation → understand
+  // the evidence gap. Every value is read from the curated PSI record; nothing is rounded, extrapolated or filled in.
+  const GUIDE={material:'sibal'};
+  const GUIDE_MATERIALS={
+    sibal:{run:'2-5',label:'SIBAL',long:'SIBAL (cotton-fiberglass fabric)',
+      headline:run=>({value:run.outcome.spreadRate,caption:'Flame spread rate measured in Saffire II, sample '+run.id}),
+      extra:run=>[['Burn time',run.outcome.burnTime]],
+      scope:'This rate applies only to this one run, under the conditions listed here. It is not a general value for SIBAL, and it does not tell you what happens at other airflow, oxygen or gravity levels.'},
+    silicone:{run:'2-1',label:'Silicone',long:'Silicone',
+      headline:run=>({value:run.outcome.burnTime,caption:'How NASA described the burn of Saffire II sample '+run.id+' (no spread rate was reported)'}),
+      extra:run=>[['Flame spread rate',run.outcome.spreadRate]],
+      scope:'“Insignificant” is NASA’s wording for this burn. It is a description, not a measurement of zero, and it does not mean silicone cannot burn. No spread rate was reported for this sample.'}
+  };
+  function guideRecord(){return PSI_DATA.records.find(r=>r.id==='PSI-99');}
+  function renderGuideObservation(){
+    const r=guideRecord(),m=GUIDE_MATERIALS[GUIDE.material],run=r&&r.runs.find(x=>x.id===m.run);
+    const box=el('div',{class:'guide-observation',id:'guide-observation','aria-live':'polite'});
+    if(!run){box.appendChild(el('p',{class:'notice warn',text:'This sample is missing from the curated dataset, so nothing is shown for it.'}));return box;}
+    const h=m.headline(run);
+    box.appendChild(el('p',{class:'guide-value'},[el('span',{class:'guide-number',id:'guide-value',text:h.value}),el('span',{class:'guide-caption',text:h.caption})]));
+    const facts=[['Material tested',run.material],['Gravity',r.gravityLabel],['Airflow',run.airflow+', '+run.direction.toLowerCase()+' flow'],['Oxygen',run.oxygen+' '+run.oxygenUnit+' (worked out from measured CO₂, see CSV note 1)'],...m.extra(run)];
+    box.appendChild(el('dl',{class:'guide-facts',id:'guide-conditions'},facts.flatMap(([k,v])=>[el('dt',{text:k}),el('dd',{text:v})])));
+    box.appendChild(el('p',{class:'guide-scope',id:'guide-scope',text:m.scope}));
+    box.appendChild(el('p',{class:'small guide-source',id:'guide-source'},['Source: NASA PSI-99 (Saffire II) · '+r.sourceFile+' · row '+run.id+' · ',psiLink(r,'Open NASA record ↗'),' · ',el('a',{href:r.downloadUrl,target:'_blank',rel:'noopener noreferrer',text:'Original CSV ↗'}),' · ',el('a',{href:'/sources/PSI-99-table.csv',download:r.sourceFile,text:'Download pinned copy'})]));
+    return box;
+  }
+  function setGuideMaterial(key){
+    if(!GUIDE_MATERIALS[key]||GUIDE.material===key)return;GUIDE.material=key;
+    const old=document.getElementById('guide-observation');if(old)old.replaceWith(renderGuideObservation());
+    document.querySelectorAll('.guide-switch button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.material===key)));
+    const status=document.getElementById('guide-status');if(status)status.textContent='Showing '+GUIDE_MATERIALS[key].long+'. Measurement, test conditions and source row updated.';
+    if(typeof syncNavigation==='function')syncNavigation('research',true);
+  }
+  function renderGuidedIntro(st){
+    const g=el('section',{class:'card guided',id:'guided-intro','aria-labelledby':'guided-title'});
+    g.appendChild(el('p',{class:'eyebrow',text:'Lunar habitat demo · 3 steps'}));
+    g.appendChild(el('h1',{id:'guided-title',text:'What does NASA know about fabric and silicone fires in low gravity?'}));
+    g.appendChild(el('p',{class:'lede',text:'A lunar habitat team wants to know how two cabin materials behave in a fire. Follow the three steps. Everything shown comes straight from a NASA experiment table.'}));
+    const steps=el('ol',{class:'guide-steps'});
+    const s1=el('li',{class:'guide-step'},[el('h2',{text:'Choose a material'})]);
+    const sw=el('div',{class:'guide-switch',role:'group','aria-label':'Material'});
+    Object.entries(GUIDE_MATERIALS).forEach(([key,m])=>{const b=el('button',{type:'button',class:'btn',id:'guide-'+key,text:m.long});b.dataset.material=key;b.setAttribute('aria-pressed',String(GUIDE.material===key));b.addEventListener('click',()=>setGuideMaterial(key));sw.appendChild(b);});
+    s1.appendChild(sw);s1.appendChild(el('p',{class:'small',id:'guide-status',role:'status',text:'Both materials were burned in the same NASA experiment, Saffire II, so you can switch between them.'}));
+    const s2=el('li',{class:'guide-step'},[el('h2',{text:'See NASA’s observation'}),renderGuideObservation()]);
+    const rec=guideRecord(),o2=key=>{const run=rec&&rec.runs.find(x=>x.id===GUIDE_MATERIALS[key].run);return run?run.oxygen.replace(/^~\s*/,'')+'%':'not reported';};
+    const s3=el('li',{class:'guide-step'},[el('h2',{text:'Understand the evidence gap'}),
+      el('ul',{class:'gap-list'},[
+        el('li',{},[el('strong',{text:'Gravity. '}),'Both samples burned in microgravity, inside a spacecraft. This dataset has no lunar-gravity measurement for either material. NASA’s PSI database has no partial-gravity combustion data yet; the LUCI and FM2 experiments are expected to add some. Microgravity and Earth-gravity results may bracket what happens in between, but that is not a measurement.']),
+        el('li',{},[el('strong',{text:'Oxygen. '}),'These runs had about '+o2('sibal')+' (SIBAL) and '+o2('silicone')+' (silicone) oxygen. A Moon base is expected to use 30% oxygen or more at 10.2 psi or less, which makes materials more flammable. No run here used that atmosphere.'])]),
+      el('p',{class:'guide-gap',text:'Missing lunar evidence is not evidence of safety. A lunar habitat needs its own tests.'}),
+      el('p',{class:'small',text:'Moon-base atmosphere and partial-gravity data status: NASA Space Apps 2026 “Flame in Freefall” challenge brief.'})]);
+    steps.appendChild(s1);steps.appendChild(s2);steps.appendChild(s3);g.appendChild(steps);
+    g.appendChild(el('div',{class:'row guide-next'},[el('a',{class:'btn primary',href:'#evidence-ask-panel',text:'Ask a question about this evidence'}),el('a',{class:'btn',href:'#comparison',text:'Compare two experiments'}),el('a',{class:'btn',href:'#advanced-tools',text:'Advanced filters and tables'})]));
+    st.appendChild(g);
+  }
+  function renderResearchHelp(st){
+    st.appendChild(el('section',{class:'card guided guided-compact',id:'research-help'},[el('p',{class:'eyebrow',text:'NASA research · how to use'}),el('h1',{text:'Search NASA’s fire experiments with your own question'}),
+      el('ol',{class:'how-steps'},[el('li',{text:'Write your question in plain words below, for example “How does airflow change flame spread on fabric?”.'}),el('li',{text:'Narrow the results with the filters (material, gravity, airflow).'}),el('li',{text:'Open the NASA source, compare two experiments, or ask for a cited answer.'})]),
+      el('p',{class:'small',text:'Want a worked example first? Use “Lunar habitat demo” in the top menu.'})]));
+  }
+
+  // "For research labs": the business hypothesis, stated plainly. Targets and plans are labelled as such; nothing here
+  // is a customer, revenue, partnership or NASA endorsement.
+  function openLabs(){cancelEvidence();goTo('labs');}
+  function renderLabs(st){
+    const wrap=el('section',{class:'labs',id:'labs-page','aria-labelledby':'labs-title'});
+    wrap.appendChild(el('p',{class:'eyebrow',text:'For research labs'}));
+    wrap.appendChild(el('h1',{id:'labs-title',text:'Turn NASA combustion evidence into your next research question.'}));
+    wrap.appendChild(el('p',{class:'lede',text:'Compare experiments, understand their conditions, and build a research brief with sources you can trace.'}));
+    wrap.appendChild(el('p',{class:'notice',id:'labs-hypothesis',text:'Our business model is an early hypothesis that we still have to validate. This page has no customers, revenue, partnerships or testimonials to report, and NASA does not endorse AstroFlare.'}));
+    const go=el('div',{class:'row labs-actions'});const demo=el('button',{type:'button',class:'btn primary',id:'labs-demo',text:'Run the lunar habitat demo'});demo.addEventListener('click',openLunarDemo);go.appendChild(demo);go.appendChild(el('a',{class:'btn',href:'#pilot',text:'Discuss a research pilot'}));wrap.appendChild(go);
+    const crit=[['Customer','University combustion and materials-science researchers are our initial users.'],['Buyer','A laboratory director, principal investigator or university department could pay for the team workspace.'],['Problem','Researchers need to match published experiments to their conditions and document why the evidence supports their proposed investigation.'],['Value','AstroFlare connects a research question to relevant experiments, source conditions, evidence gaps and a reusable research brief.'],['Revenue','Public exploration stays free. We propose paid collaboration, project history and maintained evidence collections.'],['Validation','We will test whether labs return, produce accurate research briefs and are willing to pay. Targets are listed below and none has been achieved.']];
+    const c=el('section',{class:'labs-block',id:'labs-criteria','aria-labelledby':'criteria-title'},[el('h2',{id:'criteria-title',text:'The business in six lines'}),el('dl',{class:'criteria'},crit.flatMap(([k,v])=>[el('dt',{text:k}),el('dd',{text:v})]))]);wrap.appendChild(c);
+    wrap.appendChild(el('section',{class:'labs-block',id:'labs-journey','aria-labelledby':'journey-title'},[el('h2',{id:'journey-title',text:'One customer journey'}),el('p',{text:'A university lab is preparing a material-flammability investigation. Its researchers compare relevant NASA experiments, identify conditions that differ from their scenario, and create a cited proposal for further research.'}),el('p',{class:'small',text:'The Public Explorer already lets you try this with the lunar habitat demo.'})]));
+    const free=el('div',{class:'offer',id:'offer-public'},[el('p',{class:'status-tag available',text:'Free · Available now'}),el('h3',{text:'Public Explorer'}),el('ul',{},['The lunar habitat demonstration','Filters, ranking and side-by-side comparison','NASA citations for every value','A research brief you can copy','Saved research projects with Markdown and JSON export (kept in this browser only)'].map(t=>el('li',{text:t})))]);
+    const paid=el('div',{class:'offer',id:'offer-workspace'},[el('p',{class:'status-tag planned',text:'Planned · Not built yet'}),el('h3',{text:'Research Lab Workspace'}),el('ul',{},['Planned: shared projects','Planned: reviewer comments','Planned: version history','Planned: reviewed additions to the evidence collection'].map(t=>el('li',{text:t}))),el('p',{class:'small',text:'None of these exist yet. There is no account system, sign-up or checkout.'})]);
+    wrap.appendChild(el('section',{class:'labs-block',id:'labs-offers','aria-labelledby':'offers-title'},[el('h2',{id:'offers-title',text:'Two offerings'}),el('div',{class:'offer-pair'},[free,paid])]));
+    wrap.appendChild(el('section',{class:'labs-block',id:'labs-pricing','aria-labelledby':'pricing-title'},[el('h2',{id:'pricing-title',text:'Pricing hypothesis'}),el('p',{class:'pricing',id:'pricing-statement',text:'Proposed pilot pricing: US$49 per lab/month. We will test this price with research teams before launching subscriptions.'}),el('p',{class:'small',text:'This is a pricing hypothesis, not a researched market benchmark or an active subscription. There is no checkout.'})]));
+    const tests=['Can researchers identify relevant evidence correctly?','Can they distinguish measurements from missing evidence?','How long does a comparable review take with and without AstroFlare?','Do they return to saved projects?','Would the lab’s budget holder pay for the proposed workspace?'];
+    wrap.appendChild(el('section',{class:'labs-block',id:'labs-validation','aria-labelledby':'validation-title'},[el('h2',{id:'validation-title',text:'What we will test with pilot labs'}),el('ul',{},tests.map(t=>el('li',{text:t}))),el('p',{class:'target',text:'Initial recruitment target (a future target, not a result): three labs and ten observed research-review tasks.'}),el('p',{class:'small',text:'Any price has to cover hosting, support and the human time needed to review the evidence collection. We are not publishing savings, profit or market-size figures because we have none.'})]));
+    wrap.appendChild(renderPilot());
+    st.appendChild(wrap);
+  }
+  // A pilot enquiry is only possible through a published, verified address. Opening an email draft does not send anything,
+  // so the page says so and never claims an enquiry was received.
+  function renderPilot(){
+    const box=el('section',{class:'labs-block pilot',id:'pilot',tabindex:'-1','aria-labelledby':'pilot-title'},[el('h2',{id:'pilot-title',text:'Discuss a research pilot'})]);
+    const addr=typeof CONTACT_EMAIL==='string'&&/^[^\s@<>"']+@[^\s@<>"']+\.[A-Za-z]{2,}$/.test(CONTACT_EMAIL)?CONTACT_EMAIL:'';
+    if(addr){
+      box.appendChild(el('p',{text:'If your lab would like to try AstroFlare for a material-flammability review, tell us about your research need. Include your name, institution and what you are investigating.'}));
+      box.appendChild(el('p',{},[el('a',{class:'btn primary',id:'pilot-email',href:'mailto:'+addr+'?subject='+encodeURIComponent('AstroFlare research pilot enquiry'),text:'Email the team'}),' ',el('span',{class:'small',text:addr})]));
+      box.appendChild(el('p',{class:'small',id:'pilot-note',text:'This opens your email app with a draft. We only receive your enquiry when you send that email. This page does not send or store anything.'}));
+    }else{
+      box.appendChild(el('p',{class:'notice warn',id:'pilot-unavailable',role:'note',text:'We have not published a contact address on this site yet, and there is no enquiry form. Pilot enquiries cannot be sent from this page at the moment.'}));
+    }
+    return box;
+  }
+
+  // Research projects: name, save, reopen and export an evidence review. Stored in this browser only; mission-screening
+  // saves use a different key and are never read or changed here.
+  const PROJECTS_KEY='astroflareResearchProjects',PROJECTS_MAX=25;
+  const PROJECT_FILTERS={material:['any','fabric','pmma','silicone','gas'],gravity:['any','microgravity','lunar','earth'],airflow:['any','forced','variable','20','concurrent','opposed','quiescent']};
+  const PROJECT_SCENARIO_GRAVITY=['lunar','microgravity','earth','any'];
+  const PROJECTS={status:'',statusKind:'',lastSavedId:null};
+  function projectsRead(){try{const raw=localStorage.getItem(PROJECTS_KEY);if(!raw)return {list:[],error:''};const data=JSON.parse(raw);if(!Array.isArray(data))throw Error('shape');return {list:data.filter(projectValid),error:data.length&&!data.filter(projectValid).length?'Saved projects on this browser could not be read.':''};}catch{return {list:[],error:'Saved projects on this browser could not be read, so none are shown. Your mission-screening save is not affected.'};}}
+  function projectsWrite(list){try{localStorage.setItem(PROJECTS_KEY,JSON.stringify(list));return true;}catch{return false;}}
+  function projectValid(p){
+    const ids=PSI_DATA.records.map(r=>r.id);
+    return p&&typeof p==='object'&&typeof p.id==='string'&&typeof p.name==='string'&&typeof p.question==='string'&&p.filters&&Object.keys(PROJECT_FILTERS).every(k=>PROJECT_FILTERS[k].includes(p.filters[k]))&&p.scenario&&PROJECT_SCENARIO_GRAVITY.includes(p.scenario.gravity)&&Array.isArray(p.selected)&&p.selected.length<=2&&p.selected.every(id=>ids.includes(id));
+  }
+  function projectRecords(question,filters,scenario){return rankResearch(question,filters,scenario).map(r=>scenarioRecord(r,filters.material));}
+  function projectSnapshot(name){
+    const records=projectRecords(EXPLORER.question,EXPLORER.filters,EXPLORER.scenario);
+    const d=researchDecision(records,EXPLORER.filters,EXPLORER.scenario);d.text=d.text.replace(LUNAR_QUESTION,EXPLORER.question);
+    const used=[...new Set(records.flatMap(r=>EXPLORER.selected.includes(r.id)?r.runs.map(x=>r.id+':'+x.id):[]))];
+    return {kind:'astroflare-research-project',formatVersion:1,id:'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),name,savedAt:new Date().toISOString(),datasetVersion:PSI_DATA.version,
+      question:EXPLORER.question,filters:{...EXPLORER.filters},scenario:{...EXPLORER.scenario},selected:[...EXPLORER.selected],guideMaterial:GUIDE.material,
+      ranking:records.map((r,i)=>({rank:i+1,id:r.id,name:r.name,points:r.points})),sourceRuns:used,
+      brief:{measured:d.measured,missing:d.missing,proposedNextStep:d.step,variable:d.variable,holdFixed:d.fixed,citations:d.citations.map(c=>({id:c.id,row:c.row,url:c.url})),text:d.text},
+      note:'Research relevance only: not a fire-risk score, a safety determination or a lunar prediction. Saved on this browser only.'};
+  }
+  function projectMarkdown(p){
+    const rec=id=>PSI_DATA.records.find(r=>r.id===id),L=[];
+    L.push('# '+p.name,'','*AstroFlare research project · saved '+p.savedAt.slice(0,10)+' · dataset version '+p.datasetVersion+'*','');
+    L.push('## Research question and scenario','',p.question,'','- Scenario gravity: '+p.scenario.gravity,'- Material filter: '+p.filters.material,'- Experiment gravity filter: '+p.filters.gravity,'- Airflow filter: '+p.filters.airflow,'');
+    L.push('## Experiments considered (research relevance ranking)','');p.ranking.forEach(r=>L.push(r.rank+'. '+r.name+' ('+r.id+'), '+r.points+' relevance points'));
+    L.push('','Selected for comparison: '+(p.selected.map(id=>{const r=rec(id);return r?r.name+' ('+id+')':id;}).join(', ')||'none'));
+    if(p.sourceRuns.length)L.push('','Runs in the compared investigations: '+p.sourceRuns.join(', '));
+    L.push('','## Measured evidence (reported by NASA)','',p.brief.measured,'','This describes what the cited experiment reported under its own conditions. It is not a prediction for your scenario.','');
+    L.push('## Evidence gaps (not measured)','',p.brief.missing,'','A missing measurement is a gap, not evidence of safety.','');
+    L.push('## Proposed research (a suggestion, not a result)','',p.brief.proposedNextStep,'','- Variable to study: '+p.brief.variable,'- Hold fixed: '+p.brief.holdFixed,'');
+    L.push('## Citations','');p.brief.citations.forEach(c=>L.push('- NASA PSI '+c.id+', row '+c.row+': '+c.url));
+    const ids=[...new Set([...p.ranking.map(r=>r.id)])];ids.forEach(id=>{const r=rec(id);if(r)L.push('- '+r.name+' record: '+r.source+' (file v'+r.fileVersion+', verified '+r.verifiedOn+')');});
+    L.push('','---','Research relevance is separate from fire-risk scoring. Microgravity measurements are not lunar predictions. AstroFlare is an independent project; NASA does not endorse it.');
+    return L.join('\n')+'\n';
+  }
+  function projectSlug(name){return (name||'project').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'project';}
+  function setProjectStatus(text,kind){PROJECTS.status=text;PROJECTS.statusKind=kind||'';const s=document.getElementById('project-status');if(s){s.textContent=text;s.className='project-status '+(kind||'');}}
+  function saveProject(name){
+    name=(name||'').trim().replace(/\s+/g,' ').slice(0,80);
+    if(!name){setProjectStatus('Give the project a name first. Nothing was saved.','bad');const i=document.getElementById('project-name');if(i){i.setAttribute('aria-invalid','true');i.focus();}return false;}
+    const {list}=projectsRead(),existing=list.findIndex(p=>p.name.toLowerCase()===name.toLowerCase()),snap=projectSnapshot(name);
+    if(existing>=0)snap.id=list[existing].id;
+    const next=existing>=0?list.map((p,i)=>i===existing?snap:p):[snap,...list].slice(0,PROJECTS_MAX);
+    if(!projectsWrite(next)){setProjectStatus('This browser would not save the project (storage is blocked or full). You can still download it with the export buttons after saving is available, or copy the research brief.','bad');return false;}
+    PROJECTS.lastSavedId=snap.id;refreshProjectList();setProjectStatus((existing>=0?'Updated “':'Saved “')+name+'” on this browser only.','ok');return true;
+  }
+  function openProject(id){
+    const p=projectsRead().list.find(x=>x.id===id);if(!p){setProjectStatus('That project could not be found or is damaged.','bad');return;}
+    EXPLORER.question=p.question;EXPLORER.questionDraft=p.question;EXPLORER.filters={...p.filters};EXPLORER.scenario={...p.scenario};EXPLORER.selected=[...p.selected];if(GUIDE_MATERIALS[p.guideMaterial])GUIDE.material=p.guideMaterial;
+    const note=p.datasetVersion!==PSI_DATA.version?' The evidence collection has been updated since (saved '+p.datasetVersion+', now '+PSI_DATA.version+'); ranking uses the current records.':'';
+    EXPLORER.change='Project “'+p.name+'” restored: question, filters, ranking, comparison and takeaway were rebuilt together.'+note;EXPLORER.ask='';EXPLORER.askDraft='';cancelEvidence();
+    PROJECTS.status='Opened “'+p.name+'”.'+note;PROJECTS.statusKind='ok';refreshResearch('project-status');
+  }
+  function deleteProject(id){const {list}=projectsRead(),p=list.find(x=>x.id===id);if(!p)return;if(projectsWrite(list.filter(x=>x.id!==id))){refreshProjectList();setProjectStatus('Deleted “'+p.name+'” from this browser.','ok');}else setProjectStatus('This browser would not update saved projects.','bad');}
+  function exportProject(id,kind){
+    const p=projectsRead().list.find(x=>x.id===id);if(!p){setProjectStatus('That project could not be found or is damaged.','bad');return;}
+    try{if(kind==='md')download('astroflare-'+projectSlug(p.name)+'.md','text/markdown',projectMarkdown(p));else download('astroflare-'+projectSlug(p.name)+'.json','application/json',JSON.stringify(p,null,2)+'\n');setProjectStatus('Downloaded the '+(kind==='md'?'Markdown':'JSON')+' export of “'+p.name+'”.','ok');}
+    catch{setProjectStatus('The download could not start in this browser.','bad');}
+  }
+  function refreshProjectList(){const old=document.getElementById('project-list');if(old)old.replaceWith(renderProjectList());}
+  function renderProjectList(){
+    const {list,error}=projectsRead(),box=el('div',{id:'project-list'});
+    if(error)box.appendChild(el('p',{class:'notice warn',role:'alert',text:error}));
+    if(!list.length){box.appendChild(el('p',{class:'small',id:'project-empty',text:'No saved projects yet. Name the current review above and choose Save project.'}));return box;}
+    const ul=el('ul',{class:'project-items'});
+    list.forEach(p=>{const b=(label,fn,extra)=>{const x=el('button',{type:'button',class:'btn small-btn',text:label,'aria-label':label+': '+p.name});if(extra)x.id=extra+p.id;x.addEventListener('click',fn);return x;};
+      ul.appendChild(el('li',{class:'project-item','data-project-id':p.id},[el('div',{},[el('strong',{text:p.name}),el('p',{class:'small',text:'Saved '+p.savedAt.slice(0,10)+' · '+(p.selected.length?'comparing '+p.selected.join(' and '):'no comparison')+' · dataset '+p.datasetVersion})]),el('div',{class:'row'},[b('Open',()=>openProject(p.id),'open-'),b('Markdown',()=>exportProject(p.id,'md'),'md-'),b('JSON',()=>exportProject(p.id,'json'),'json-'),b('Delete',()=>deleteProject(p.id),'del-')])]));});
+    box.appendChild(ul);return box;
+  }
+  function renderProjects(st){
+    const box=el('section',{class:'card projects',id:'research-projects','aria-labelledby':'projects-title'},[el('h2',{id:'projects-title',text:'Research projects'}),el('p',{class:'lede',text:'Save this review, come back to it later and export it as a document.'}),el('p',{class:'storage-note',id:'project-storage-note',text:'Saved on this browser only.'})]);
+    const form=el('form',{id:'project-form',class:'project-form'});form.appendChild(el('label',{class:'lbl',for:'project-name',text:'Project name'}));
+    const name=el('input',{id:'project-name',type:'text',maxlength:'80',autocomplete:'off',placeholder:'For example: SIBAL fabric, lunar cabin review'});name.addEventListener('input',()=>name.removeAttribute('aria-invalid'));
+    const save=el('button',{type:'submit',class:'btn primary',id:'save-project',text:'Save project'});form.appendChild(el('div',{class:'row'},[el('div',{style:'flex:1 1 280px'},[name]),save]));
+    form.addEventListener('submit',e=>{e.preventDefault();saveProject(name.value);});box.appendChild(form);
+    box.appendChild(el('p',{class:'project-status '+PROJECTS.statusKind,id:'project-status',role:'status','aria-live':'polite',tabindex:'-1',text:PROJECTS.status}));
+    box.appendChild(renderProjectList());
+    box.appendChild(el('p',{class:'small',text:'A project stores your question, filters, selected investigations, the source and run identifiers, the dataset version and the research brief with its citations. Exports separate measured evidence, gaps and proposed research. Your mission-screening save is kept separately.'}));
+    st.appendChild(box);
   }
 
   const ANSWERS=latestOnlyAnswers();
@@ -1366,19 +1696,32 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
   let navigationReady=false,navigationRestoring=false;
   function syncNavigation(stage,replace=false){
     if(navigationRestoring)return;
-    const state={astroflare:true,stage,explorer:stage==='research'?{question:EXPLORER.question,filters:{...EXPLORER.filters},scenario:{...EXPLORER.scenario},selected:[...EXPLORER.selected]}:null};
-    const hash=stage==='home'?'':stage==='research'?'#lunar-demo':'#'+stage;
-    const method=!navigationReady||replace||history.state?.stage===stage?'replaceState':'pushState';
+    const mode=EXPLORER.mode==='research'?'research':'demo';
+    const state={astroflare:true,stage,mode,explorer:stage==='research'?{question:EXPLORER.question,filters:{...EXPLORER.filters},scenario:{...EXPLORER.scenario},selected:[...EXPLORER.selected],material:GUIDE.material}:null};
+    const hash=stage==='home'?'':stage==='research'?(mode==='research'?'#research':'#lunar-demo'):'#'+stage;
+    const sameView=history.state?.stage===stage&&(stage!=='research'||history.state?.mode===mode);
+    const method=!navigationReady||replace||sameView?'replaceState':'pushState';
     history[method](state,'',location.pathname+location.search+hash);navigationReady=true;
   }
+  const HASH_STAGES={'#labs':['labs'],'#lunar-demo':['research','demo'],'#research':['research','research'],'#mission':['mission'],'#problem':['problem'],'#info':['info'],'#review':['review'],'#results':['results'],'#report':['report']};
   function restoreNavigation(){
     const saved=history.state?.astroflare?history.state:null;
-    let stage=saved?.stage||(location.hash==='#lunar-demo'?'research':location.hash==='#mission'?'mission':'home');
-    if(!['home','research','mission'].includes(stage)&&!canVisit(stage))stage='mission';
-    if(stage==='research'&&saved?.explorer){const e=saved.explorer;EXPLORER.question=e.question;EXPLORER.questionDraft=e.question;EXPLORER.filters={...e.filters};EXPLORER.scenario={...e.scenario};EXPLORER.selected=[...e.selected];EXPLORER.change='Research view restored. Original evidence and source links remain available.';}
+    const fromHash=HASH_STAGES[location.hash];
+    let stage=saved?.stage||(fromHash?fromHash[0]:'home');
+    // Later screening steps need answers; a direct link to one falls back to the start of the screening.
+    if(!['home','research','labs','mission'].includes(stage)&&!canVisit(stage))stage='mission';
+    if(stage==='research'){
+      const mode=saved?.mode||(fromHash&&fromHash[1])||'demo';
+      if(saved?.explorer){const e=saved.explorer;EXPLORER.question=e.question;EXPLORER.questionDraft=e.question;EXPLORER.filters={...e.filters};EXPLORER.scenario={...e.scenario};EXPLORER.selected=[...e.selected];if(e.material)GUIDE.material=e.material;EXPLORER.change='Research view restored. Original evidence and source links remain available.';}
+      else if(mode==='research'&&EXPLORER.mode!=='research')resetForOwnQuestion();
+      else if(mode==='demo'&&EXPLORER.mode!=='demo')loadLunarPreset();
+      EXPLORER.mode=mode;
+    }
     cancelEvidence();navigationRestoring=true;goTo(stage);navigationRestoring=false;syncNavigation(stage,true);
   }
   window.addEventListener('popstate',restoreNavigation);
+  // A hash typed into the address bar (or a link from another page) changes the view too.
+  window.addEventListener('hashchange',()=>{const want=HASH_STAGES[location.hash];const cur=history.state;if(cur?.astroflare&&want&&cur.stage===want[0]&&(want[0]!=='research'||cur.mode===want[1]))return;if(!want&&(location.hash||cur?.stage==='home'))return;history.replaceState(null,'',location.href);restoreNavigation();});
   document.addEventListener('click',event=>{const a=event.target.closest?.('a[href^="#"]');if(!a)return;const target=document.getElementById(a.getAttribute('href').slice(1));if(!target)return;event.preventDefault();if(!target.hasAttribute('tabindex'))target.setAttribute('tabindex','-1');target.focus({preventScroll:true});target.scrollIntoView?.({block:'start',behavior:'auto'});});
 
   function experimentPlate(){
@@ -1422,9 +1765,9 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
   function goTo(stage,opts){
     if(stage==='report'&&S.assessment&&!S.reportMd&&!S.reportErr&&!opts?.preparing)return prepareReport();
     cancelScreenTasks();if(stage!=='research')cancelEvidence();
-    if(!['home','research','mission','problem','info','review','running','results','report'].includes(stage))stage='home';
+    if(!['home','research','labs','mission','problem','info','review','running','results','report'].includes(stage))stage='home';
     if(stage==='info'&&!S.flow||stage==='review'&&!S.profile||['results','report'].includes(stage)&&!S.assessment)stage='mission';
-    S.stage=stage;document.body.classList.toggle('research-active',stage==='research'||stage==='home');S.reached[stage]=true;if(opts?.step)S.viewStep=opts.step;
+    S.stage=stage;document.body.classList.toggle('research-active',stage==='research'||stage==='home'||stage==='labs');S.reached[stage]=true;if(opts?.step)S.viewStep=opts.step;
     renderStepper();renderContext();renderStage();syncNavigation(stage);const h=$('stage').querySelector('h1,h2');if(h){h.tabIndex=-1;h.focus({preventScroll:true});}window.scrollTo({top:0,behavior:'auto'});
   }
   function collectVisibleDrafts(){
@@ -1462,7 +1805,7 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
     S.reportMd=null;S.reportErr=null;goTo('report',{preparing:true});const task=beginTask('report'),n=narrativeFor(S.assessment);
     try{const r=await post('/api/report',{inputs:engineInputs(),basis:basisMap(),mission:missionPayload(),explain:false,includeInfluence:true,narrative:n?.status==='included'?n:null},60000);if(!currentTask(task))return;S.reportMd=r.markdown.replace(/Most consequential unresolved issue/gi,'One condition to review (not ranked)');S.reportJson=JSON.parse(JSON.stringify(r.report).replace(/Most consequential unresolved issue/gi,'One condition to review (not ranked)'));renderStage();screenStatus('Report ready. Download Markdown or JSON, or print the report.');}catch(e){if(currentTask(task)){S.reportErr=e.message;renderStage();}}
   }
-  function openCustomResearch(){goTo('research');$('question-editor').open=true;$('research-question').focus({preventScroll:true});$('research-question').select();}
+  function openCustomResearch(){resetForOwnQuestion();EXPLORER.mode='research';goTo('research');$('question-editor').open=true;$('research-question').focus({preventScroll:true});$('research-question').select();}
 
   async function investigate(action,extra){
     const epoch=screenEpoch,body={inputs:engineInputs(),basis:basisMap(),mission:missionPayload(),action,...(extra||{})};
@@ -1484,17 +1827,17 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
   }
   function animateArrival(node){return playMotion(node,[{opacity:.72,transform:'translateY(5px)'},{opacity:1,transform:'none'}]);}
   function enhanceInterface(){
-    const nav={homeBtn:S.stage==='home',researchBtn:S.stage==='research',missionBtn:!['home','research'].includes(S.stage)};
+    const research=S.stage==='research',demo=research&&EXPLORER.mode!=='research';const nav={homeBtn:S.stage==='home',demoBtn:demo,researchBtn:research&&!demo,labsBtn:S.stage==='labs',missionBtn:!['home','research','labs'].includes(S.stage)};
     Object.entries(nav).forEach(([id,on])=>{const b=$(id);if(b){if(on)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');}});
     document.querySelectorAll('#stage details:not([id])').forEach((d,i)=>{const title=d.querySelector('summary')?.textContent||'notes';d.id='disclosure-'+S.stage+'-'+title.toLowerCase().replace(/[^a-z0-9]+/g,'-').slice(0,65)+'-'+i;});
     if(lastMotionStage===S.stage)return;lastMotionStage=S.stage;sectionObserver?.disconnect();
     if(S.stage==='home')document.querySelectorAll('.hero-copy h1,.hero-question,.hero-copy>.row').forEach((node,i)=>playMotion(node,[{opacity:.72,transform:'translateY(8px)'},{opacity:1,transform:'none'}],{duration:220,delay:i*45}));
     if(typeof IntersectionObserver!=='function'||reducedMotion())return;
-    try{sectionObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){sectionObserver.unobserve(entry.target);animateArrival(entry.target);}}),{threshold:.08});document.querySelectorAll('#stage>.card:not(.research-hero),#stage>details.sec,.decision-layout').forEach(e=>sectionObserver.observe(e));}catch{sectionObserver=null;}
+    try{sectionObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){sectionObserver.unobserve(entry.target);animateArrival(entry.target);}}),{threshold:.08});document.querySelectorAll('#stage>.card:not(.research-hero):not(.home-how),#stage>details.sec,.decision-layout').forEach(e=>sectionObserver.observe(e));}catch{sectionObserver=null;}
   }
   const motionPreference=typeof matchMedia==='function'?matchMedia('(prefers-reduced-motion: reduce)'):null;
   motionPreference?.addEventListener?.('change',e=>{if(e.matches){sectionObserver?.disconnect();activeMotion.forEach(a=>{try{a.cancel();}catch{}});activeMotion.clear();}});
-  document.addEventListener('click',event=>{if(event.target.closest?.('#homeBtn,#researchBtn,#missionBtn,#demoBtn,#stepper button,#context button'))collectVisibleDrafts();},true);
+  document.addEventListener('click',event=>{if(event.target.closest?.('#homeBtn,#researchBtn,#labsBtn,#missionBtn,#demoBtn,#stepper button,#context button'))collectVisibleDrafts();},true);
 
   // ---------------------------------------------------------------- start
   let started=false;
@@ -1502,7 +1845,7 @@ function latestOnlyAnswers(){let sequence=0;return {cancel(){sequence++;},submit
     if(started)return; started=true;
     S.schema=BOOTSTRAP.schema; S.guide=BOOTSTRAP.guide; S.examples=BOOTSTRAP.examples; S.methodology=BOOTSTRAP.methodology;
     bindControls(); renderMethod(); restoreNavigation();
-    if(AI_ENABLED)api("/api/status").then(r=>{S.aiAvailable=AI_ENABLED && !!(r.analysis && r.analysis.explanation && r.analysis.explanation.available);}).catch(()=>{});
+    if(AI_ENABLED)api("/api/status").then(r=>{S.aiAvailable=AI_ENABLED && !!(r.analysis && r.analysis.explanation && r.analysis.explanation.available);}).catch(()=>{S.aiAvailable=false;});
   }
   document.addEventListener("DOMContentLoaded", start);
   if (document.readyState !== "loading") start();

@@ -47,17 +47,30 @@
   let navigationReady=false,navigationRestoring=false;
   function syncNavigation(stage,replace=false){
     if(navigationRestoring)return;
-    const state={astroflare:true,stage,explorer:stage==='research'?{question:EXPLORER.question,filters:{...EXPLORER.filters},scenario:{...EXPLORER.scenario},selected:[...EXPLORER.selected]}:null};
-    const hash=stage==='home'?'':stage==='research'?'#lunar-demo':'#'+stage;
-    const method=!navigationReady||replace||history.state?.stage===stage?'replaceState':'pushState';
+    const mode=EXPLORER.mode==='research'?'research':'demo';
+    const state={astroflare:true,stage,mode,explorer:stage==='research'?{question:EXPLORER.question,filters:{...EXPLORER.filters},scenario:{...EXPLORER.scenario},selected:[...EXPLORER.selected],material:GUIDE.material}:null};
+    const hash=stage==='home'?'':stage==='research'?(mode==='research'?'#research':'#lunar-demo'):'#'+stage;
+    const sameView=history.state?.stage===stage&&(stage!=='research'||history.state?.mode===mode);
+    const method=!navigationReady||replace||sameView?'replaceState':'pushState';
     history[method](state,'',location.pathname+location.search+hash);navigationReady=true;
   }
+  const HASH_STAGES={'#labs':['labs'],'#lunar-demo':['research','demo'],'#research':['research','research'],'#mission':['mission'],'#problem':['problem'],'#info':['info'],'#review':['review'],'#results':['results'],'#report':['report']};
   function restoreNavigation(){
     const saved=history.state?.astroflare?history.state:null;
-    let stage=saved?.stage||(location.hash==='#lunar-demo'?'research':location.hash==='#mission'?'mission':'home');
-    if(!['home','research','mission'].includes(stage)&&!canVisit(stage))stage='mission';
-    if(stage==='research'&&saved?.explorer){const e=saved.explorer;EXPLORER.question=e.question;EXPLORER.questionDraft=e.question;EXPLORER.filters={...e.filters};EXPLORER.scenario={...e.scenario};EXPLORER.selected=[...e.selected];EXPLORER.change='Research view restored. Original evidence and source links remain available.';}
+    const fromHash=HASH_STAGES[location.hash];
+    let stage=saved?.stage||(fromHash?fromHash[0]:'home');
+    // Later screening steps need answers; a direct link to one falls back to the start of the screening.
+    if(!['home','research','labs','mission'].includes(stage)&&!canVisit(stage))stage='mission';
+    if(stage==='research'){
+      const mode=saved?.mode||(fromHash&&fromHash[1])||'demo';
+      if(saved?.explorer){const e=saved.explorer;EXPLORER.question=e.question;EXPLORER.questionDraft=e.question;EXPLORER.filters={...e.filters};EXPLORER.scenario={...e.scenario};EXPLORER.selected=[...e.selected];if(e.material)GUIDE.material=e.material;EXPLORER.change='Research view restored. Original evidence and source links remain available.';}
+      else if(mode==='research'&&EXPLORER.mode!=='research')resetForOwnQuestion();
+      else if(mode==='demo'&&EXPLORER.mode!=='demo')loadLunarPreset();
+      EXPLORER.mode=mode;
+    }
     cancelEvidence();navigationRestoring=true;goTo(stage);navigationRestoring=false;syncNavigation(stage,true);
   }
   window.addEventListener('popstate',restoreNavigation);
+  // A hash typed into the address bar (or a link from another page) changes the view too.
+  window.addEventListener('hashchange',()=>{const want=HASH_STAGES[location.hash];const cur=history.state;if(cur?.astroflare&&want&&cur.stage===want[0]&&(want[0]!=='research'||cur.mode===want[1]))return;if(!want&&(location.hash||cur?.stage==='home'))return;history.replaceState(null,'',location.href);restoreNavigation();});
   document.addEventListener('click',event=>{const a=event.target.closest?.('a[href^="#"]');if(!a)return;const target=document.getElementById(a.getAttribute('href').slice(1));if(!target)return;event.preventDefault();if(!target.hasAttribute('tabindex'))target.setAttribute('tabindex','-1');target.focus({preventScroll:true});target.scrollIntoView?.({block:'start',behavior:'auto'});});

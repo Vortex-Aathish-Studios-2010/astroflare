@@ -114,6 +114,32 @@ class Route(Base):
         self.assertIn("Research explanation withheld: unsupported_number", log)
         self.assertNotIn("9.9", log)
 
+    def test_an_unreadable_reply_is_retried_once_and_the_retry_can_succeed(self):
+        replies = iter(['{"status": "answered", "answer": "Saffire II run 2-5 reported', reply()])  # first one cut off mid-JSON
+        self.responder = lambda req, timeout: completion(content=next(replies), finish="length")
+        code, body, _ = self.ask()
+        self.assertEqual((code, body["mode"]), (200, "ai"))
+        self.assertEqual(len(self.calls), 2)
+        self.assertIn("not_json (attempt 1", self.out.getvalue())
+
+    def test_a_reply_that_fails_a_content_check_is_not_retried(self):
+        self.responder = lambda req, timeout: completion(content=reply(answer="This rate is safe for a habitat."))
+        code, body, _ = self.ask()
+        self.assertEqual(body["mode"], "withheld")
+        self.assertEqual(len(self.calls), 1)  # retrying would only fish for a version that slips past the checks
+
+    def test_two_unreadable_replies_are_withheld_after_one_retry(self):
+        self.responder = lambda req, timeout: completion(content="I cannot produce JSON right now.")
+        code, body, _ = self.ask()
+        self.assertEqual(body["mode"], "withheld")
+        self.assertEqual(len(self.calls), 2)
+
+    def test_the_answer_gets_room_to_finish(self):
+        self.responder = lambda req, timeout: completion(content=reply())
+        self.ask()
+        self.assertEqual(json.loads(self.calls[0][0].data)["max_tokens"], server.ANSWER_MAX_TOKENS)
+        self.assertGreaterEqual(server.ANSWER_MAX_TOKENS, 4000)
+
     def test_without_a_configured_service_it_says_so_and_calls_nothing(self):
         del os.environ["FREELLMAPI_API_KEY"]
         code, body, _ = self.ask()

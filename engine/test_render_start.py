@@ -86,6 +86,32 @@ class Environments(unittest.TestCase):
             self.assertNotIn(name, env)
         self.assertNotIn(KEY, repr(env))
 
+    def test_engine_can_start_before_the_router_and_pick_up_the_key_from_the_file(self):
+        import os
+        import server
+        d = tempfile.mkdtemp()
+        key_file = os.path.join(d, "router.key")
+        saved = dict(os.environ)
+        try:
+            os.environ.clear()
+            os.environ.update(render_start.astroflare_env(self.BASE, None, key_file))
+            self.assertEqual(os.environ["FREELLMAPI_API_KEY_FILE"], key_file)
+            self.assertNotIn("FREELLMAPI_API_KEY", os.environ)
+            self.assertEqual(server.ai_status()["state"], "missing")  # router not ready yet: the site works, AI is off
+            render_start.write_key_file(KEY, key_file)
+            self.assertEqual(server.freellm_key(), KEY)
+            self.assertEqual(server.ai_status()["state"], "ok")  # no restart needed
+            self.assertFalse(os.path.exists(key_file + ".tmp"))
+        finally:
+            os.environ.clear()
+            os.environ.update(saved)
+            shutil.rmtree(d, ignore_errors=True)
+
+    def test_a_key_given_directly_wins_over_the_file(self):
+        env = render_start.astroflare_env(self.BASE, KEY, "/nonexistent")
+        self.assertEqual(env["FREELLMAPI_API_KEY"], KEY)
+        self.assertNotIn("FREELLMAPI_API_KEY_FILE", env)
+
     def test_each_program_gets_its_own_port(self):
         ports = {render_start.ROUTER_PORT, render_start.ENGINE_PORT, 10000}
         self.assertEqual(len(ports), 3)

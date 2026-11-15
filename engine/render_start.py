@@ -29,6 +29,9 @@ ROUTER_DIR = Path(os.environ.get("FREELLMAPI_DIR") or "/opt/freellmapi")
 ROUTER_PORT = 3001
 ENGINE_PORT = 8001
 ROUTER_DB = os.environ.get("FREEAPI_DB_PATH") or "/data/freellmapi.db"
+# The router's key is handed to the engine through this file (owner-only), so the engine and the site can start at
+# once instead of waiting for the router; AI becomes available as soon as the file appears.
+KEY_FILE = os.environ.get("FREELLMAPI_KEY_FILE") or "/data/router.key"
 ROUTER_START_TIMEOUT = 120  # seconds; first boot runs migrations and a catalog sync
 ENGINE_START_TIMEOUT = 30
 RESTARTS = 5
@@ -54,15 +57,28 @@ def router_env(base):
     return env
 
 
-def astroflare_env(base, unified_key):
-    """The engine's environment: private on 127.0.0.1:8001, the local router and its key, no router secrets."""
+def astroflare_env(base, unified_key, key_file=None):
+    """The engine's environment: private on 127.0.0.1:8001, the local router and its key (or the file that will
+    hold it), no router secrets."""
     env = {k: v for k, v in base.items() if k not in ROUTER_ONLY and k != "NODE_OPTIONS"}
     env.setdefault("AI_PROVIDER", "freellmapi")
     env.update(PORT=str(ENGINE_PORT), ASTROFLARE_HOST="127.0.0.1", ASTROFLARE_ENV="production",
                FREELLMAPI_BASE_URL="http://127.0.0.1:%d/v1" % ROUTER_PORT)
     if unified_key:
         env["FREELLMAPI_API_KEY"] = unified_key
+    elif key_file:
+        env["FREELLMAPI_API_KEY_FILE"] = key_file
     return env
+
+
+def write_key_file(key, path=None):
+    """Write the router key for the engine: owner-only permissions, replaced atomically so a reader never sees half."""
+    path = Path(path or KEY_FILE)
+    tmp = path.with_name(path.name + ".tmp")
+    fd = os.open(str(tmp), os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, "w", encoding="utf-8") as f:
+        f.write(key)
+    os.replace(str(tmp), str(path))
 
 
 def site_env(base):
@@ -109,8 +125,8 @@ def start_router():
     return subprocess.Popen(["node", "server/dist/index.js"], cwd=ROUTER_DIR, env=router_env(os.environ))
 
 
-def start_engine(key):
-    return subprocess.Popen([sys.executable, str(ENGINE_DIR / "server.py")], cwd=ENGINE_DIR, env=astroflare_env(os.environ, key))
+def start_engine():
+    return subprocess.Popen([sys.executable, str(ENGINE_DIR / "server.py")], cwd=ENGINE_DIR, env=astroflare_env(os.environ, None, KEY_FILE))
 
 
 def start_site():
@@ -130,10 +146,14 @@ def wait_for(proc, ready, timeout):
 
 
 def main():
+    """Start everything at once so a waking free-plan service answers quickly: the site and the engine come up in
+    seconds, while the router boots in parallel and AI is enabled when its key is ready."""
+    try:
+        os.remove(KEY_FILE)  # a key from an earlier router run is never valid for this one
+    except OSError:
+        pass
     router = start_router()
-    key = read_unified_key(ROUTER_DB) if wait_for(router, router_ready, ROUTER_START_TIMEOUT) else None
-    log("FreeLLMAPI is ready; AI explanations are enabled." if key else "FreeLLMAPI did not start; the site runs without AI explanations.")
-    engine = start_engine(key)
+    engine = start_engine()
     if not wait_for(engine, engine_ready, ENGINE_START_TIMEOUT):
         log("The assessment engine did not start; stopping.")
         for p in (engine, router):
@@ -141,25 +161,39 @@ def main():
                 p.terminate()
         return 1
     site = start_site()
+    log("Site and engine are up; waiting for FreeLLMAPI before enabling AI explanations.")
+    stopping = []
 
     def stop(*_):
+        stopping.append(True)  # tell the loop below not to restart anything
         for p in (site, engine, router):
             if p.poll() is None:
                 p.terminate()
     signal.signal(signal.SIGTERM, stop)
 
+    key, router_deadline = None, time.monotonic() + ROUTER_START_TIMEOUT
     restarts = {"router": 0, "engine": 0}
-    while site.poll() is None:
-        time.sleep(2)
-        # The database survives a router crash inside the same container, so the unified key stays valid.
-        if key and router.poll() is not None and restarts["router"] < RESTARTS:
+    while site.poll() is None and not stopping:
+        time.sleep(1)
+        if key is None and router.poll() is None and router_ready():
+            key = read_unified_key(ROUTER_DB)
+            if key:
+                write_key_file(key)
+                log("FreeLLMAPI is ready; AI explanations are enabled.")
+        if key is None and time.monotonic() > router_deadline and router_deadline:
+            log("FreeLLMAPI did not become ready; the site runs without AI explanations.")
+            router_deadline = 0
+        if stopping:
+            break
+        # The database survives a router crash inside the same container, so the key file stays valid.
+        if router.poll() is not None and restarts["router"] < RESTARTS:
             restarts["router"] += 1
             log("FreeLLMAPI stopped (exit %s); restarting (%d/%d)." % (router.returncode, restarts["router"], RESTARTS))
             router = start_router()
         if engine.poll() is not None and restarts["engine"] < RESTARTS:
             restarts["engine"] += 1
             log("The assessment engine stopped (exit %s); restarting (%d/%d)." % (engine.returncode, restarts["engine"], RESTARTS))
-            engine = start_engine(key)
+            engine = start_engine()
     stop()
     return site.returncode or 0
 

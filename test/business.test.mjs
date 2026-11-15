@@ -1,0 +1,115 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {bootJudge,pause,choose} from './judge-helpers.mjs';
+const html=fs.readFileSync(new URL('../public/index.html',import.meta.url),'utf8');
+const text=(d,id)=>d.getElementById(id).textContent;
+
+test('landing page: demo is the recommended first step, with a preview and a labs link',async()=>{
+ const {dom,d,errors}=bootJudge(html);try{await pause();
+  assert.match(d.querySelector('.recommended').textContent,/Recommended first step/);
+  assert.equal(d.getElementById('lunar-demo').classList.contains('primary'),true);
+  assert.equal(d.getElementById('lunar-demo').textContent,'Run the lunar habitat demo');
+  assert.ok(d.querySelector('.will-get'));
+  assert.match(d.body.textContent,/Turn NASA combustion evidence into your next research question/);
+  const p=d.querySelector('.home-preview').textContent;assert.match(p,/Ranked experiment/);assert.match(p,/2\.1 mm\/s flame spread/);assert.match(p,/applies only to this run/);assert.match(p,/Not tested on the Moon/);
+  assert.match(d.getElementById('tool-key').textContent,/Research explorer.*Mission screening/);
+  assert.ok(d.getElementById('labsBtn'));assert.equal(d.querySelectorAll('#registration,#checkout,form[action]').length,0);
+  assert.deepEqual(errors,[]);}finally{dom.window.close();}
+});
+
+test('For research labs: six criteria, planned features labelled, pricing hypothesis, validation targets, no checkout',async()=>{
+ const {dom,d,w,errors}=bootJudge(html);try{await pause();
+  d.getElementById('labsBtn').click();await pause();
+  assert.equal(d.getElementById('labsBtn').getAttribute('aria-current'),'page');assert.equal(d.getElementById('homeBtn').getAttribute('aria-current'),null);assert.equal(w.location.hash,'#labs');
+  const crit=text(d,'labs-criteria');for(const k of ['Customer','Buyer','Problem','Value','Revenue','Validation'])assert.match(crit,new RegExp(k));
+  assert.match(crit,/University combustion and materials-science researchers/);assert.match(crit,/none has been achieved/);
+  assert.match(text(d,'labs-hypothesis'),/early hypothesis.*no customers, revenue, partnerships or testimonials.*NASA does not endorse/);
+  assert.match(text(d,'labs-journey'),/material-flammability investigation/);
+  assert.match(text(d,'offer-public'),/Free · Available now/);assert.match(text(d,'offer-workspace'),/Planned · Not built yet/);
+  for(const f of ['shared projects','reviewer comments','version history','reviewed additions'])assert.match(text(d,'offer-workspace'),new RegExp('Planned: '+f));
+  assert.equal(text(d,'pricing-statement'),'Proposed pilot pricing: US$49 per lab/month. We will test this price with research teams before launching subscriptions.');
+  assert.match(text(d,'labs-pricing'),/not a researched market benchmark or an active subscription/);
+  const v=text(d,'labs-validation');for(const q of ['identify relevant evidence correctly','distinguish measurements from missing evidence','with and without AstroFlare','return to saved projects','budget holder pay'])assert.match(v,new RegExp(q));
+  assert.match(v,/three labs and ten observed research-review tasks/);assert.match(v,/future target, not a result/);assert.match(v,/hosting, support/);
+  assert.doesNotMatch(d.getElementById('labs-page').textContent,/\$[0-9,]+ ?(million|billion|k\b)|market size of|saves? [0-9]+%/i);
+  assert.equal(d.querySelectorAll('#labs-page input,#labs-page form,#labs-page [href*=checkout]').length,0);
+  d.getElementById('labs-demo').click();await pause();assert.match(text(d,'research-decision'),/2\.1 mm\/s/);assert.equal(d.getElementById('demoBtn').getAttribute('aria-current'),'page');
+  w.history.back();await pause();assert.ok(d.getElementById('labs-page'));assert.equal(d.getElementById('labsBtn').getAttribute('aria-current'),'page');
+  assert.deepEqual(errors,[]);}finally{dom.window.close();}
+});
+
+test('direct link to #labs opens the labs page',async()=>{
+ const {dom,d}=bootJudge(html,{url:'https://astroflare.test/#labs'});try{await pause();assert.ok(d.getElementById('labs-page'));assert.equal(d.getElementById('labsBtn').getAttribute('aria-current'),'page');}finally{dom.window.close();}
+});
+
+test('pilot contact: honest message without a published address; mailto note with one; never a success claim',async()=>{
+ let b=bootJudge(html);try{await pause();b.d.getElementById('labsBtn').click();await pause();
+  assert.match(text(b.d,'pilot'),/Discuss a research pilot/);assert.match(text(b.d,'pilot-unavailable'),/have not published a contact address/);
+  assert.equal(b.d.querySelectorAll('#pilot a[href^=mailto],#pilot form').length,0);assert.doesNotMatch(text(b.d,'pilot'),/thank you|received|submitted|sent!/i);}finally{b.dom.window.close();}
+ assert.match(html,/const CONTACT_EMAIL="";/,'the shipped build must not contain a placeholder address');
+ const withAddress=html.replace('const CONTACT_EMAIL="";','const CONTACT_EMAIL="pilots@lab.example";');
+ b=bootJudge(withAddress);try{await pause();b.d.getElementById('labsBtn').click();await pause();
+  const a=b.d.getElementById('pilot-email');assert.match(a.getAttribute('href'),/^mailto:pilots@lab\.example\?subject=/);assert.equal(a.textContent,'Email the team');
+  assert.match(text(b.d,'pilot-note'),/only receive your enquiry when you send that email.*does not send or store/);assert.doesNotMatch(text(b.d,'pilot'),/thank you|received your/i);}finally{b.dom.window.close();}
+ for(const bad of ['not-an-email','a@b','"><script>x</script>@x.com']){const b2=bootJudge(html.replace('const CONTACT_EMAIL="";','const CONTACT_EMAIL='+JSON.stringify(bad)+';'));try{await pause();b2.d.getElementById('labsBtn').click();await pause();assert.equal(b2.d.querySelectorAll('#pilot a[href^=mailto]').length,0,bad);}finally{b2.dom.window.close();}}
+});
+
+async function exports(w){const blobs=[],names=[];w.URL.createObjectURL=blob=>{blobs.push(blob);return 'blob:t/'+blobs.length};w.URL.revokeObjectURL=()=>{};w.HTMLAnchorElement.prototype.click=function(){names.push(this.download)};
+ const read=blob=>new Promise((res,rej)=>{const r=new w.FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsText(blob)});return {blobs,names,read};}
+
+test('research projects: save, change, reopen restores filters + ranking + comparison + takeaway; exports separate measured/gaps/proposed',async()=>{
+ const {dom,d,w,errors}=bootJudge(html);try{await pause();
+  w.localStorage.setItem('astroflareSession','{"mission-save":"untouched"}');
+  d.getElementById('demoBtn').click();await pause();
+  assert.match(text(d,'project-storage-note'),/Saved on this browser only\./);
+  // empty name: refused with a message, nothing stored
+  d.getElementById('project-form').dispatchEvent(new w.Event('submit',{cancelable:true}));assert.match(text(d,'project-status'),/Give the project a name/);assert.equal(w.localStorage.getItem('astroflareResearchProjects'),null);
+  // project 1: silicone, opposed
+  choose(d,w,'filter-material','silicone');choose(d,w,'filter-airflow','opposed');
+  const ex=await exports(w);
+  d.getElementById('project-name').value='Silicone opposed';d.getElementById('project-form').dispatchEvent(new w.Event('submit',{cancelable:true}));
+  assert.match(text(d,'project-status'),/Saved “Silicone opposed” on this browser only/);
+  const saved=JSON.parse(w.localStorage.getItem('astroflareResearchProjects'));assert.equal(saved.length,1);const p=saved[0];
+  assert.equal(p.datasetVersion,'2026-11-14.2');assert.deepEqual(p.filters,{material:'silicone',gravity:'any',airflow:'opposed'});assert.equal(p.scenario.gravity,'lunar');assert.ok(p.sourceRuns.includes('PSI-99:2-1'));assert.ok(p.brief.text.length>50);assert.ok(p.brief.citations.length>=1);
+  assert.equal(w.localStorage.getItem('astroflareSession'),'{"mission-save":"untouched"}');
+  // change everything, then reopen
+  d.getElementById('restore-lunar-preset').click();await pause();assert.equal(d.getElementById('filter-material').value,'any');
+  choose(d,w,'filter-material','fabric');assert.match(text(d,'research-decision'),/2\.1 mm\/s/);
+  d.getElementById('open-'+p.id).click();await pause();
+  assert.equal(d.getElementById('filter-material').value,'silicone');assert.equal(d.getElementById('filter-airflow').value,'opposed');assert.equal(d.getElementById('scenario-gravity').value,'lunar');
+  assert.match(text(d,'filter-status'),/1 of 3/);assert.match(text(d,'filter-status'),/Project “Silicone opposed” restored/);
+  assert.match(text(d,'research-decision'),/Insignificant/);assert.doesNotMatch(text(d,'research-decision'),/2\.1 mm/);
+  assert.ok(d.getElementById('comparison').textContent.includes('Silicone'));assert.equal(d.querySelectorAll('input[id^=compare-]:checked').length,p.selected.length);
+  assert.match(text(d,'project-status'),/Opened “Silicone opposed”/);
+  // exports
+  d.getElementById('md-'+p.id).click();d.getElementById('json-'+p.id).click();
+  assert.equal(ex.names[0],'astroflare-silicone-opposed.md');assert.equal(ex.names[1],'astroflare-silicone-opposed.json');
+  const md=await ex.read(ex.blobs[0]),json=JSON.parse(await ex.read(ex.blobs[1]));
+  for(const h of ['## Research question and scenario','## Measured evidence (reported by NASA)','## Evidence gaps (not measured)','## Proposed research (a suggestion, not a result)','## Citations'])assert.ok(md.includes(h),h);
+  assert.match(md,/Insignificant/);assert.match(md,/do not convert|not .{0,40}zero|Insignificant/i);assert.doesNotMatch(md,/2\.1 mm\/s/);
+  assert.match(md,/dataset version 2026-11-14\.2/);assert.match(md,/psi\.nasa\.gov/);assert.match(md,/Research relevance is separate from fire-risk scoring/);assert.match(md,/not lunar predictions/);assert.match(md,/NASA does not endorse/);
+  assert.equal(json.kind,'astroflare-research-project');assert.deepEqual(json.filters,p.filters);assert.match(json.note,/not a fire-risk score/);
+  // a SIBAL project keeps the 2.1 mm/s with its material and run
+  d.getElementById('restore-lunar-preset').click();await pause();d.getElementById('project-name').value='SIBAL fabric';d.getElementById('project-form').dispatchEvent(new w.Event('submit',{cancelable:true}));
+  const fab=JSON.parse(w.localStorage.getItem('astroflareResearchProjects')).find(x=>x.name==='SIBAL fabric');d.getElementById('md-'+fab.id).click();const md2=await ex.read(ex.blobs[2]);
+  assert.match(md2,/2\.1 mm\/s for run 2-5/);assert.match(md2,/SIBAL/);assert.match(md2,/not a prediction for your scenario/);assert.match(md2,/PSI-99:2-5/);
+  // overwrite by name, then delete
+  d.getElementById('project-name').value='sibal FABRIC';d.getElementById('project-form').dispatchEvent(new w.Event('submit',{cancelable:true}));assert.equal(JSON.parse(w.localStorage.getItem('astroflareResearchProjects')).length,2);assert.match(text(d,'project-status'),/Updated/);
+  d.getElementById('del-'+p.id).click();assert.equal(JSON.parse(w.localStorage.getItem('astroflareResearchProjects')).length,1);assert.match(text(d,'project-status'),/Deleted/);
+  assert.equal(w.localStorage.getItem('astroflareSession'),'{"mission-save":"untouched"}');
+  assert.deepEqual(errors,[]);}finally{dom.window.close();}
+});
+
+test('research projects: damaged, hostile and blocked storage fail with clear messages',async()=>{
+ let {dom,d,w,errors}=bootJudge(html,{beforeParse(w){w.localStorage.setItem('astroflareResearchProjects','{not json');}});try{await pause();d.getElementById('demoBtn').click();await pause();
+  assert.match(d.getElementById('project-list').textContent,/could not be read.*mission-screening save is not affected/);
+  d.getElementById('project-name').value='After damage';d.getElementById('project-form').dispatchEvent(new w.Event('submit',{cancelable:true}));assert.match(text(d,'project-status'),/Saved “After damage”/);assert.equal(JSON.parse(w.localStorage.getItem('astroflareResearchProjects')).length,1);assert.deepEqual(errors,[]);}finally{dom.window.close();}
+ // entries with impossible filters or unknown investigations are ignored, never applied
+ ({dom,d,w,errors}=bootJudge(html,{beforeParse(w){w.localStorage.setItem('astroflareResearchProjects',JSON.stringify([{id:'x',name:'bad',question:'q',filters:{material:'<img onerror=1>',gravity:'any',airflow:'any'},scenario:{gravity:'lunar'},selected:[]},{id:'y',name:'bad2',question:'q',filters:{material:'any',gravity:'any',airflow:'any'},scenario:{gravity:'lunar'},selected:['PSI-00']}]));}}));try{await pause();d.getElementById('demoBtn').click();await pause();assert.equal(d.querySelectorAll('.project-item').length,0);assert.doesNotMatch(d.getElementById('research-projects').innerHTML,/onerror/);assert.deepEqual(errors,[]);}finally{dom.window.close();}
+ // storage that throws on write
+ ({dom,d,w,errors}=bootJudge(html,{beforeParse(w){w.Storage.prototype.setItem=function(){throw new Error('QuotaExceededError')};}}));try{await pause();d.getElementById('demoBtn').click();await pause();d.getElementById('project-name').value='Blocked';d.getElementById('project-form').dispatchEvent(new w.Event('submit',{cancelable:true}));assert.match(text(d,'project-status'),/would not save the project/);assert.equal(d.getElementById('project-status').className.includes('bad'),true);assert.deepEqual(errors,[]);}finally{dom.window.close();}
+});
+
+test('keyboard: labs, project name and save are reachable form controls with labels',async()=>{
+ const {dom,d}=bootJudge(html);try{await pause();d.getElementById('demoBtn').click();await pause();
+  const label=d.querySelector('label[for=project-name]');assert.ok(label);assert.equal(d.getElementById('save-project').type,'submit');assert.equal(d.getElementById('project-status').getAttribute('role'),'status');
+  for(const id of ['labsBtn','homeBtn','demoBtn','researchBtn','missionBtn'])assert.equal(d.getElementById(id).tagName,'BUTTON');}finally{dom.window.close();}
+});

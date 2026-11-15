@@ -260,9 +260,23 @@ def freellm_model():
 _MODEL_ID = re.compile(r"[A-Za-z0-9._:/@+-]{1,100}")
 
 
+def freellm_key():
+    """The router key: FREELLMAPI_API_KEY, else the contents of FREELLMAPI_API_KEY_FILE. The file lets a hosted
+    engine start before its router is ready (render_start.py writes it once the router has generated its key), so
+    the site answers quickly after a cold start and AI becomes available a little later."""
+    key = _env("FREELLMAPI_API_KEY")
+    path = _env("FREELLMAPI_API_KEY_FILE")
+    if key or not path:
+        return key
+    try:
+        return Path(path).read_text(encoding="utf-8").strip()
+    except OSError:
+        return ""
+
+
 def freellm_state():
     """'ok', 'missing', 'malformed' (key), 'bad_url' or 'bad_model'."""
-    key = _env("FREELLMAPI_API_KEY")
+    key = freellm_key()
     if not key:
         return "missing"
     if not key.startswith("freellmapi-") or len(key) < 16 or re.search(r"\s", key) or _PLACEHOLDER.search(key):
@@ -524,7 +538,7 @@ def _router_error_detail(raw):
     if not isinstance(msg, str):
         return ""
     msg = _clean_text(msg, 4000)  # generous: shortening happens below, keeping both ends
-    key = _env("FREELLMAPI_API_KEY")
+    key = freellm_key()
     if key:
         msg = msg.replace(key, "<redacted>")
     msg = _KEYISH.sub("<redacted>", msg)
@@ -677,7 +691,7 @@ _FREELLM_UNREACHABLE = ("Make sure the FreeLLMAPI app is running and FREELLMAPI_
 
 
 def _freellm_headers(extra=None):
-    h = {"Authorization": "Bearer " + _env("FREELLMAPI_API_KEY"), "Accept": "application/json"}
+    h = {"Authorization": "Bearer " + freellm_key(), "Accept": "application/json"}
     h.update(extra or {})
     return h
 
@@ -875,6 +889,33 @@ def interpret_mission(text, use_ai, client=None):
     return guide_lib.merge_candidates(rules, cands, dest, clar), {"requested": True, "status": "used", "message": "Automated text analysis was also used. Anything it proposed is tagged 'automated suggestion' and quotes your own words."}, diag
 
 
+# Generated answers are short, but the models that write them reason before answering and that reasoning counts
+# against the token limit. At 1,500 tokens replies were cut off mid-JSON and withheld as unreadable ("not_json"), so
+# answers get the same room as the structured explanation.
+ANSWER_MAX_TOKENS = 4000
+# A reply the checker cannot read at all (cut off, or not the requested JSON) says nothing about its content, so it is
+# worth one more attempt. A reply that was read and failed a content check is never retried: that would just be
+# fishing for a version that slips past the checks.
+_RETRY_UNREADABLE = ("not_json", "bad_shape")
+
+
+def _checked_answer(system, user, validate, client, label):
+    """Call the text service and validate the reply, retrying once only when the reply could not be read.
+    Returns (answer or None, public status, diagnostics). Logs reason codes only, never text or keys."""
+    for attempt in (1, 2):
+        reply, status, diag = _service_text(system, user, ANSWER_MAX_TOKENS, client)
+        if status != "used":
+            return None, status, diag
+        ans, notes = validate(reply)
+        diag["validationNotes"], diag["attempt"] = notes, attempt
+        if ans is not None:
+            return ans, status, diag
+        print("%s withheld: %s (attempt %d, truncated=%s, %d chars)" % (label, ",".join(notes), attempt, bool(diag.get("truncated")), len(reply or "")))
+        if not set(notes) & set(_RETRY_UNREADABLE):
+            break
+    return None, "used", diag
+
+
 def answer_question(a, question, mission, client=None):
     """Free-text follow-up question. Deterministic routes first; otherwise an optional grounded answer.
     Returns (payload, diagnostics)."""
@@ -882,15 +923,13 @@ def answer_question(a, question, mission, client=None):
     if intent:
         return {"mode": "rules", "intent": intent}, {}
     system, user = investigate_lib.ask_request(a, question, mission)
-    reply, status, diag = _service_text(system, user, 1500, client)
+    ans, status, diag = _checked_answer(system, user, lambda reply: investigate_lib.validate_answer(reply, a, question), client, "Typed answer")
     if status != "used":
         kind = status if status in report_lib.PUBLIC_MESSAGES else "unavailable"
         said = {"not_configured": "Typed questions of this kind need the optional explanation service, which is not set up on this installation.",
                 "busy": "The explanation service is busy, so this question could not be answered just now.",
                 "unavailable": "The explanation service did not return a usable result for this question."}[kind]
         return {"mode": "unavailable", "status": status, "message": said + " Questions about influence, missing information, calculations, evidence and what to verify are answered without it."}, diag
-    ans, notes = investigate_lib.validate_answer(reply, a, question)
-    diag["validationNotes"] = notes
     if ans is None:
         return {"mode": "withheld", "message": "A generated answer was produced but withheld because it did not pass the consistency checks. Try rephrasing, or use one of the built-in investigation actions."}, diag
     return {"mode": "ai", "answer": ans, "label": "Automatically generated answer based only on this assessment. Not written or reviewed by a person; checked for consistency, not scientific correctness."}, diag
@@ -904,17 +943,14 @@ def answer_research_question(question, ids, client=None):
     except (OSError, ValueError):
         return {"mode": "unavailable", "status": "unavailable", "message": "The curated evidence records could not be loaded, so no explanation was requested."}, {"reason": "dataset_unreadable"}
     system, user, data = research_lib.ask_request(dataset, question, ids)
-    reply, status, diag = _service_text(system, user, 1500, client)
+    ans, status, diag = _checked_answer(system, user, lambda reply: research_lib.validate_answer(reply, data, question, dataset), client, "Research explanation")
     if status != "used":
         kind = status if status in report_lib.PUBLIC_MESSAGES else "unavailable"
         said = {"not_configured": "The optional explanation service is not set up on this installation.",
                 "busy": "The explanation service is busy, so no explanation could be written just now.",
                 "unavailable": "The explanation service did not return a usable result."}[kind]
         return {"mode": "unavailable", "status": status, "message": said + " The evidence answer above does not depend on it."}, diag
-    ans, notes = research_lib.validate_answer(reply, data, question, dataset)
-    diag["validationNotes"] = notes
     if ans is None:
-        print("Research explanation withheld: %s" % ",".join(notes))  # internal reason codes only; never text or keys
         return {"mode": "withheld", "message": "An explanation was produced but withheld because it did not pass the consistency checks. The evidence answer above is unaffected."}, diag
     return {"mode": "ai", "answer": ans["answer"], "uses": ans["uses"], "status": ans["status"],
             "label": "Automatically generated explanation based only on the curated NASA PSI records. Not written or reviewed by a person; checked for consistency, not scientific correctness."}, diag

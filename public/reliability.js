@@ -19,9 +19,9 @@
   function goTo(stage,opts){
     if(stage==='report'&&S.assessment&&!S.reportMd&&!S.reportErr&&!opts?.preparing)return prepareReport();
     cancelScreenTasks();if(stage!=='research')cancelEvidence();
-    if(!['home','research','mission','problem','info','review','running','results','report'].includes(stage))stage='home';
+    if(!['home','research','labs','mission','problem','info','review','running','results','report'].includes(stage))stage='home';
     if(stage==='info'&&!S.flow||stage==='review'&&!S.profile||['results','report'].includes(stage)&&!S.assessment)stage='mission';
-    S.stage=stage;document.body.classList.toggle('research-active',stage==='research'||stage==='home');S.reached[stage]=true;if(opts?.step)S.viewStep=opts.step;
+    S.stage=stage;document.body.classList.toggle('research-active',stage==='research'||stage==='home'||stage==='labs');S.reached[stage]=true;if(opts?.step)S.viewStep=opts.step;
     renderStepper();renderContext();renderStage();syncNavigation(stage);const h=$('stage').querySelector('h1,h2');if(h){h.tabIndex=-1;h.focus({preventScroll:true});}window.scrollTo({top:0,behavior:'auto'});
   }
   function collectVisibleDrafts(){
@@ -59,7 +59,7 @@
     S.reportMd=null;S.reportErr=null;goTo('report',{preparing:true});const task=beginTask('report'),n=narrativeFor(S.assessment);
     try{const r=await post('/api/report',{inputs:engineInputs(),basis:basisMap(),mission:missionPayload(),explain:false,includeInfluence:true,narrative:n?.status==='included'?n:null},60000);if(!currentTask(task))return;S.reportMd=r.markdown.replace(/Most consequential unresolved issue/gi,'One condition to review (not ranked)');S.reportJson=JSON.parse(JSON.stringify(r.report).replace(/Most consequential unresolved issue/gi,'One condition to review (not ranked)'));renderStage();screenStatus('Report ready. Download Markdown or JSON, or print the report.');}catch(e){if(currentTask(task)){S.reportErr=e.message;renderStage();}}
   }
-  function openCustomResearch(){goTo('research');$('question-editor').open=true;$('research-question').focus({preventScroll:true});$('research-question').select();}
+  function openCustomResearch(){resetForOwnQuestion();EXPLORER.mode='research';goTo('research');$('question-editor').open=true;$('research-question').focus({preventScroll:true});$('research-question').select();}
 
   async function investigate(action,extra){
     const epoch=screenEpoch,body={inputs:engineInputs(),basis:basisMap(),mission:missionPayload(),action,...(extra||{})};
